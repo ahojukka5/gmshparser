@@ -23,7 +23,7 @@ import gmshparser
 gmshparser.parse("testdata.msh")
 ```
 
-[travis-img]: https://travis-ci.org/ahojukka5/gmshparser.svg?branch=master
-[travis-url]: https://travis-ci.org/ahojukka5/gmshparser
+[travis-img]: https://travis-ci.com/ahojukka5/gmshparser.svg?branch=master
+[travis-url]: https://travis-ci.com/ahojukka5/gmshparser
 [coveralls-img]: https://coveralls.io/repos/github/ahojukka5/gmshparser/badge.svg?branch=master
 [coveralls-url]: https://coveralls.io/github/ahojukka5/gmshparser?branch=master
