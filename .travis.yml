@@ -1,3 +1,17 @@
 language: python
+
+before_install:
+  - python --version
+  - pip install -U pip
+  - pip install -U pytest
+  - pip install codecov
+  - pip install pytest-cov
+
+install:
+  - pip install ".[test]" # install package + test dependencies
+
 script:
-  - pytest
+  - pytest --cov=gmshparser tests/ # run tests
+
+after_success:
+  - codecov # submit coverage
