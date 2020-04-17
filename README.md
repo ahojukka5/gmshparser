@@ -1,6 +1,7 @@
 # gmshparser - parse Gmsh .msh file format
 
-[![Build Status](https://travis-ci.org/ahojukka5/gmshparser.svg?branch=master)](https://travis-ci.org/ahojukka5/gmshparser)
+[![Build Status][travis-img]][travis-url]
+[![Coverate Status][coveralls-img]][coveralls-url]
 
 Package author: Jukka Aho (@ahojukka5)
 
@@ -21,3 +22,8 @@ pip install gmshparser
 import gmshparser
 gmshparser.parse("testdata.msh")
 ```
+
+[travis-img]: https://travis-ci.org/ahojukka5/gmshparser.svg?branch=master
+[travis-url]: https://travis-ci.org/ahojukka5/gmshparser
+[coveralls-img]: https://coveralls.io/repos/github/ahojukka5/gmshparser/badge.svg?branch=master
+[coveralls-url]: https://coveralls.io/github/ahojukka5/gmshparser?branch=master
