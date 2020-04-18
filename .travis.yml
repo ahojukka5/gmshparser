@@ -4,14 +4,16 @@ before_install:
   - python --version
   - pip install -U pip
   - pip install -U pytest
-  - pip install codecov
   - pip install pytest-cov
+  - pip install pytest-pycodestyle
+  - pip install pytest-pep8
+  - pip install python-coveralls
 
 install:
   - pip install ".[test]" # install package + test dependencies
 
 script:
-  - pytest --cov=gmshparser tests/ # run tests
+  - pytest
 
 after_success:
-  - codecov # submit coverage
+  - coveralls # submit coverage
