@@ -48,7 +48,7 @@ def mesh():
     6 0.4
     $EndNodeData
     """
-    return gmshparser.parse_io(io.StringIO(data))
+    return gmshparser.parse_io(io.StringIO(data), gmshparser.PARSERS)
 
 
 def test_version(mesh):
