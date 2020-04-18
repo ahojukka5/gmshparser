@@ -6,8 +6,10 @@
 
 Package author: Jukka Aho (@ahojukka5)
 
-This is a simple package which does only one thing: parses Gmsh .msh file
-format. No external dependencies or anything extra. Just mesh parsing.
+Gmshparser is a small Python package which aims to do only one thing: parse Gmsh
+mesh file format. Package does not have any external dependencies to other
+packages and it aims to be a simple stand-alone solution for a common problem:
+how to import mesh to your favourite research FEM code?
 
 ## Installing package
 
@@ -38,3 +40,4 @@ contact me (ahojukka5 at gmail.com) directly.
 [documentation-img]: https://readthedocs.org/projects/gmshparser/badge/?version=latest
 [documentation-url]: https://gmshparser.readthedocs.io/en/latest/?badge=latest
 [issues]: https://github.com/ahojukka5/gmshparser/issues
+[gmsh]: https://gmsh.info/
