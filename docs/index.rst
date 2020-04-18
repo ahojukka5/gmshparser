@@ -17,6 +17,7 @@ further details.
    :maxdepth: 2
 
    Home <self>
+   Mesh formats <mesh_formats>
    API <api>
    License <license>
 
