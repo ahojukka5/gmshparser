@@ -4,6 +4,7 @@ before_install:
   - python --version
   - pip install -U pip
   - pip install -U pytest
+  - pip install coverage==4.5.4
   - pip install pytest-cov
   - pip install pytest-pycodestyle
   - pip install pytest-pep8
