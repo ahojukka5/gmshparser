@@ -43,6 +43,25 @@
 # 6 0.4
 # $EndNodeData
 
+from typing import List
+
+def parse_ints(io) -> List[int]:
+    """
+    Given io, read a single line and consider that as a list of integers.
+    """
+    line = io.readline()
+    line = line.strip()
+    parts = line.split(" ")
+    ints = map(int, parts)
+    return list(ints)
+
+def parse_floats(io) -> List[float]:
+    """ Given io, read a single line and consider that as a list of floats. """
+    line = io.readline()
+    line = line.strip()
+    parts = line.split(" ")
+    ints = map(float, parts)
+    return list(ints)
 
 class Mesh(object):
 
