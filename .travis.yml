@@ -7,6 +7,7 @@ before_install:
   - pip install pytest-cov
   - pip install pytest-pycodestyle
   - pip install pytest-pep8
+  - pip install pytest-flake8
   - pip install python-coveralls
 
 install:
