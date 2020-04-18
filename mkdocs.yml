@@ -1,1 +1,5 @@
-site_name: gmshparser - parse Gmsh .msh file format
+site_name: gmshparser
+theme: readthedocs
+nav:
+  - Home: 'index.md'
+  - License: 'license.md'
