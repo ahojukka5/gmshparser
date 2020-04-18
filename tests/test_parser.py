@@ -51,6 +51,12 @@ def mesh():
     return gmshparser.parse_io(io.StringIO(data), gmshparser.PARSERS)
 
 
+def test_abstract_parser(mesh):
+    p = gmshparser.AbstractParser()
+    with pytest.raises(NotImplementedError):
+        p.parse(1, 2)
+
+
 def test_version(mesh):
     assert mesh.get_version() == 4.1
     assert mesh.get_ascii()
