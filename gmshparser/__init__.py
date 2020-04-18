@@ -132,7 +132,7 @@ class NodeEntity(object):
 
 class Mesh(object):
 
-    """ Mesh is the main object of the package, containing the Gmsh .msh information. """
+    """Mesh is the main class of the package."""
 
     def __init__(self):
         self.version_ = "unknown"
@@ -214,13 +214,13 @@ class Mesh(object):
 
 
 class AbstractParser(object):
-    def parse(self, mesh, io):
+    def parse(self, mesh: Mesh, io: TextIO) -> None:
         raise NotImplementedError(
             "You have to implement parser(self, mesh, io) to your parser")
 
 
 class MeshFormatParser(AbstractParser):
-    def parse(self, mesh, io):
+    def parse(self, mesh: Mesh, io: TextIO) -> None:
         s = io.readline().strip().split(" ")
         mesh.set_version(float(s[0]))
         mesh.set_ascii(int(s[1]) == 0)
@@ -229,7 +229,7 @@ class MeshFormatParser(AbstractParser):
 
 class NodesParser(AbstractParser):
 
-    def parse(self, mesh, io):
+    def parse(self, mesh: Mesh, io: TextIO) -> None:
         meta = parse_ints(io)
         mesh.set_number_of_entities(meta[0])
         mesh.set_number_of_nodes(meta[1])
@@ -242,7 +242,7 @@ class NodesParser(AbstractParser):
             entity.set_tag(emeta[1])
             entity.set_number_of_parametric_coordinates(emeta[2])
             entity.set_number_of_nodes(emeta[3])
-            node_tags: List[int] = []
+            node_tags = []
             for j in range(entity.get_number_of_nodes()):
                 tag = int(io.readline())
                 node = Node()
