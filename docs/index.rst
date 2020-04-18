@@ -1,4 +1,5 @@
-# Welcome to gmshparser's documentation!
+Welcome to gmshparser's documentation!
+======================================
 
 Package author: Jukka Aho (@ahojukka5)
 
@@ -7,24 +8,42 @@ mesh file format. Package does not have any external dependencies to other
 packages and it aims to be a simple stand-alone solution for a common problem:
 how to import mesh to your favourite research FEM code?
 
-Project is hosted on GitHub: <https://github.com/ahojukka5/gmshparser>
+Project is hosted on GitHub: <https://github.com/ahojukka5/gmshparser>. Project
+is licensed under MIT license. Please see the [project license](license.md) for
+further details.
 
-## Installing package
+.. toctree::
+   :maxdepth: 2
 
-Using pip:
+   Home <self>
+   API <api>
+   License <license>
+
+Installing package
+------------------
+
+Package can be installed using a standard package installing tool `pip`:
 
 ```bash
 pip install gmshparser
 ```
 
-## Usage
+Development version can be installed from GitHub repository, again, using `pip`:
+
+```bash
+pip install git+git://github.com/ahojukka5/gmshparser.git
+```
+
+Usage
+-----
 
 ```python
 import gmshparser
 gmshparser.parse("testdata.msh")
 ```
 
-## Contributing to project
+Contributing to the project
+---------------------------
 
 Like in other open source projects, contributions are always welcome to this
 too! If you have some great ideas how to make this package better, feature
