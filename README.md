@@ -2,6 +2,7 @@
 
 [![Build Status][travis-img]][travis-url]
 [![Coverate Status][coveralls-img]][coveralls-url]
+[![Documentation Status][documentation-img]][documentation-url]
 
 Package author: Jukka Aho (@ahojukka5)
 
@@ -27,3 +28,5 @@ gmshparser.parse("testdata.msh")
 [travis-url]: https://travis-ci.com/ahojukka5/gmshparser
 [coveralls-img]: https://coveralls.io/repos/github/ahojukka5/gmshparser/badge.svg?branch=master
 [coveralls-url]: https://coveralls.io/github/ahojukka5/gmshparser?branch=master
+[documentation-img]: https://readthedocs.org/projects/gmshparser/badge/?version=latest
+[documentation-url]: https://gmshparser.readthedocs.io/en/latest/?badge=latest
