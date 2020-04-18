@@ -1,4 +1,4 @@
-from typing import List, Tuple, TextIO
+from typing import List, Tuple, Dict, Type, TextIO
 
 
 def parse_ints(io: TextIO) -> List[int]:
@@ -212,6 +212,7 @@ class Mesh(object):
         """Get node entity based on tag."""
         return self.entities_[tag]
 
+
 class AbstractParser(object):
     def parse(self, mesh, io):
         raise NotImplementedError(
@@ -261,7 +262,8 @@ PARSERS = {
 }
 
 
-def parse_io(io, parsers=PARSERS):
+def parse_io(io: TextIO, parsers: Dict[str, Type[AbstractParser]]) -> Mesh:
+    """Parse input stream using `parsers` and return `Mesh` object. """
     mesh = Mesh()
     for line in io:
         line = line.strip()
