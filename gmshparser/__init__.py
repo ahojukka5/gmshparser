@@ -273,3 +273,9 @@ def parse_io(io, parsers=PARSERS):
             continue
         parsers[line]().parse(mesh, io)
     return mesh
+
+
+def parse(filename: str) -> Mesh:
+    """Parse Gmsh .msh file and return `Mesh` object."""
+    with open(filename, "r") as fid:
+        return parse_io(fid, PARSERS)
