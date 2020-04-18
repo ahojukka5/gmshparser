@@ -49,6 +49,9 @@ def mesh():
     """
     return gmshparser.parse_io(io.StringIO(data))
 
-def test_mesh1():
-    mesh = gmshparser.parse_io(io.StringIO(MESH1))
-    assert mesh.version == 4.1
+
+def test_version(mesh):
+    assert mesh.get_version() == 4.1
+    assert mesh.get_ascii()
+    assert mesh.get_precision() == 8
+
