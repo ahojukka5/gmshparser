@@ -4,12 +4,7 @@ from .helpers import parse_ints, parse_floats
 from .node import Node
 from .node_entity import NodeEntity
 from .mesh import Mesh
-
-
-class AbstractParser(object):
-    def parse(self, mesh: Mesh, io: TextIO) -> None:
-        raise NotImplementedError(
-            "You have to implement parser(self, mesh, io) to your parser")
+from .abstract_parser import AbstractParser
 
 
 class MeshFormatParser(AbstractParser):
