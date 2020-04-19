@@ -29,4 +29,6 @@ def parse_io(io: TextIO, parsers: Dict[str, Type[AbstractParser]]) -> Mesh:
 def parse(filename: str) -> Mesh:
     """Parse Gmsh .msh file and return `Mesh` object."""
     with open(filename, "r") as fid:
-        return parse_io(fid, PARSERS)
+        mesh = parse_io(fid, PARSERS)
+        mesh.set_name(filename)
+        return mesh

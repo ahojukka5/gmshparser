@@ -6,6 +6,7 @@ class Mesh(object):
     """Mesh is the main class of the package."""
 
     def __init__(self):
+        self.name_ = "newmesh"
         self.version_ = "unknown"
         self.ascii_ = False
         self.precision_ = -1  # t_size
@@ -14,6 +15,14 @@ class Mesh(object):
         self.min_node_tag_ = -1
         self.max_node_tag_ = -1
         self.entities_ = {}
+
+    def set_name(self, name: str):
+        """Set the name of the mesh."""
+        self.name_ = name
+
+    def get_name(self) -> str:
+        """Get the name of the mesh."""
+        return self.name_
 
     def set_version(self, version: str):
         """Set the version of the Mesh object"""
