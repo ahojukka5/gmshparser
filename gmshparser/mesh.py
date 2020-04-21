@@ -1,4 +1,5 @@
 from gmshparser.node_entity import NodeEntity
+from io import StringIO
 
 
 class Mesh(object):
@@ -91,3 +92,13 @@ class Mesh(object):
     def get_node_entity(self, tag: int):
         """Get node entity based on tag."""
         return self.entities_[tag]
+
+    def __str__(self):
+        io = StringIO()
+        io.write(f"Mesh name: {self.get_name()}\n")
+        io.write(f"Mesh version: {self.get_version()}\n")
+        io.write(f"Number of nodes: {self.get_number_of_nodes()}\n")
+        io.write(f"Minimum node tag: {self.get_min_node_tag()}\n")
+        io.write(f"Maximum node tag: {self.get_max_node_tag()}\n")
+        io.write(f"Number of entities: {self.get_number_of_entities()}\n")
+        return io.getvalue()
