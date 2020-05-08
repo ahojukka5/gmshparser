@@ -11,11 +11,11 @@ class Mesh(object):
         self.version_ = "unknown"
         self.ascii_ = False
         self.precision_ = -1  # t_size
-        self.number_of_entities_ = -1
+        self.number_of_node_entities_ = -1
         self.number_of_nodes_ = -1
         self.min_node_tag_ = -1
         self.max_node_tag_ = -1
-        self.entities_ = {}
+        self.node_entities_ = {}
 
     def set_name(self, name: str):
         """Set the name of the mesh."""
@@ -49,13 +49,13 @@ class Mesh(object):
         """Get the precision of the mesh"""
         return self.precision_
 
-    def set_number_of_entities(self, number_of_entities: int):
-        """Set number of entities."""
-        self.number_of_entities_ = number_of_entities
+    def set_number_of_node_entities(self, number_of_node_entities: int):
+        """Set number of node entities."""
+        self.number_of_node_entities_ = number_of_node_entities
 
-    def get_number_of_entities(self) -> int:
-        """Get number of entities."""
-        return self.number_of_entities_
+    def get_number_of_node_entities(self) -> int:
+        """Get number of node entities."""
+        return self.number_of_node_entities_
 
     def set_number_of_nodes(self, number_of_nodes: int):
         """Set number of nodes."""
@@ -81,17 +81,17 @@ class Mesh(object):
         """Get node maximum tag."""
         return self.max_node_tag_
 
-    def has_node_entity(self, entity_tag) -> bool:
-        """Test does mesh have entity with `entity_tag`."""
-        return entity_tag in self.entities_
+    def has_node_entity(self, node_entity_tag) -> bool:
+        """Test does mesh have entity with `node_entity_tag`."""
+        return node_entity_tag in self.node_entities_
 
-    def add_node_entity(self, entity: NodeEntity):
+    def add_node_entity(self, node_entity: NodeEntity):
         """Add node entity to mesh."""
-        self.entities_[entity.get_tag()] = entity
+        self.node_entities_[node_entity.get_tag()] = node_entity
 
     def get_node_entity(self, tag: int):
         """Get node entity based on tag."""
-        return self.entities_[tag]
+        return self.node_entities_[tag]
 
     def __str__(self):
         io = StringIO()
@@ -100,5 +100,6 @@ class Mesh(object):
         io.write("Number of nodes: %s\n" % self.get_number_of_nodes())
         io.write("Minimum node tag: %s\n" % self.get_min_node_tag())
         io.write("Maximum node tag: %s\n" % self.get_max_node_tag())
-        io.write("Number of entities: %s\n" % self.get_number_of_entities())
+        io.write("Number of node entities: %s\n" %
+                 self.get_number_of_node_entities())
         return io.getvalue()

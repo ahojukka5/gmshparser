@@ -10,11 +10,11 @@ class NodesParser(AbstractParser):
 
     def parse(self, mesh: Mesh, io: TextIO) -> None:
         meta = parse_ints(io)
-        mesh.set_number_of_entities(meta[0])
+        mesh.set_number_of_node_entities(meta[0])
         mesh.set_number_of_nodes(meta[1])
         mesh.set_min_node_tag(meta[2])
         mesh.set_max_node_tag(meta[3])
-        for i in range(mesh.get_number_of_entities()):
+        for i in range(mesh.get_number_of_node_entities()):
             emeta = parse_ints(io)
             entity = NodeEntity()
             entity.set_dimension(emeta[0])
