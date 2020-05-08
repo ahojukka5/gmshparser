@@ -1,14 +1,16 @@
-from typing import Dict, Type, TextIO
+from typing import TextIO
 from .mesh import Mesh
-from .abstract_parser import AbstractParser
 from .mesh_format_parser import MeshFormatParser
 from .nodes_parser import NodesParser
 
 
-Parsers = Dict[str, Type[AbstractParser]]
+DEFAULT_PARSERS = {
+    "$MeshFormat": MeshFormatParser,
+    "$Nodes": NodesParser,
+}
 
 
-def parse_io(io: TextIO, mesh: Mesh, parsers: Parsers) -> Mesh:
+def parse_io(io: TextIO, mesh=Mesh(), parsers=DEFAULT_PARSERS) -> Mesh:
     """Parse input stream using `parsers` to `mesh` object. """
     for line in io:
         line = line.strip()
@@ -22,16 +24,9 @@ def parse_io(io: TextIO, mesh: Mesh, parsers: Parsers) -> Mesh:
     return mesh
 
 
-DEFAULT_PARSERS = {
-    "$MeshFormat": MeshFormatParser,
-    "$Nodes": NodesParser
-}
-
-
-def parse(filename: str, parsers: Parsers = DEFAULT_PARSERS) -> Mesh:
+def parse(filename: str) -> Mesh:
     """Parse Gmsh .msh file and return `Mesh` object."""
-    mesh = Mesh()
-    mesh.set_name(filename)
     with open(filename, "r") as fid:
-        mesh = parse_io(fid, mesh, parsers)
+        mesh = parse_io(fid)
+        mesh.set_name(filename)
         return mesh
