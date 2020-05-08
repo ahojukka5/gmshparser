@@ -48,6 +48,6 @@ class NodeEntity(object):
         """Add new node to entity."""
         self.nodes_[node.get_tag()] = node
 
-    def get_node(self, tag: int):
+    def get_node(self, tag: int) -> Node:
         """Get node from entity by its tag."""
         return self.nodes_[tag]
