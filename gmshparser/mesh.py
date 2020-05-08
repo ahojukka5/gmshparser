@@ -8,19 +8,19 @@ class Mesh(object):
     """Mesh is the main class of the package."""
 
     def __init__(self):
-        self.name_ = "newmesh"
-        self.version_ = "unknown"
-        self.ascii_ = False
-        self.precision_ = -1  # t_size
-        self.number_of_node_entities_ = -1
-        self.number_of_nodes_ = -1
-        self.min_node_tag_ = -1
-        self.max_node_tag_ = -1
+        self.name_ = "New Mesh"
+        self.version_ = "4.1"
+        self.ascii_ = True
+        self.precision_ = 8  # t_size
+        self.number_of_node_entities_ = 0
+        self.number_of_nodes_ = 0
+        self.min_node_tag_ = 0
+        self.max_node_tag_ = 0
         self.node_entities_ = {}
-        self.number_of_element_entities_ = -1
-        self.number_of_elements_ = -1
-        self.min_element_tag_ = -1
-        self.max_element_tag_ = -1
+        self.number_of_element_entities_ = 0
+        self.number_of_elements_ = 0
+        self.min_element_tag_ = 0
+        self.max_element_tag_ = 0
         self.element_entities_ = {}
 
     def set_name(self, name: str):
