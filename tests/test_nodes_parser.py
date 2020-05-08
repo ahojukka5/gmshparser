@@ -2,7 +2,9 @@ from gmshparser.nodes_parser import NodesParser
 from gmshparser.mesh import Mesh
 from io import StringIO
 
-__content__ = """1 6 1 6
+__content__ = """
+$Nodes
+1 6 1 6
 2 1 0 6
 1
 2
@@ -17,34 +19,13 @@ __content__ = """1 6 1 6
 2. 0. 0.
 2. 1. 0.
 $EndNodes
-$Elements
-1 2 1 2
-2 1 3 2
-1 1 2 3 4
-2 2 5 6 3
-$EndElements
-$NodeData
-1
-"A scalar view"
-1
-0.0
-3
-0
-1
-6
-1 0.0
-2 0.1
-3 0.2
-4 0.0
-5 0.2
-6 0.4
-$EndNodeData"""
+"""
 
 
 def test_nodes_parser():
     parser = NodesParser()
     mesh = Mesh()
-    data = StringIO(__content__)
+    data = StringIO(__content__.strip())
     parser.parse(mesh, data)
 
     assert mesh.get_number_of_nodes() == 6

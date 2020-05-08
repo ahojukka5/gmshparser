@@ -9,7 +9,11 @@ from .helpers import parse_ints, parse_floats
 class NodesParser(AbstractParser):
 
     def parse(self, mesh: Mesh, io: TextIO) -> None:
-        meta = parse_ints(io)
+        line = io.readline()
+        if line.startswith("$Nodes"):
+            line = io.readline()
+        meta = list(map(int, line.strip().split(" ")))
+
         mesh.set_number_of_node_entities(meta[0])
         mesh.set_number_of_nodes(meta[1])
         mesh.set_min_node_tag(meta[2])
