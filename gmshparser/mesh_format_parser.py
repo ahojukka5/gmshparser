@@ -4,7 +4,13 @@ from .mesh import Mesh
 
 
 class MeshFormatParser(AbstractParser):
-    def parse(self, mesh: Mesh, io: TextIO) -> None:
+
+    @staticmethod
+    def get_section_name():
+        return "$MeshFormat"
+
+    @staticmethod
+    def parse(mesh: Mesh, io: TextIO) -> None:
         s = io.readline().strip().split(" ")
         mesh.set_version(float(s[0]))
         mesh.set_ascii(int(s[1]) == 0)
