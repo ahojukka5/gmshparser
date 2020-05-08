@@ -22,7 +22,11 @@ def parse_io(io: TextIO, mesh=Mesh(), parsers=DEFAULT_PARSERS) -> Mesh:
             continue
         if line not in parsers:
             continue
-        parsers[line]().parse(mesh, io)
+        try:
+            parsers[line]().parse(mesh, io)
+        except Exception:
+            print("Unable to parse section %s from mesh!" % line)
+            raise
     return mesh
 
 
