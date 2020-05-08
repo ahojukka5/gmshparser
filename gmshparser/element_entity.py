@@ -1,3 +1,4 @@
+from io import StringIO
 from .element import Element
 
 
@@ -51,3 +52,11 @@ class ElementEntity(object):
     def get_element(self, tag: int) -> Element:
         """Get an element from the entity."""
         return self.elements_[tag]
+
+    def __str__(self):
+        io = StringIO()
+        io.write("---- Element entity # %s ----\n" % self.get_tag())
+        io.write("Dimension: %s\n" % self.get_dimension())
+        io.write("Element type: %s\n" % self.get_element_type())
+        io.write("Number of elements: %s\n" % self.get_number_of_elements())
+        return io.getvalue()
