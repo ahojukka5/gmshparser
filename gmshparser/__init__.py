@@ -5,15 +5,11 @@ from .mesh_format_parser import MeshFormatParser
 from .nodes_parser import NodesParser
 
 
-PARSERS = {
-    "$MeshFormat": MeshFormatParser,
-    "$Nodes": NodesParser
-}
+Parsers = Dict[str, Type[AbstractParser]]
 
 
-def parse_io(io: TextIO, parsers: Dict[str, Type[AbstractParser]]) -> Mesh:
-    """Parse input stream using `parsers` and return `Mesh` object. """
-    mesh = Mesh()
+def parse_io(io: TextIO, mesh: Mesh, parsers: Parsers) -> Mesh:
+    """Parse input stream using `parsers` to `mesh` object. """
     for line in io:
         line = line.strip()
         if not line.startswith("$"):
@@ -26,9 +22,16 @@ def parse_io(io: TextIO, parsers: Dict[str, Type[AbstractParser]]) -> Mesh:
     return mesh
 
 
-def parse(filename: str) -> Mesh:
+DEFAULT_PARSERS = {
+    "$MeshFormat": MeshFormatParser,
+    "$Nodes": NodesParser
+}
+
+
+def parse(filename: str, parsers: Parsers = DEFAULT_PARSERS) -> Mesh:
     """Parse Gmsh .msh file and return `Mesh` object."""
+    mesh = Mesh()
+    mesh.set_name(filename)
     with open(filename, "r") as fid:
-        mesh = parse_io(fid, PARSERS)
-        mesh.set_name(filename)
+        mesh = parse_io(fid, mesh, parsers)
         return mesh
