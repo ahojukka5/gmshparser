@@ -37,3 +37,5 @@ def test_mesh():
     assert m.get_number_of_node_entities() == 1
     assert m.get_number_of_nodes() == 3
     assert m.__str__() == str_expected.lstrip()
+    assert len(m.get_element_entities()) == 0
+    assert len(m.get_node_entities()) == 0

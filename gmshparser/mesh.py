@@ -1,3 +1,4 @@
+from typing import List
 from gmshparser.node_entity import NodeEntity
 from gmshparser.element_entity import ElementEntity
 from io import StringIO
@@ -99,6 +100,10 @@ class Mesh(object):
         """Get node entity based on tag."""
         return self.node_entities_[tag]
 
+    def get_node_entities(self) -> List[NodeEntity]:
+        """Get all node entities of mesh."""
+        return self.node_entities_.values()
+
     def set_number_of_element_entities(self, number_of_element_entities: int):
         """Set number of element entities."""
         self.number_of_element_entities_ = number_of_element_entities
@@ -142,6 +147,10 @@ class Mesh(object):
     def get_element_entity(self, tag: int) -> ElementEntity:
         """Get element entity based on tag."""
         return self.element_entities_[tag]
+
+    def get_element_entities(self) -> List[ElementEntity]:
+        """Get all element entities as dictionary."""
+        return self.element_entities_.values()
 
     def __str__(self):
         io = StringIO()
