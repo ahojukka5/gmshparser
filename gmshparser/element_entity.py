@@ -1,3 +1,4 @@
+from typing import List
 from io import StringIO
 from .element import Element
 
@@ -52,6 +53,10 @@ class ElementEntity(object):
     def get_element(self, tag: int) -> Element:
         """Get an element from the entity."""
         return self.elements_[tag]
+
+    def get_elements(self) -> List[Element]:
+        """Return all the elements of this entity."""
+        return self.elements_.values()
 
     def __str__(self):
         io = StringIO()
