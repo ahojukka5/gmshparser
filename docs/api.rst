@@ -56,6 +56,9 @@ function `parse`, which is responsible of parsing a section.
 .. autoclass:: gmshparser.abstract_parser.AbstractParser
    :members:
 
+.. autoclass:: gmshparser.main_parser.MainParser
+   :members:
+
 .. autoclass:: gmshparser.mesh_format_parser.MeshFormatParser
    :members:
 
