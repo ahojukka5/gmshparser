@@ -11,7 +11,12 @@ class ElementsParser(AbstractParser):
     """ElementParser is responsible to parse data between tags $Elements and
     $EndElements."""
 
-    def parse(self, mesh: Mesh, io: TextIO) -> None:
+    @staticmethod
+    def get_section_name():
+        return "$Elements"
+
+    @staticmethod
+    def parse(mesh: Mesh, io: TextIO) -> None:
         line = io.readline()
         if line.startswith("$Elements"):
             line = io.readline()
