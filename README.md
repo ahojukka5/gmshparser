@@ -26,18 +26,22 @@ pip install gmshparser
 To read mesh into `Mesh` object, use command `parse`:
 
 ```python
-import gmshparser
-mesh = gmshparser.parse("testdata.msh")
-print(mesh)
+>>> import gmshparser
+>>> mesh = gmshparser.parse("data/testmesh.msh")
+>>> print(mesh)
 
 # output
 
-Mesh name: testdata.msh
+Mesh name: data/testmesh.msh
 Mesh version: 4.1
 Number of nodes: 6
 Minimum node tag: 1
 Maximum node tag: 6
-Number of entities: 1
+Number of node entities: 1
+Number of elements: 2
+Minimum element tag: 1
+Maximum element tag: 2
+Number of element entities: 1
 ```
 
 For further information on how to access nodes, elements, physical groups etc.
