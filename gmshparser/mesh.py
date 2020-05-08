@@ -95,10 +95,10 @@ class Mesh(object):
 
     def __str__(self):
         io = StringIO()
-        io.write(f"Mesh name: {self.get_name()}\n")
-        io.write(f"Mesh version: {self.get_version()}\n")
-        io.write(f"Number of nodes: {self.get_number_of_nodes()}\n")
-        io.write(f"Minimum node tag: {self.get_min_node_tag()}\n")
-        io.write(f"Maximum node tag: {self.get_max_node_tag()}\n")
-        io.write(f"Number of entities: {self.get_number_of_entities()}\n")
+        io.write("Mesh name: %s\n" % self.get_name())
+        io.write("Mesh version: %s\n" % self.get_version())
+        io.write("Number of nodes: %s\n" % self.get_number_of_nodes())
+        io.write("Minimum node tag: %s\n" % self.get_min_node_tag())
+        io.write("Maximum node tag: %s\n" % self.get_max_node_tag())
+        io.write("Number of entities: %s\n" % self.get_number_of_entities())
         return io.getvalue()
