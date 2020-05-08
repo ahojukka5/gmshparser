@@ -11,3 +11,4 @@ def test_node_entity():
     assert ne.get_tag() == 1
     assert ne.get_number_of_parametric_coordinates() == 0
     assert ne.get_number_of_nodes() == 1
+    assert len(ne.get_nodes()) == 0

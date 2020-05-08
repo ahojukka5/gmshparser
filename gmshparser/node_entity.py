@@ -1,3 +1,4 @@
+from typing import List
 from .node import Node
 
 
@@ -51,3 +52,7 @@ class NodeEntity(object):
     def get_node(self, tag: int) -> Node:
         """Get node from entity by its tag."""
         return self.nodes_[tag]
+
+    def get_nodes(self) -> List[Node]:
+        """Get all nodes in this entity."""
+        return self.nodes_.values()
