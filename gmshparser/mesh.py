@@ -139,7 +139,7 @@ class Mesh(object):
         """Add element entity to mesh."""
         self.element_entities_[element_entity.get_tag()] = element_entity
 
-    def get_element_entity(self, tag: int):
+    def get_element_entity(self, tag: int) -> ElementEntity:
         """Get element entity based on tag."""
         return self.element_entities_[tag]
 
