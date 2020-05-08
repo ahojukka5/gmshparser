@@ -3,6 +3,18 @@ import setuptools
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
+test_deps = [
+    'pytest',
+    'pytest-cov',
+    'pytest-pycodestyle',
+    'pytest-pep8',
+    'pytest-flake8',
+]
+
+extras = {
+    'test': test_deps,
+}
+
 setuptools.setup(
     name="gmshparser",
     version="0.1.0",
@@ -18,4 +30,6 @@ setuptools.setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
+    tests_require=test_deps,
+    extras_require=extras,
 )
