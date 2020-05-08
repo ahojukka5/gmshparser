@@ -39,10 +39,70 @@ Development version can be installed from GitHub repository, again, using pip:
 Usage
 -----
 
+The usage of the package is quite straightforward. Import libary and read mesh
+using ``gmshparser.parse``, given the filename of the mesh:
+
 .. code-block:: python
 
    import gmshparser
-   gmshparser.parse("testdata.msh")
+   mesh = gmshparser.parse("data/testmesh.msh")
+   print(mesh)
+
+Output:
+
+.. code-block:: none
+
+   Mesh name: data/testmesh.msh
+   Mesh version: 4.1
+   Number of nodes: 6
+   Minimum node tag: 1
+   Maximum node tag: 6
+   Number of node entities: 1
+   Number of elements: 2
+   Minimum element tag: 1
+   Maximum element tag: 2
+   Number of element entities: 1
+
+All nodes are stored in node entities and all elements are stored in element
+entities. To access nodes, one must first loop all node entities and after
+that all nodes in node entity::
+
+   for entity in mesh.get_node_entities():
+       for node in entity.get_nodes():
+           nid = node.get_tag()
+           ncoords = node.get_coordinates()
+           print("Node id = %s, node coordinates = %s" % (nid, ncoords))
+
+Output:
+
+.. code-block:: none
+
+   Node id = 1, node coordinates = (0.0, 0.0, 0.0)
+   Node id = 2, node coordinates = (1.0, 0.0, 0.0)
+   Node id = 3, node coordinates = (1.0, 1.0, 0.0)
+   Node id = 4, node coordinates = (0.0, 1.0, 0.0)
+   Node id = 5, node coordinates = (2.0, 0.0, 0.0)
+   Node id = 6, node coordinates = (2.0, 1.0, 0.0)
+
+Accessing elements is done in a similar way, first entities and then elements.
+Element type is given in each entity. For example, here code 3 means linear
+quadrangle::
+
+   for entity in mesh.get_element_entities():
+       eltype = entity.get_element_type()
+       print("Element type: %s" % eltype)
+       for element in entity.get_elements():
+           elid = element.get_tag()
+           elcon = element.get_connectivity()
+           print("Element id = %s, connectivity = %s" % (elid, elcon))
+
+Output:
+
+.. code-block:: none
+
+   Element type: 3
+   Element id = 1, connectivity = [1, 2, 3, 4]
+   Element id = 2, connectivity = [2, 5, 6, 3]
 
 Contributing to the project
 ---------------------------
