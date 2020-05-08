@@ -1,4 +1,5 @@
 from gmshparser.node_entity import NodeEntity
+from gmshparser.element_entity import ElementEntity
 from io import StringIO
 
 
@@ -16,6 +17,11 @@ class Mesh(object):
         self.min_node_tag_ = -1
         self.max_node_tag_ = -1
         self.node_entities_ = {}
+        self.number_of_element_entities_ = -1
+        self.number_of_elements_ = -1
+        self.min_element_tag_ = -1
+        self.max_element_tag_ = -1
+        self.element_entities_ = {}
 
     def set_name(self, name: str):
         """Set the name of the mesh."""
@@ -92,6 +98,50 @@ class Mesh(object):
     def get_node_entity(self, tag: int):
         """Get node entity based on tag."""
         return self.node_entities_[tag]
+
+    def set_number_of_element_entities(self, number_of_element_entities: int):
+        """Set number of element entities."""
+        self.number_of_element_entities_ = number_of_element_entities
+
+    def get_number_of_element_entities(self) -> int:
+        """Get number of element entities."""
+        return self.number_of_element_entities_
+
+    def set_number_of_elements(self, number_of_elements: int):
+        """Set number of elements."""
+        self.number_of_elements_ = number_of_elements
+
+    def get_number_of_elements(self) -> int:
+        """Get number of elements."""
+        return self.number_of_elements_
+
+    def set_min_element_tag(self, min_element_tag: int):
+        """Set element minimum tag."""
+        self.min_element_tag_ = min_element_tag
+
+    def get_min_element_tag(self) -> int:
+        """Get element minimum tag."""
+        return self.min_element_tag_
+
+    def set_max_element_tag(self, max_element_tag: int):
+        """Set element maximum tag."""
+        self.max_element_tag_ = max_element_tag
+
+    def get_max_element_tag(self) -> int:
+        """Get element maximum tag."""
+        return self.max_element_tag_
+
+    def has_element_entity(self, element_entity_tag) -> bool:
+        """Test does mesh have element entity with `element_entity_tag`."""
+        return element_entity_tag in self.element_entities_
+
+    def add_element_entity(self, element_entity: ElementEntity):
+        """Add element entity to mesh."""
+        self.element_entities_[element_entity.get_tag()] = element_entity
+
+    def get_element_entity(self, tag: int):
+        """Get element entity based on tag."""
+        return self.element_entities_[tag]
 
     def __str__(self):
         io = StringIO()
