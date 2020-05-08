@@ -2,11 +2,13 @@ from typing import TextIO
 from .mesh import Mesh
 from .mesh_format_parser import MeshFormatParser
 from .nodes_parser import NodesParser
+from .elements_parser import ElementsParser
 
 
 DEFAULT_PARSERS = {
     "$MeshFormat": MeshFormatParser,
     "$Nodes": NodesParser,
+    "$Elements": ElementsParser,
 }
 
 
