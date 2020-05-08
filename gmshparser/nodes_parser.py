@@ -8,7 +8,12 @@ from .helpers import parse_ints, parse_floats
 
 class NodesParser(AbstractParser):
 
-    def parse(self, mesh: Mesh, io: TextIO) -> None:
+    @staticmethod
+    def get_section_name():
+        return "$Nodes"
+
+    @staticmethod
+    def parse(mesh: Mesh, io: TextIO) -> None:
         line = io.readline()
         if line.startswith("$Nodes"):
             line = io.readline()
