@@ -21,9 +21,9 @@ def test_elements_parser():
     assert mesh.get_number_of_elements() == 2
     assert mesh.get_min_element_tag() == 1
     assert mesh.get_max_element_tag() == 2
-    assert mesh.has_element_entity(1)
+    assert mesh.has_element_entity(2, 1)
 
-    entity = mesh.get_element_entity(1)
+    entity = mesh.get_element_entity(2, 1)
     assert entity.get_tag() == 1
     assert entity.get_dimension() == 2
     assert entity.get_element_type() == 3

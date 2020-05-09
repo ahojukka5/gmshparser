@@ -31,9 +31,9 @@ def test_nodes_parser():
     assert mesh.get_number_of_nodes() == 6
     assert mesh.get_min_node_tag() == 1
     assert mesh.get_max_node_tag() == 6
-    assert mesh.has_node_entity(1)
+    assert mesh.has_node_entity(2, 1)
 
-    entity = mesh.get_node_entity(1)
+    entity = mesh.get_node_entity(2, 1)
     assert entity.get_tag() == 1
     assert entity.get_dimension() == 2
     assert entity.get_number_of_parametric_coordinates() == 0

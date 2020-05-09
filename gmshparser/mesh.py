@@ -88,17 +88,19 @@ class Mesh(object):
         """Get node maximum tag."""
         return self.max_node_tag_
 
-    def has_node_entity(self, node_entity_tag) -> bool:
-        """Test does mesh have entity with `node_entity_tag`."""
-        return node_entity_tag in self.node_entities_
+    def has_node_entity(self, dim: int, tag: int) -> bool:
+        """Test does mesh have node entity of dimension `dim` and tag `tag`."""
+        return (dim, tag) in self.node_entities_
 
     def add_node_entity(self, node_entity: NodeEntity):
         """Add node entity to mesh."""
-        self.node_entities_[node_entity.get_tag()] = node_entity
+        dim = node_entity.get_dimension()
+        tag = node_entity.get_tag()
+        self.node_entities_[(dim, tag)] = node_entity
 
-    def get_node_entity(self, tag: int):
-        """Get node entity based on tag."""
-        return self.node_entities_[tag]
+    def get_node_entity(self, dim: int, tag: int):
+        """Get node entity based on dimension and tag."""
+        return self.node_entities_[(dim, tag)]
 
     def get_node_entities(self) -> List[NodeEntity]:
         """Get all node entities of mesh."""
@@ -136,17 +138,19 @@ class Mesh(object):
         """Get element maximum tag."""
         return self.max_element_tag_
 
-    def has_element_entity(self, element_entity_tag) -> bool:
-        """Test does mesh have element entity with `element_entity_tag`."""
-        return element_entity_tag in self.element_entities_
+    def has_element_entity(self, dim: int, tag: int) -> bool:
+        """Test does mesh have element entity with `(dim, tag)`."""
+        return (dim, tag) in self.element_entities_
 
     def add_element_entity(self, element_entity: ElementEntity):
         """Add element entity to mesh."""
-        self.element_entities_[element_entity.get_tag()] = element_entity
+        dim = element_entity.get_dimension()
+        tag = element_entity.get_tag()
+        self.element_entities_[(dim, tag)] = element_entity
 
-    def get_element_entity(self, tag: int) -> ElementEntity:
-        """Get element entity based on tag."""
-        return self.element_entities_[tag]
+    def get_element_entity(self, dim: int, tag: int) -> ElementEntity:
+        """Get element entity based on dimension `dim` and tag `tag`."""
+        return self.element_entities_[(dim, tag)]
 
     def get_element_entities(self) -> List[ElementEntity]:
         """Get all element entities as dictionary."""
