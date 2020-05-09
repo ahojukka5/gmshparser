@@ -37,9 +37,12 @@ extras = {
 }
 
 description = """
-gmshparser is a lightweight and well-tested package that aims to reliably parse
-the Gmsh ascii file format (.msh). The package does not introduce any external
-dependencies and thus fits well with the needs of your own FEM research code.
+gmshparser is a lightweight, 100 % tested and well documented package that aims
+to reliably parse the Gmsh ascii file format (.msh). The package does not
+introduce any external dependencies and thus fits well with the needs of your
+own FEM research code as a small stand-alone package. Project is hosted on
+GitHub (https://github.com/ahojukka5/gmshparser) and documentation can be
+found from ReadTheDocs (https://gmshparser.readthedocs.io/).
 """
 
 setuptools.setup(
