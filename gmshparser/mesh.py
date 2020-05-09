@@ -164,6 +164,6 @@ class Mesh(object):
         io.write("Number of elements: %s\n" % self.get_number_of_elements())
         io.write("Minimum element tag: %s\n" % self.get_min_element_tag())
         io.write("Maximum element tag: %s\n" % self.get_max_element_tag())
-        io.write("Number of element entities: %s\n" %
+        io.write("Number of element entities: %s" %
                  self.get_number_of_element_entities())
         return io.getvalue()
