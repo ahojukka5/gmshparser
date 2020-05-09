@@ -5,8 +5,6 @@
 [![Coverate Status][coveralls-img]][coveralls-url]
 [![Documentation Status][documentation-img]][documentation-url]
 
-![](docs/example_mesh.svg)
-
 Package author: Jukka Aho (@ahojukka5)
 
 Gmshparser is a small Python package which aims to do only one thing: parse Gmsh
@@ -145,8 +143,7 @@ common task to visualize 2-dimensional triangluar meshes in acedemic papers,
 lecture notes, and things like that, it can be done easily using gmshparser and
 matplotlib. There's a helper function `gmshparser.helpers.get_triangles`, which
 returns a tuple `(X, Y, T)` which can then be passed to matplotlib to get a mesh
-plot. The figure shown in top of this readme file is achieved with the following
-script:
+plot:
 
 ```python
 import gmshparser
@@ -161,6 +158,8 @@ plt.axis('off')
 plt.tight_layout()
 plt.savefig('docs/example_mesh.svg')
 ```
+
+![](docs/example_mesh.svg)
 
 ## Developing package
 
