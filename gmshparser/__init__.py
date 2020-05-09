@@ -1,7 +1,7 @@
 from .mesh import Mesh
 from .main_parser import MainParser
 
-__version__ = "0.1.4"
+__version__ = "0.1.5"
 __author__ = "Jukka Aho <ahojukka5@gmail.com>"
 
 
