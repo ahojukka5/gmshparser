@@ -5,6 +5,8 @@
 [![Coverate Status][coveralls-img]][coveralls-url]
 [![Documentation Status][documentation-img]][documentation-url]
 
+![](docs/example_mesh.svg)
+
 Package author: Jukka Aho (@ahojukka5)
 
 Gmshparser is a small Python package which aims to do only one thing: parse Gmsh
@@ -136,6 +138,30 @@ jukka@jukka-XPS-13-9380:~$ gmshparser data/testmesh.msh elements
 2
 1 3 1 2 3 4
 2 3 2 5 6 3
+```
+
+### Visualizing meshes using gmshparser and matplotlib
+
+The intention of the package is not to visualize meshes. But as it is a quite
+common task to visualize 2-dimensional triangluar meshes in acedemic papers,
+lecture notes, and things like that, it can be done easily using gmshparser and
+matplotlib. There's a helper function `gmshparser.helpers.get_triangles`, which
+returns a tuple `(X, Y, T)` which can then be passed to matplotlib to get a mesh
+plot. The figure shown in top of this readme file is achieved with the following
+script:
+
+```python
+import gmshparser
+mesh = gmshparser.parse("data/example_mesh.msh")
+X, Y, T = gmshparser.helpers.get_triangles(mesh)
+
+import matplotlib.pylab as plt
+plt.figure()
+plt.triplot(X, Y, T, color='black')
+plt.axis('equal')
+plt.axis('off')
+plt.tight_layout()
+plt.savefig('docs/example_mesh.svg')
 ```
 
 ## Developing package
