@@ -47,7 +47,7 @@ setuptools.setup(
     version=get_version("gmshparser/__init__.py"),
     author="Jukka Aho",
     author_email="ahojukka5@gmail.com",
-    description=description,
+    description=" ".join(description.strip().splitlines()),
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/ahojukka5/gmshparser",
