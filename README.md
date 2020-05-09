@@ -12,7 +12,11 @@ mesh file format. Package does not have any external dependencies to other
 packages and it aims to be a simple stand-alone solution for a common problem:
 how to import mesh to your favourite research FEM code?
 
-Project documentation is located at: [https://gmshparser.readthedocs.io/](https://gmshparser.readthedocs.io/)
+Project source in GitHub: [https://github.com/ahojukka5/gmshparser](https://github.com/ahojukka5/gmshparser)
+
+Project documentation in ReadTheDocs: [https://gmshparser.readthedocs.io/](https://gmshparser.readthedocs.io/)
+
+Project releases in PyPi: [https://pypi.org/project/gmshparser/](https://pypi.org/project/gmshparser/)
 
 ## Installing package
 
