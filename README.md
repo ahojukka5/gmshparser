@@ -47,8 +47,44 @@ Maximum element tag: 2
 Number of element entities: 1
 ```
 
-For further information on how to access nodes, elements, physical groups etc.
-look the [documentation](https://gmshparser.readthedocs.io/).
+gmshparser can also help you even if you don't make FEM code in Python. You can
+print nodes and elements in a simpler format with command-line tools, making it
+easier to read an element mesh with C ++ or Fortran, for example. To extract
+nodes:
+
+```bash
+gmshparser data/testmesh.msh nodes
+```
+
+```text
+6
+1 0.000000 0.000000 0.000000
+2 1.000000 0.000000 0.000000
+3 1.000000 1.000000 0.000000
+4 0.000000 1.000000 0.000000
+5 2.000000 0.000000 0.000000
+6 2.000000 1.000000 0.000000
+```
+
+To extract elements:
+
+```bash
+gmshparser data/testmesh.msh elements
+```
+
+```text
+2
+1 3 1 2 3 4
+2 3 2 5 6 3
+```
+
+Here, the first column is element id, second is element type and rest of
+integers are connectivity.
+
+If you are writing your FEM stuff with Python, then you have access to the all
+relevant properties of the model using `mesh` object. For further information on
+how to access nodes, elements, physical groups, and other things what Gmsh
+provides, take a look of [documentation](https://gmshparser.readthedocs.io/).
 
 ## Contributing to project
 
