@@ -1,5 +1,6 @@
 # gmshparser - parse Gmsh .msh file format
 
+![Python CI](https://github.com/ahojukka5/gmshparser/workflows/Python%20CI/badge.svg)
 [![Build Status][travis-img]][travis-url]
 [![Coverate Status][coveralls-img]][coveralls-url]
 [![Documentation Status][documentation-img]][documentation-url]
