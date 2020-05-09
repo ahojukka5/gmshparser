@@ -5,12 +5,12 @@ from . import parse
 """gmshparser cli provides some helpers to convert mesh to another format."""
 
 
-def info(mesh, file):
+def info(mesh, file) -> None:
     print("---- MESH SUMMARY ----", file=file)
     print(mesh, file=file)
 
 
-def nodes(mesh, file):
+def nodes(mesh, file) -> None:
     print(mesh.get_number_of_nodes(), file=file)
     for entity in mesh.get_node_entities():
         for node in entity.get_nodes():
@@ -19,7 +19,7 @@ def nodes(mesh, file):
             print("%d %f %f %f" % (nid, x, y, z), file=file)
 
 
-def elements(mesh, file):
+def elements(mesh, file) -> None:
     print(mesh.get_number_of_elements(), file=file)
     for entity in mesh.get_element_entities():
         eltype = entity.get_element_type()
@@ -29,7 +29,7 @@ def elements(mesh, file):
             print("%s %s %s" % (elid, eltype, elcon), file=file)
 
 
-def main(argv=None, file=sys.stdout):
+def main(argv=None, file=sys.stdout) -> None:
     parser = argparse.ArgumentParser()
     choices = {"info": info, "nodes": nodes, "elements": elements}
     parser.add_argument('filename', action='store')
@@ -37,4 +37,3 @@ def main(argv=None, file=sys.stdout):
     args = parser.parse_args(argv or sys.argv[1:])
     mesh = parse(args.filename)
     choices[args.action](mesh, file)
-    return file

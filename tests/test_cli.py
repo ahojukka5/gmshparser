@@ -52,6 +52,15 @@ def test_main(tmpdir):
     fh.write(__content__.strip())
     filename = os.path.join(fh.dirname, fh.basename)
     # We just check that there comes some print from functions to stdout
-    assert len(main([filename, "info"], StringIO()).getvalue()) == 288
-    assert len(main([filename, "nodes"], StringIO()).getvalue()) == 176
-    assert len(main([filename, "elements"], StringIO()).getvalue()) == 26
+
+    output = StringIO()
+    main([filename, "info"], output)
+    assert len(output.getvalue()) == 288
+
+    output = StringIO()
+    main([filename, "nodes"], output)
+    assert len(output.getvalue()) == 176
+
+    output = StringIO()
+    main([filename, "elements"], output)
+    assert len(output.getvalue()) == 26
