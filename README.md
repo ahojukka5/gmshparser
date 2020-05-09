@@ -14,11 +14,9 @@ mesh file format. Package does not have any external dependencies to other
 packages and it aims to be a simple stand-alone solution for a common problem:
 how to import mesh to your favourite research FEM code?
 
-Project source in GitHub: [https://github.com/ahojukka5/gmshparser](github)
-
-Project documentation in ReadTheDocs: [https://gmshparser.readthedocs.io/](documentation)
-
-Project releases in PyPi: [https://pypi.org/project/gmshparser/](pypi)
+- Project source in GitHub: [https://github.com/ahojukka5/gmshparser](https://github.com/ahojukka5/gmshparser)
+- Project documentation in ReadTheDocs: [https://gmshparser.readthedocs.io](https://gmshparser.readthedocs.io)
+- Project releases in PyPi: [https://pypi.org/project/gmshparser](https://pypi.org/project/gmshparser)
 
 ## Installing package
 
@@ -101,7 +99,7 @@ Element id = 2, connectivity = [2, 5, 6, 3]
 If you are writing your FEM stuff with Python, then you have access to the all
 relevant properties of the model using `mesh` object. For further information on
 how to access nodes, elements, physical groups, and other things what Gmsh
-provides, take a look of [documentation](documentation).
+provides, take a look of [documentation](https://gmshparser.readthedocs.io).
 
 ### Using command line interface
 
@@ -221,8 +219,5 @@ tracker][issues] or contact me (ahojukka5@gmail.com) directly.
 [coveralls-url]: https://coveralls.io/github/ahojukka5/gmshparser?branch=master
 [documentation-img]: https://readthedocs.org/projects/gmshparser/badge/?version=latest
 [documentation-url]: https://gmshparser.readthedocs.io/en/latest/?badge=latest
-[github]: https://github.com/ahojukka5/gmshparser
-[documentation]: https://gmshparser.readthedocs.io/
-[pypi]: https://pypi.org/project/gmshparser/
 [issues]: https://github.com/ahojukka5/gmshparser/issues
 [gmsh]: https://gmsh.info/
