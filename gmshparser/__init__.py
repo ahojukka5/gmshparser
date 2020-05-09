@@ -1,6 +1,9 @@
 from .mesh import Mesh
 from .main_parser import MainParser
 
+__version__ = "0.1.0"
+__author__ = "Jukka Aho <ahojukka5@gmail.com>"
+
 
 def parse(filename: str) -> Mesh:
     """Parse Gmsh .msh file and return `Mesh` object."""
