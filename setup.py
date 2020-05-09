@@ -45,6 +45,10 @@ GitHub (https://github.com/ahojukka5/gmshparser) and documentation can be
 found from ReadTheDocs (https://gmshparser.readthedocs.io/).
 """
 
+entry_points = {
+    'console_scripts': ['gmshparser=gmshparser.cli:main'],
+}
+
 setuptools.setup(
     name="gmshparser",
     version=get_version("gmshparser/__init__.py"),
@@ -62,4 +66,5 @@ setuptools.setup(
     ],
     tests_require=test_deps,
     extras_require=extras,
+    entry_points=entry_points,
 )
