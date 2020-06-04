@@ -1,6 +1,8 @@
 # gmshparser - parse Gmsh .msh file format
 
-![Python CI](https://github.com/ahojukka5/gmshparser/workflows/Python%20CI/badge.svg)
+[![Python CI - Status][gh-ci-img]][gh-ci-url]
+[![PyPI - Version][pypi-img]][pypi-url]
+[![PyPI - Downloads][pypi-dl-img]][pypi-dl-url]
 [![Coverate Status][coveralls-img]][coveralls-url]
 [![Documentation Status][documentation-img]][documentation-url]
 
@@ -211,10 +213,16 @@ project too! If you have some great ideas how to make this package better,
 feature requests etc., you can open an issue on gmshparser's [issue
 tracker][issues] or contact me (ahojukka5@gmail.com) directly.
 
+[gh-ci-img]: https://github.com/ahojukka5/gmshparser/workflows/Python%20CI/badge.svg
+[gh-ci-url]: https://github.com/ahojukka5/gmshparser/actions
 [travis-img]: https://travis-ci.com/ahojukka5/gmshparser.svg?branch=master
 [travis-url]: https://travis-ci.com/ahojukka5/gmshparser
 [coveralls-img]: https://coveralls.io/repos/github/ahojukka5/gmshparser/badge.svg?branch=master
 [coveralls-url]: https://coveralls.io/github/ahojukka5/gmshparser?branch=master
+[pypi-img]: https://img.shields.io/pypi/v/gmshparser
+[pypi-url]: https://pypi.org/project/gmshparser
+[pypi-dl-img]: https://img.shields.io/pypi/dm/gmshparser
+[pypi-dl-url]: https://pypi.org/project/gmshparser
 [documentation-img]: https://readthedocs.org/projects/gmshparser/badge/?version=latest
 [documentation-url]: https://gmshparser.readthedocs.io/en/latest/?badge=latest
 [issues]: https://github.com/ahojukka5/gmshparser/issues
