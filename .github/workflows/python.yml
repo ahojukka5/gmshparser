@@ -21,8 +21,29 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: Install package + test dependencies
-        run: pip install ".[test]"
+      - name: Install Poetry
+        uses: dschep/install-poetry-action@v1.2
 
-      - name: Run pytest
-        run: pytest
+      - name: Install Poetry virtualenv
+        uses: actions/cache@v1
+        id: cache
+        with:
+          path: ~/.virtualenvs
+          key: poetry-${{ hashFiles('**/poetry.lock') }}
+          restore-keys: |
+            poetry-${{ hashFiles('**/poetry.lock') }}
+
+      - name: Set Poetry config
+        run: |
+          poetry config virtualenvs.in-project false
+          poetry config virtualenvs.path ~/.virtualenvs
+
+      - name: Install dependencies
+        run: poetry install
+        if: steps.cache.outputs.cache-hit != 'true'
+
+      - name: Code quality check
+        run: poetry run black . --check
+
+      - name: Test with pytest
+        run: poetry run pytest
