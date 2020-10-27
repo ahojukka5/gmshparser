@@ -54,7 +54,7 @@ def parse_floats(io: TextIO) -> List[float]:
 
 
 def get_triangles(mesh):
-    """ Return tuple (X, Y, T) of triangular data.
+    """Return tuple (X, Y, T) of triangular data.
 
     Data can be used effectively in matplotlib's `triplot`:
 

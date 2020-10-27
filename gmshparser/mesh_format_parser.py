@@ -4,6 +4,7 @@ from .mesh import Mesh
 
 
 class MeshFormatParser(AbstractParser):
+    """Parse MeshFormat section."""
 
     @staticmethod
     def get_section_name():

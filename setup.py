@@ -8,13 +8,13 @@ import os.path
 
 def read(rel_path):
     here = os.path.abspath(os.path.dirname(__file__))
-    with codecs.open(os.path.join(here, rel_path), 'r') as fp:
+    with codecs.open(os.path.join(here, rel_path), "r") as fp:
         return fp.read()
 
 
 def get_version(rel_path):
     for line in read(rel_path).splitlines():
-        if line.startswith('__version__'):
+        if line.startswith("__version__"):
             delim = '"' if '"' in line else "'"
             return line.split(delim)[1]
     else:
@@ -25,15 +25,15 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 test_deps = [
-    'pytest',
-    'pytest-cov',
-    'pytest-pycodestyle',
-    'pytest-pep8',
-    'pytest-flake8',
+    "pytest",
+    "pytest-cov",
+    "pytest-pycodestyle",
+    "pytest-pep8",
+    "pytest-flake8",
 ]
 
 extras = {
-    'test': test_deps,
+    "test": test_deps,
 }
 
 description = """
@@ -46,7 +46,7 @@ found from ReadTheDocs (https://gmshparser.readthedocs.io/).
 """
 
 entry_points = {
-    'console_scripts': ['gmshparser=gmshparser.cli:main'],
+    "console_scripts": ["gmshparser=gmshparser.cli:main"],
 }
 
 setuptools.setup(

@@ -4,7 +4,7 @@ from .mesh import Mesh
 
 class AbstractParser(object):
 
-    """ AbstractParser is a superclass of all other parsers.
+    """AbstractParser is a superclass of all other parsers.
 
     All other parsers must inheric ``AbstractParser`` and implement their own
     static methods ``parse`` and ``get_section_name``.

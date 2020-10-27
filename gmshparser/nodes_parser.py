@@ -7,6 +7,7 @@ from .helpers import parse_ints, parse_floats
 
 
 class NodesParser(AbstractParser):
+    """Parse Nodes section."""
 
     @staticmethod
     def get_section_name():

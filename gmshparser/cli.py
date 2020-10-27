@@ -32,8 +32,8 @@ def elements(mesh, file) -> None:
 def main(argv=None, file=sys.stdout) -> None:
     parser = argparse.ArgumentParser()
     choices = {"info": info, "nodes": nodes, "elements": elements}
-    parser.add_argument('filename', action='store')
-    parser.add_argument('action', choices=list(choices.keys()))
+    parser.add_argument("filename", action="store")
+    parser.add_argument("action", choices=list(choices.keys()))
     args = parser.parse_args(argv or sys.argv[1:])
     mesh = parse(args.filename)
     choices[args.action](mesh, file)
