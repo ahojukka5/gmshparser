@@ -13,6 +13,7 @@ pytest-cov = "^2.10.1"
 pytest-pycodestyle = "^2.2.0"
 pytest-flake8 = "^1.0.6"
 black = {version = "^20.8b1", allow-prereleases = true}
+flake8 = "^3.8.4"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
