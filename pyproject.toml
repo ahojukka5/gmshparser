@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "gmshparser"
+version = "0.2.0"
+description = "gmshparser is a lightweight, 100 % tested and well documented package that parses Gmsh ascii file format (.msh)"
+authors = ["Jukka Aho <ahojukka5@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.7"
+
+[tool.poetry.dev-dependencies]
+pytest = "^6.1.1"
+pytest-cov = "^2.10.1"
+pytest-pycodestyle = "^2.2.0"
+pytest-flake8 = "^1.0.6"
+black = {version = "^20.8b1", allow-prereleases = true}
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
