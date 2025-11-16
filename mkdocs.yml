@@ -1,0 +1,84 @@
+site_name: gmshparser
+site_description: A lightweight Python package for parsing Gmsh .msh mesh files
+site_author: Jukka Aho
+site_url: https://gmshparser.readthedocs.io
+repo_url: https://github.com/ahojukka5/gmshparser
+repo_name: ahojukka5/gmshparser
+
+theme:
+  name: material
+  palette:
+    # Light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    # Dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.top
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+    - content.code.annotate
+
+plugins:
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+          options:
+            docstring_style: google
+            show_source: true
+            show_root_heading: true
+            show_symbol_type_heading: true
+            show_symbol_type_toc: true
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.tabbed:
+      alternate_style: true
+  - tables
+  - toc:
+      permalink: true
+
+nav:
+  - Home: index.md
+  - User Guide:
+      - Getting Started: user-guide/getting-started.md
+      - Installation: user-guide/installation.md
+      - Basic Usage: user-guide/basic-usage.md
+      - Command Line Interface: user-guide/cli.md
+      - Visualization: user-guide/visualization.md
+      - Supported Formats: user-guide/supported-formats.md
+  - Developer Guide:
+      - Contributing: developer-guide/contributing.md
+      - Architecture: developer-guide/architecture.md
+      - Writing Parsers: developer-guide/writing-parsers.md
+      - Testing: developer-guide/testing.md
+      - Test Results: developer-guide/test-results.md
+  - API Reference:
+      - Overview: api/overview.md
+      - Mesh: api/mesh.md
+      - Parsers: api/parsers.md
+      - Helpers: api/helpers.md
+  - About:
+      - License: about/license.md
+      - Changelog: about/changelog.md
