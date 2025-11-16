@@ -1,10 +1,12 @@
 # gmshparser - parse Gmsh .msh file format
 
-[![Python CI - Status][gh-ci-img]][gh-ci-url]
+[![Python CI][gh-ci-img]][gh-ci-url]
+[![codecov][codecov-img]][codecov-url]
 [![PyPI - Version][pypi-img]][pypi-url]
 [![PyPI - Downloads][pypi-dl-img]][pypi-dl-url]
-[![Coverate Status][coveralls-img]][coveralls-url]
-[![Documentation Status][documentation-img]][documentation-url]
+[![Documentation][docs-img]][docs-url]
+[![Python Version][python-img]][pypi-url]
+[![License][license-img]][license-url]
 
 Package author: Jukka Aho (@ahojukka5)
 
@@ -14,7 +16,7 @@ packages and it aims to be a simple stand-alone solution for a common problem:
 how to import mesh to your favourite research FEM code?
 
 - Project source in GitHub: [https://github.com/ahojukka5/gmshparser](https://github.com/ahojukka5/gmshparser)
-- Project documentation in ReadTheDocs: [https://gmshparser.readthedocs.io](https://gmshparser.readthedocs.io)
+- Project documentation: [https://ahojukka5.github.io/gmshparser/](https://ahojukka5.github.io/gmshparser/)
 - Project releases in PyPi: [https://pypi.org/project/gmshparser](https://pypi.org/project/gmshparser)
 
 ## Supported Gmsh MSH file formats
@@ -110,7 +112,7 @@ Element id = 2, connectivity = [2, 5, 6, 3]
 If you are writing your FEM stuff with Python, then you have access to the all
 relevant properties of the model using `mesh` object. For further information on
 how to access nodes, elements, physical groups, and other things what Gmsh
-provides, take a look of [documentation](https://gmshparser.readthedocs.io).
+provides, take a look of [documentation](https://ahojukka5.github.io/gmshparser/).
 
 ### Using command line interface
 
@@ -172,7 +174,7 @@ plt.tight_layout()
 plt.savefig('docs/example_mesh.svg')
 ```
 
-![](docs/example_mesh.svg)
+![Example mesh visualization](docs/example_mesh.svg)
 
 ## Developing package
 
@@ -227,12 +229,15 @@ tracker][issues] or contact me (<ahojukka5@gmail.com>) directly.
 
 [gh-ci-img]: https://github.com/ahojukka5/gmshparser/workflows/Python%20CI/badge.svg
 [gh-ci-url]: https://github.com/ahojukka5/gmshparser/actions
-[coveralls-img]: https://coveralls.io/repos/github/ahojukka5/gmshparser/badge.svg?branch=master
-[coveralls-url]: https://coveralls.io/github/ahojukka5/gmshparser?branch=master
+[codecov-img]: https://codecov.io/gh/ahojukka5/gmshparser/branch/master/graph/badge.svg
+[codecov-url]: https://codecov.io/gh/ahojukka5/gmshparser
 [pypi-img]: https://img.shields.io/pypi/v/gmshparser
 [pypi-url]: https://pypi.org/project/gmshparser
 [pypi-dl-img]: https://img.shields.io/pypi/dm/gmshparser
 [pypi-dl-url]: https://pypi.org/project/gmshparser
-[documentation-img]: https://readthedocs.org/projects/gmshparser/badge/?version=latest
-[documentation-url]: https://gmshparser.readthedocs.io/en/latest/?badge=latest
+[docs-img]: https://img.shields.io/badge/docs-GitHub%20Pages-blue
+[docs-url]: https://ahojukka5.github.io/gmshparser/
+[python-img]: https://img.shields.io/pypi/pyversions/gmshparser
+[license-img]: https://img.shields.io/github/license/ahojukka5/gmshparser
+[license-url]: https://github.com/ahojukka5/gmshparser/blob/master/LICENSE
 [issues]: https://github.com/ahojukka5/gmshparser/issues
