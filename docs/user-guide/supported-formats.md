@@ -1,0 +1,321 @@
+# Supported Formats
+
+gmshparser supports multiple versions of the Gmsh MSH file format, automatically detecting the version and using the appropriate parser.
+
+## Format Overview
+
+| Version | Status | Description |
+|---------|--------|-------------|
+| MSH 1.0 | ✅ Fully Supported | Legacy format |
+| MSH 2.0 | ✅ Fully Supported | Standard format |
+| MSH 2.1 | ✅ Fully Supported | With physical names |
+| MSH 2.2 | ✅ Fully Supported | Compatible with 2.0/2.1 |
+| MSH 4.0 | ✅ Fully Supported | Modern entity-based format |
+| MSH 4.1 | ✅ Fully Supported | Latest version |
+
+## MSH 1.0 (Legacy Format)
+
+The original Gmsh format using simple section markers.
+
+### Structure
+
+```text
+$NOD
+<number-of-nodes>
+<node-id> <x> <y> <z>
+...
+$ENDNOD
+$ELM
+<number-of-elements>
+<elm-number> <elm-type> <reg-phys> <reg-elem> <number-of-nodes> <node-list>
+...
+$ENDELM
+```
+
+### Features
+
+- No `$MeshFormat` section
+- Simple node and element sections
+- Legacy element type numbering
+- Physical and elementary region tags
+
+### Example
+
+```text
+$NOD
+6
+1 0.0 0.0 0.0
+2 1.0 0.0 0.0
+3 1.0 1.0 0.0
+4 0.0 1.0 0.0
+5 2.0 0.0 0.0
+6 2.0 1.0 0.0
+$ENDNOD
+$ELM
+2
+1 3 0 1 4 1 2 3 4
+2 3 0 1 4 2 5 6 3
+$ENDELM
+```
+
+## MSH 2.0/2.1/2.2 (Standard Format)
+
+The widely-used standard format with `$MeshFormat` section.
+
+### Structure
+
+```text
+$MeshFormat
+<version> <file-type> <data-size>
+$EndMeshFormat
+$Nodes
+<number-of-nodes>
+<node-id> <x> <y> <z>
+...
+$EndNodes
+$Elements
+<number-of-elements>
+<elm-id> <elm-type> <number-of-tags> <tag-list> <node-list>
+...
+$EndElements
+```
+
+### MSH 2.1 Addition
+
+```text
+$PhysicalNames
+<number-of-physical-names>
+<dimension> <physical-tag> "<physical-name>"
+...
+$EndPhysicalNames
+```
+
+### Features
+
+- Explicit version declaration
+- Node and element sections with clear syntax
+- Support for element tags (physical, elementary, partition)
+- Optional physical group names (2.1+)
+- ASCII or binary formats supported
+
+### Example (MSH 2.2)
+
+```text
+$MeshFormat
+2.2 0 8
+$EndMeshFormat
+$Nodes
+6
+1 0.0 0.0 0.0
+2 1.0 0.0 0.0
+3 1.0 1.0 0.0
+4 0.0 1.0 0.0
+5 2.0 0.0 0.0
+6 2.0 1.0 0.0
+$EndNodes
+$Elements
+2
+1 3 2 1 1 1 2 3 4
+2 3 2 1 1 2 5 6 3
+$EndElements
+```
+
+## MSH 4.0/4.1 (Modern Format)
+
+The current Gmsh format with entity-based organization.
+
+### Structure
+
+```text
+$MeshFormat
+<version> <file-type> <data-size>
+$EndMeshFormat
+$Entities
+<numPoints> <numCurves> <numSurfaces> <numVolumes>
+<point-entities>
+<curve-entities>
+<surface-entities>
+<volume-entities>
+$EndEntities
+$Nodes
+<numEntityBlocks> <numNodes> <minNodeTag> <maxNodeTag>
+<entityDim> <entityTag> <parametric> <numNodesInBlock>
+<nodeTag>
+...
+<x> <y> <z>
+...
+$EndNodes
+$Elements
+<numEntityBlocks> <numElements> <minElementTag> <maxElementTag>
+<entityDim> <entityTag> <elementType> <numElementsInBlock>
+<elementTag> <nodeTag1> <nodeTag2> ...
+...
+$EndElements
+```
+
+### Features
+
+- Entity-based organization (points, curves, surfaces, volumes)
+- Explicit entity topology
+- Node and element blocks grouped by entity
+- More efficient for large meshes
+- Better support for high-order elements
+
+### Example (MSH 4.1)
+
+```text
+$MeshFormat
+4.1 0 8
+$EndMeshFormat
+$Nodes
+1 6 1 6
+2 1 0 6
+1
+2
+3
+4
+5
+6
+0.0 0.0 0.0
+1.0 0.0 0.0
+1.0 1.0 0.0
+0.0 1.0 0.0
+2.0 0.0 0.0
+2.0 1.0 0.0
+$EndNodes
+$Elements
+1 2 1 2
+2 1 3 2
+1 1 2 3 4
+2 2 5 6 3
+$EndElements
+```
+
+## Element Types
+
+All formats use the same element type numbering:
+
+| Type | Name | Nodes | Dimension |
+|------|------|-------|-----------|
+| 1 | Line | 2 | 1D |
+| 2 | Triangle | 3 | 2D |
+| 3 | Quadrangle | 4 | 2D |
+| 4 | Tetrahedron | 4 | 3D |
+| 5 | Hexahedron | 8 | 3D |
+| 6 | Prism | 6 | 3D |
+| 7 | Pyramid | 5 | 3D |
+| 8 | Line (3-node) | 3 | 1D |
+| 9 | Triangle (6-node) | 6 | 2D |
+| 10 | Quadrangle (9-node) | 9 | 2D |
+| 11 | Tetrahedron (10-node) | 10 | 3D |
+| 15 | Point | 1 | 0D |
+| ... | Higher-order elements | ... | ... |
+
+See the [Gmsh documentation](https://gmsh.info/doc/texinfo/gmsh.html#MSH-file-format) for the complete list.
+
+## Version Detection
+
+gmshparser automatically detects the file format version:
+
+```python
+import gmshparser
+
+mesh = gmshparser.parse("mesh.msh")
+version = mesh.get_version()
+
+if version == 1.0:
+    print("Legacy MSH 1.0 format")
+elif version >= 2.0 and version < 3.0:
+    print("Standard MSH 2.x format")
+elif version >= 4.0:
+    print("Modern MSH 4.x format")
+```
+
+### Detection Algorithm
+
+1. Read first line of file
+2. If line is `$MeshFormat`: Parse version from next line
+3. If line is `$NOD`: Assume MSH 1.0
+4. Otherwise: Error (unsupported format)
+
+## Format Compatibility
+
+### gmshparser → gmshparser
+
+All supported versions can be read and processed with the same API:
+
+```python
+# Same code works for all versions
+for entity in mesh.get_node_entities():
+    for node in entity.get_nodes():
+        print(node.get_tag(), node.get_coordinates())
+```
+
+### Gmsh → gmshparser
+
+gmshparser can read all mesh files generated by:
+
+- Gmsh 1.x (MSH 1.0)
+- Gmsh 2.x (MSH 2.0, 2.1, 2.2)
+- Gmsh 4.x (MSH 4.0, 4.1)
+
+### Limitations
+
+- **Binary format**: Not supported (ASCII only)
+- **Compressed format**: Not supported
+- **Post-processing data**: Node/element data sections not parsed (but can be added if needed)
+- **Periodic entities**: Not explicitly handled
+
+## Converting Between Versions
+
+To convert between formats, use Gmsh itself:
+
+```bash
+# Convert to MSH 2.2
+gmsh input.msh -format msh22 -o output.msh
+
+# Convert to MSH 4.1
+gmsh input.msh -format msh41 -o output.msh
+```
+
+Or in Python with gmshparser:
+
+```python
+# Read any version
+mesh = gmshparser.parse("input.msh")
+
+# Extract and rewrite (would need custom writer)
+# Note: gmshparser currently only reads, not writes
+```
+
+## Testing
+
+gmshparser is tested against real mesh files for all supported versions:
+
+- 10+ test files covering all versions
+- Elements from 0D (points) to 3D (tetrahedra)
+- Various mesh complexities
+- 100% success rate on test suite
+
+See the [Test Results](../developer-guide/test-results.md) for details.
+
+## Future Support
+
+Potential future additions:
+
+- Binary format support
+- Post-processing data sections
+- MSH format writing (currently read-only)
+- Compressed file support
+
+## References
+
+- [Official Gmsh MSH Format Documentation](https://gmsh.info/doc/texinfo/gmsh.html#MSH-file-format)
+- [Gmsh Website](https://gmsh.info/)
+- [Gmsh GitLab Repository](https://gitlab.onelab.info/gmsh/gmsh)
+
+## Next Steps
+
+- Try parsing different format versions
+- Check the [API Reference](../api/overview.md)
+- Learn about [Writing Custom Parsers](../developer-guide/writing-parsers.md)
