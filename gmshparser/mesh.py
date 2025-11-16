@@ -1,16 +1,17 @@
-from typing import List
+from typing import List, Optional
 from gmshparser.node_entity import NodeEntity
 from gmshparser.element_entity import ElementEntity
 from io import StringIO
 
 
 class Mesh(object):
-
     """Mesh is the main class of the package."""
 
     def __init__(self):
         self.name_ = "New Mesh"
-        self.version_ = "4.1"
+        self.version_ = None  # Will be set when parsing MeshFormat
+        self.version_major_ = None
+        self.version_minor_ = None
         self.ascii_ = True
         self.precision_ = 8  # t_size
         self.number_of_node_entities_ = 0
@@ -32,13 +33,26 @@ class Mesh(object):
         """Get the name of the mesh."""
         return self.name_
 
-    def set_version(self, version: str):
+    def set_version(self, version: float):
         """Set the version of the Mesh object"""
         self.version_ = version
+        # Parse major and minor version numbers
+        major = int(version)
+        minor = int(round((version - major) * 10))
+        self.version_major_ = major
+        self.version_minor_ = minor
 
-    def get_version(self) -> str:
+    def get_version(self) -> Optional[float]:
         """Get the version of the Mesh object"""
         return self.version_
+
+    def get_version_major(self) -> Optional[int]:
+        """Get the major version number."""
+        return self.version_major_
+
+    def get_version_minor(self) -> Optional[int]:
+        """Get the minor version number."""
+        return self.version_minor_
 
     def set_ascii(self, is_ascii: bool):
         """Set a boolean flag whether this mesh is ASCII or binary"""
