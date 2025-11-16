@@ -8,6 +8,8 @@
 [![Python Version][python-img]][pypi-url]
 [![License][license-img]][license-url]
 
+![gmshparser hero image](docs/hero-image.webp)
+
 Package author: Jukka Aho (@ahojukka5)
 
 Gmshparser is a small Python package which aims to do only one thing: parse Gmsh
