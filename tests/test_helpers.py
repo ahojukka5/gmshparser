@@ -4,7 +4,13 @@ from gmshparser.node import Node
 from gmshparser.node_entity import NodeEntity
 from gmshparser.element import Element
 from gmshparser.element_entity import ElementEntity
-from gmshparser.helpers import parse_ints, parse_floats, get_triangles, get_quads, get_elements_2d
+from gmshparser.helpers import (
+    parse_ints,
+    parse_floats,
+    get_triangles,
+    get_quads,
+    get_elements_2d,
+)
 
 
 def test_parse_ints():
@@ -74,9 +80,15 @@ def test_get_quads():
 
     # Create 6 nodes for 2 quads
     nodes = []
-    coords = [(0.0, 0.0, 0.0), (1.0, 0.0, 0.0), (1.0, 1.0, 0.0),
-              (0.0, 1.0, 0.0), (2.0, 0.0, 0.0), (2.0, 1.0, 0.0)]
-    
+    coords = [
+        (0.0, 0.0, 0.0),
+        (1.0, 0.0, 0.0),
+        (1.0, 1.0, 0.0),
+        (0.0, 1.0, 0.0),
+        (2.0, 0.0, 0.0),
+        (2.0, 1.0, 0.0),
+    ]
+
     for i, (x, y, z) in enumerate(coords, start=1):
         n = Node()
         n.set_tag(i)
@@ -109,14 +121,14 @@ def test_get_quads():
     mesh.add_element_entity(ee)
 
     (X, Y, Q) = get_quads(mesh)
-    
+
     # Check we have 6 nodes
     assert len(X) == 6
     assert len(Y) == 6
-    
+
     # Check we have 2 quads
     assert len(Q) == 2
-    
+
     # Check quad connectivity (should have 4 nodes each)
     assert len(Q[0]) == 4
     assert len(Q[1]) == 4
@@ -136,7 +148,7 @@ def test_get_elements_2d():
         (3.0, 1.0, 0.0),  # 6
         (2.0, 1.0, 0.0),  # 7
     ]
-    
+
     nodes = []
     for i, (x, y, z) in enumerate(coords, start=1):
         n = Node()
@@ -177,23 +189,22 @@ def test_get_elements_2d():
     mesh.add_element_entity(ee_quad)
 
     data = get_elements_2d(mesh)
-    
-    # Check structure
-    assert 'nodes' in data
-    assert 'triangles' in data
-    assert 'quads' in data
-    assert 'node_ids' in data
-    
-    # Check we have 7 nodes
-    assert len(data['nodes']) == 7
-    
-    # Check we have 1 triangle and 1 quad
-    assert len(data['triangles']) == 1
-    assert len(data['quads']) == 1
-    
-    # Check triangle has 3 nodes
-    assert len(data['triangles'][0]) == 3
-    
-    # Check quad has 4 nodes
-    assert len(data['quads'][0]) == 4
 
+    # Check structure
+    assert "nodes" in data
+    assert "triangles" in data
+    assert "quads" in data
+    assert "node_ids" in data
+
+    # Check we have 7 nodes
+    assert len(data["nodes"]) == 7
+
+    # Check we have 1 triangle and 1 quad
+    assert len(data["triangles"]) == 1
+    assert len(data["quads"]) == 1
+
+    # Check triangle has 3 nodes
+    assert len(data["triangles"][0]) == 3
+
+    # Check quad has 4 nodes
+    assert len(data["quads"][0]) == 4

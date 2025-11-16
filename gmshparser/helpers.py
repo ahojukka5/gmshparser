@@ -87,7 +87,7 @@ def get_triangles(mesh):
     X = []
     Y = []
 
-    for (i, nid) in enumerate(node_ids):
+    for i, nid in enumerate(node_ids):
         invP[nid] = i
         X.append(nodes[nid][0])
         Y.append(nodes[nid][1])
@@ -154,7 +154,7 @@ def get_quads(mesh):
     X = []
     Y = []
 
-    for (i, nid) in enumerate(sorted(node_ids)):
+    for i, nid in enumerate(sorted(node_ids)):
         invP[nid] = i
         X.append(nodes[nid][0])
         Y.append(nodes[nid][1])
@@ -199,7 +199,7 @@ def get_elements_2d(mesh):
                 elcon = element.get_connectivity()
                 for c in elcon:
                     node_ids.add(c)
-                
+
                 if eltype == 2:  # Triangle
                     triangles.append(elcon)
                 elif eltype == 3:  # Quad
@@ -214,8 +214,8 @@ def get_elements_2d(mesh):
                 nodes[nid] = (ncoords[0], ncoords[1])
 
     return {
-        'nodes': nodes,
-        'triangles': triangles,
-        'quads': quads,
-        'node_ids': sorted(node_ids)
+        "nodes": nodes,
+        "triangles": triangles,
+        "quads": quads,
+        "node_ids": sorted(node_ids),
     }
