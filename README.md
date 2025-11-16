@@ -17,6 +17,18 @@ how to import mesh to your favourite research FEM code?
 - Project documentation in ReadTheDocs: [https://gmshparser.readthedocs.io](https://gmshparser.readthedocs.io)
 - Project releases in PyPi: [https://pypi.org/project/gmshparser](https://pypi.org/project/gmshparser)
 
+## Supported Gmsh MSH file formats
+
+gmshparser supports multiple versions of the Gmsh MSH file format:
+
+- **MSH 1.0**: Legacy format using `$NOD/$ENDNOD` and `$ELM/$ENDELM` sections
+- **MSH 2.0, 2.1, 2.2**: Standard format with `$MeshFormat`, `$Nodes`, and `$Elements` sections
+- **MSH 4.0, 4.1**: Modern format with entity-based organization using `$Entities` section
+
+The parser automatically detects the file format version and uses the appropriate
+parser for that version, so you don't need to worry about which version you're
+working with.
+
 ## Installing package
 
 To install the most recent package from Python Package Index (PyPi), use git:
@@ -211,12 +223,10 @@ parsing elements, to get an idea how things are implemented.
 Like in all other open source projects, contributions are always welcome to this
 project too! If you have some great ideas how to make this package better,
 feature requests etc., you can open an issue on gmshparser's [issue
-tracker][issues] or contact me (ahojukka5@gmail.com) directly.
+tracker][issues] or contact me (<ahojukka5@gmail.com>) directly.
 
 [gh-ci-img]: https://github.com/ahojukka5/gmshparser/workflows/Python%20CI/badge.svg
 [gh-ci-url]: https://github.com/ahojukka5/gmshparser/actions
-[travis-img]: https://travis-ci.com/ahojukka5/gmshparser.svg?branch=master
-[travis-url]: https://travis-ci.com/ahojukka5/gmshparser
 [coveralls-img]: https://coveralls.io/repos/github/ahojukka5/gmshparser/badge.svg?branch=master
 [coveralls-url]: https://coveralls.io/github/ahojukka5/gmshparser?branch=master
 [pypi-img]: https://img.shields.io/pypi/v/gmshparser
@@ -226,4 +236,3 @@ tracker][issues] or contact me (ahojukka5@gmail.com) directly.
 [documentation-img]: https://readthedocs.org/projects/gmshparser/badge/?version=latest
 [documentation-url]: https://gmshparser.readthedocs.io/en/latest/?badge=latest
 [issues]: https://github.com/ahojukka5/gmshparser/issues
-[gmsh]: https://gmsh.info/
