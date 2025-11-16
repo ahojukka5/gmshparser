@@ -5,23 +5,21 @@ description = "gmshparser is a lightweight, 100 % tested and well documented pac
 authors = ["Jukka Aho <ahojukka5@gmail.com>"]
 
 [tool.poetry.dependencies]
-python = "^3.6"
+python = "^3.8.1"
 
-[tool.poetry.dev-dependencies]
-pytest = "^6.1.1"
-pytest-cov = "^2.10.1"
-pytest-pycodestyle = "^2.2.0"
-pytest-flake8 = "^1.0.6"
-black = {version = "^20.8b1", allow-prereleases = true}
-flake8 = "^3.8.4"
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.0.0"
+pytest-cov = "^4.0.0"
+black = "^23.0.0"
+flake8 = "^6.0.0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.pytest.ini_options]
-minversion = "6.0"
-addopts = "--cov=gmshparser --flake8 -v --cov-report=term-missing"
+minversion = "8.0"
+addopts = "--cov=gmshparser -v --cov-report=term-missing"
 testpaths = [
     "tests",
 ]
