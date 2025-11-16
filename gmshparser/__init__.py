@@ -1,6 +1,7 @@
 from .mesh import Mesh
 from .main_parser import MainParser
 from .version_manager import VersionManager, MshFormatVersion
+from . import helpers
 
 __version__ = "0.2.0"
 __author__ = "Jukka Aho <ahojukka5@gmail.com>"
