@@ -59,7 +59,8 @@ class ElementsParserV1(AbstractParser):
 
             # Get node tags
             # Note: In MSH 1.0, the number of fields may vary depending on element type
-            # Line format: elm-number elm-type reg-phys reg-elem number-of-nodes node-list
+            # Line format: elm-number elm-type reg-phys reg-elem
+            #              number-of-nodes node-list
             node_list = [int(line[5 + i]) for i in range(number_of_nodes)]
 
             # Get element dimension from type
