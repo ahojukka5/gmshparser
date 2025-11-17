@@ -5,9 +5,9 @@ description = "gmshparser is a lightweight, 100 % tested and well documented pac
 authors = ["Jukka Aho <ahojukka5@gmail.com>"]
 
 [tool.poetry.dependencies]
-python = "^3.8.1"
+python = "^3.12"
 
-[tool.poetry.dev-dependencies]
+[tool.poetry.group.dev.dependencies]
 pytest = "^8.0.0"
 black = "^24.0.0"
 flake8 = "^7.0.0"
