@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "gmshparser"
-version = "0.2.0"
+version = "0.3.0"
 description = "gmshparser is a lightweight, 100 % tested and well documented package that parses Gmsh ascii file format (.msh)"
 authors = ["Jukka Aho <ahojukka5@gmail.com>"]
 
