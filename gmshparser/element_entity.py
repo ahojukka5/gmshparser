@@ -4,8 +4,7 @@ from .element import Element
 
 
 class ElementEntity(object):
-
-    """ ElementEntity class holds elements for one block. """
+    """ElementEntity class holds elements for one block."""
 
     def __init__(self):
         self.dimension_ = -1

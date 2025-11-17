@@ -2,8 +2,7 @@ from typing import Tuple
 
 
 class Node(object):
-
-    """ Node. """
+    """Node."""
 
     def __init__(self):
         self.tag_ = -1

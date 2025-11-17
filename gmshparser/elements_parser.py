@@ -7,7 +7,6 @@ from .element_entity import ElementEntity
 
 
 class ElementsParser(AbstractParser):
-
     """ElementParser is responsible to parse data between tags $Elements and
     $EndElements."""
 

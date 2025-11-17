@@ -3,8 +3,7 @@ from .node import Node
 
 
 class NodeEntity(object):
-
-    """ NodeEntity class holds nodes for one block. """
+    """NodeEntity class holds nodes for one block."""
 
     def __init__(self):
         self.dimension_ = -1

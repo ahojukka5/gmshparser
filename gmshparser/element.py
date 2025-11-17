@@ -2,8 +2,7 @@ from typing import List
 
 
 class Element(object):
-
-    """ Element. """
+    """Element."""
 
     def __init__(self):
         self.tag_ = -1
