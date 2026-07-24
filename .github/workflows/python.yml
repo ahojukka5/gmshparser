@@ -47,11 +47,15 @@ jobs:
 
       - name: Smoke test wheel
         if: matrix.python-version == '3.12'
-        run: uv run --isolated --no-project --with dist/*.whl python -c "import gmshparser"
+        run: |
+          uv run --isolated --no-project --with dist/*.whl python -c "import gmshparser"
+          uv run --isolated --no-project --with dist/*.whl gmshparser --version
 
       - name: Smoke test source distribution
         if: matrix.python-version == '3.12'
-        run: uv run --isolated --no-project --with dist/*.tar.gz python -c "import gmshparser"
+        run: |
+          uv run --isolated --no-project --with dist/*.tar.gz python -c "import gmshparser"
+          uv run --isolated --no-project --with dist/*.tar.gz gmshparser --version
 
       - name: Upload coverage to Codecov
         if: matrix.python-version == '3.12'
