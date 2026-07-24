@@ -8,7 +8,9 @@ from typing import Any
 try:
     import numpy as np
     from numpy.typing import DTypeLike, NDArray
-except ModuleNotFoundError as error:  # pragma: no cover - exercised by package smoke tests
+except (
+    ModuleNotFoundError
+) as error:  # pragma: no cover - exercised by package smoke tests
     raise ModuleNotFoundError(
         "NumPy support is optional; install it with 'pip install gmshparser[numpy]'"
     ) from error
@@ -142,9 +144,7 @@ def to_numpy(
     points = np.asarray(
         [node.coordinates for node in nodes], dtype=coordinate_dtype
     ).reshape((-1, 3))
-    node_tags = np.asarray(
-        [node.tag for node in nodes], dtype=resolved_index_dtype
-    )
+    node_tags = np.asarray([node.tag for node in nodes], dtype=resolved_index_dtype)
     node_entity_keys = np.asarray(
         [node.entity_key for node in nodes], dtype=resolved_index_dtype
     ).reshape((-1, 2))
@@ -163,9 +163,7 @@ def to_numpy(
                 f"Element type {element_type.name} has inconsistent connectivity widths"
             )
         width = widths.pop()
-        connectivity = np.empty(
-            (len(elements), width), dtype=resolved_index_dtype
-        )
+        connectivity = np.empty((len(elements), width), dtype=resolved_index_dtype)
 
         for element_row, element in enumerate(elements):
             for node_column, node in enumerate(element.nodes):
