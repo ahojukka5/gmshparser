@@ -11,8 +11,9 @@
 ![gmshparser hero image](docs/hero-image.webp)
 
 gmshparser is a small, dependency-free Python package for reading **ASCII**
-[Gmsh](https://gmsh.info/) MSH files. It provides a consistent object model for
-nodes, elements, and entities across the supported format versions.
+[Gmsh](https://gmsh.info/) MSH files. It provides a modern immutable API for
+normal application code while retaining the original parser-oriented API for
+backward compatibility.
 
 - **Python:** 3.12 or newer
 - **MSH formats:** 1.0, 2.0, 2.1, 2.2, 4.0, and 4.1
@@ -45,35 +46,64 @@ Install the current development version directly from GitHub:
 uv add "gmshparser @ git+https://github.com/ahojukka5/gmshparser.git"
 ```
 
-## Python API
+## Pythonic API
+
+Use `read()` for new code:
 
 ```python
 import gmshparser
 
-mesh = gmshparser.parse("mesh.msh")
+mesh = gmshparser.read("mesh.msh")
 print(mesh)
+print(mesh.version, len(mesh.nodes), len(mesh.elements))
 ```
 
-Iterate over nodes:
+Collections iterate over objects and use Gmsh tags for indexing:
 
 ```python
-for entity in mesh.get_node_entities():
+for node in mesh.nodes:
+    print(node.tag, node.x, node.y, node.z)
+
+node = mesh.nodes[42]
+triangle = mesh.elements[17]
+```
+
+Filter elements without manually traversing entity blocks:
+
+```python
+triangles = mesh.elements.by_type(2)
+surface_quads = mesh.elements.where(element_type=3, dimension=2)
+
+for element in triangles:
+    print(element.tag, element.node_tags)
+```
+
+Entity context remains available through each value object and through entity
+collections indexed by `(dimension, tag)`:
+
+```python
+entity = mesh.element_entities[(2, 7)]
+print(entity.element_type, len(entity))
+```
+
+`read()` also accepts open text streams. See the
+[Pythonic API guide](https://ahojukka5.github.io/gmshparser/user-guide/pythonic-api/)
+for the complete model.
+
+## Compatibility API
+
+Existing applications using the original mutable `get_*` / `set_*` model can
+continue unchanged:
+
+```python
+legacy_mesh = gmshparser.parse("mesh.msh")
+
+for entity in legacy_mesh.get_node_entities():
     for node in entity.get_nodes():
         print(node.get_tag(), node.get_coordinates())
 ```
 
-Iterate over elements:
-
-```python
-for entity in mesh.get_element_entities():
-    element_type = entity.get_element_type()
-    for element in entity.get_elements():
-        print(element.get_tag(), element_type, element.get_connectivity())
-```
-
-The parser detects the MSH version automatically. See the
-[Basic Usage guide](https://ahojukka5.github.io/gmshparser/user-guide/basic-usage/)
-for the complete data-access examples.
+The parser detects the MSH version automatically in both APIs.
 
 ## Command-line interface
 
@@ -92,14 +122,14 @@ gmshparser --version
 
 ## Visualization helpers
 
-Matplotlib is optional. The triangle helper returns zero-based connectivity
-suitable for `matplotlib.triplot`:
+Matplotlib is optional. Helpers accept both the modern and compatibility mesh
+models:
 
 ```python
 import gmshparser
 import matplotlib.pyplot as plt
 
-mesh = gmshparser.parse("mesh.msh")
+mesh = gmshparser.read("mesh.msh")
 X, Y, triangles = gmshparser.helpers.get_triangles(mesh)
 plt.triplot(X, Y, triangles)
 plt.axis("equal")
