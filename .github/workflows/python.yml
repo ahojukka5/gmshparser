@@ -32,6 +32,17 @@ jobs:
       - name: Install test and lint dependencies
         run: uv sync --no-default-groups --group test --group lint
 
+      - name: Format example for diagnosis
+        if: matrix.python-version == '3.12'
+        run: uv run --no-sync black examples/visualize_quads.py
+
+      - name: Upload formatted example
+        if: matrix.python-version == '3.12'
+        uses: actions/upload-artifact@v4
+        with:
+          name: black-formatted-example
+          path: examples/visualize_quads.py
+
       - name: Check formatting
         run: uv run --no-sync black gmshparser tests examples --check
 
