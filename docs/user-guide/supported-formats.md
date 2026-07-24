@@ -1,23 +1,38 @@
 # Supported Formats
 
-gmshparser supports multiple versions of the Gmsh MSH file format, automatically detecting the version and using the appropriate parser.
+gmshparser reads the node and element data from selected **ASCII** Gmsh MSH
+formats. The version is detected automatically from `$MeshFormat`, or from the
+legacy `$NOD` header for MSH 1.0.
 
-## Format Overview
+## Supported versions
 
-| Version | Status | Description |
-|---------|--------|-------------|
-| MSH 1.0 | ✅ Fully Supported | Legacy format |
-| MSH 2.0 | ✅ Fully Supported | Standard format |
-| MSH 2.1 | ✅ Fully Supported | With physical names |
-| MSH 2.2 | ✅ Fully Supported | Compatible with 2.0/2.1 |
-| MSH 4.0 | ✅ Fully Supported | Modern entity-based format |
-| MSH 4.1 | ✅ Fully Supported | Latest version |
+| Version | Node and element layout | Status |
+| --- | --- | --- |
+| MSH 1.0 | legacy `$NOD` and `$ELM` sections | supported |
+| MSH 2.0 | flat `$Nodes` and `$Elements` sections | supported |
+| MSH 2.1 | flat `$Nodes` and `$Elements` sections | supported |
+| MSH 2.2 | flat `$Nodes` and `$Elements` sections | supported |
+| MSH 4.0 | entity-block `$Nodes` and `$Elements` sections | supported |
+| MSH 4.1 | entity-block `$Nodes` and `$Elements` sections | supported |
 
-## MSH 1.0 (Legacy Format)
+“Supported” here means that the core mesh topology—node coordinates, element
+connectivity, entity grouping, counts, and tag ranges—can be read through the
+common Python API. It does not mean that every optional MSH section is retained.
 
-The original Gmsh format using simple section markers.
+## ASCII only
 
-### Structure
+The `$MeshFormat` file-type field is recorded in the `Mesh` object, but the
+parser reads the file as text. Binary MSH files are therefore not supported.
+Convert them to ASCII with Gmsh before parsing.
+
+```bash
+gmsh input.msh -format msh41 -bin 0 -o output.msh
+```
+
+## MSH 1.0
+
+MSH 1.0 files have no `$MeshFormat` section. gmshparser recognizes the legacy
+headers:
 
 ```text
 $NOD
@@ -27,295 +42,86 @@ $NOD
 $ENDNOD
 $ELM
 <number-of-elements>
-<elm-number> <elm-type> <reg-phys> <reg-elem> <number-of-nodes> <node-list>
+<element-records>
 ...
 $ENDELM
 ```
 
-### Features
+The parser converts the legacy flat data into the same `Mesh`, `NodeEntity`, and
+`ElementEntity` model used for later versions.
 
-- No `$MeshFormat` section
-- Simple node and element sections
-- Legacy element type numbering
-- Physical and elementary region tags
+## MSH 2.x
 
-### Example
+For MSH 2.0, 2.1, and 2.2, gmshparser parses:
 
-```text
-$NOD
-6
-1 0.0 0.0 0.0
-2 1.0 0.0 0.0
-3 1.0 1.0 0.0
-4 0.0 1.0 0.0
-5 2.0 0.0 0.0
-6 2.0 1.0 0.0
-$ENDNOD
-$ELM
-2
-1 3 0 1 4 1 2 3 4
-2 3 0 1 4 2 5 6 3
-$ENDELM
-```
+- `$MeshFormat`
+- `$Nodes`
+- `$Elements`
 
-## MSH 2.0/2.1/2.2 (Standard Format)
+Element records may contain physical, elementary, and partition tags. The
+current parser uses the elementary entity tag for grouping but does not expose
+the complete tag list on each element.
 
-The widely-used standard format with `$MeshFormat` section.
+`$PhysicalNames` and other optional sections are not stored by the current data
+model.
 
-### Structure
+## MSH 4.x
 
-```text
-$MeshFormat
-<version> <file-type> <data-size>
-$EndMeshFormat
-$Nodes
-<number-of-nodes>
-<node-id> <x> <y> <z>
-...
-$EndNodes
-$Elements
-<number-of-elements>
-<elm-id> <elm-type> <number-of-tags> <tag-list> <node-list>
-...
-$EndElements
-```
+For MSH 4.0 and 4.1, gmshparser parses the entity-block forms of `$Nodes` and
+`$Elements` and stores each block as a node or element entity.
 
-### MSH 2.1 Addition
+The standalone `$Entities` section and its geometry, bounding boxes, topology,
+and physical tags are not retained. Entity dimension and tag values available
+in the node and element block headers are preserved.
 
-```text
-$PhysicalNames
-<number-of-physical-names>
-<dimension> <physical-tag> "<physical-name>"
-...
-$EndPhysicalNames
-```
+## Common limitations
 
-### Features
+The current reader does not provide:
 
-- Explicit version declaration
-- Node and element sections with clear syntax
-- Support for element tags (physical, elementary, partition)
-- Optional physical group names (2.1+)
-- ASCII or binary formats supported
+- binary MSH support
+- mesh writing or format conversion
+- compressed-file handling
+- preservation of every optional MSH section
+- post-processing datasets such as `$NodeData`, `$ElementData`, or
+  `$ElementNodeData`
+- periodic-entity metadata
+- complete physical-name and physical-tag metadata
 
-### Example (MSH 2.2)
+Unknown sections are skipped by the main parsing loop unless a parser for that
+section is registered in the relevant version-specific parser list.
 
-```text
-$MeshFormat
-2.2 0 8
-$EndMeshFormat
-$Nodes
-6
-1 0.0 0.0 0.0
-2 1.0 0.0 0.0
-3 1.0 1.0 0.0
-4 0.0 1.0 0.0
-5 2.0 0.0 0.0
-6 2.0 1.0 0.0
-$EndNodes
-$Elements
-2
-1 3 2 1 1 1 2 3 4
-2 3 2 1 1 2 5 6 3
-$EndElements
-```
+## Element types
 
-## MSH 4.0/4.1 (Modern Format)
+Element type codes are stored as the numeric values defined by Gmsh. Common
+codes include:
 
-The current Gmsh format with entity-based organization.
+| Code | Element | Dimension |
+| --- | --- | --- |
+| 15 | point | 0 |
+| 1 | two-node line | 1 |
+| 2 | three-node triangle | 2 |
+| 3 | four-node quadrangle | 2 |
+| 4 | four-node tetrahedron | 3 |
+| 5 | eight-node hexahedron | 3 |
+| 6 | six-node prism | 3 |
+| 7 | five-node pyramid | 3 |
 
-### Structure
+The parser also recognizes several higher-order element codes when deriving the
+entity dimension. Refer to the official Gmsh MSH specification for the complete
+code table.
 
-```text
-$MeshFormat
-<version> <file-type> <data-size>
-$EndMeshFormat
-$Entities
-<numPoints> <numCurves> <numSurfaces> <numVolumes>
-<point-entities>
-<curve-entities>
-<surface-entities>
-<volume-entities>
-$EndEntities
-$Nodes
-<numEntityBlocks> <numNodes> <minNodeTag> <maxNodeTag>
-<entityDim> <entityTag> <parametric> <numNodesInBlock>
-<nodeTag>
-...
-<x> <y> <z>
-...
-$EndNodes
-$Elements
-<numEntityBlocks> <numElements> <minElementTag> <maxElementTag>
-<entityDim> <entityTag> <elementType> <numElementsInBlock>
-<elementTag> <nodeTag1> <nodeTag2> ...
-...
-$EndElements
-```
-
-### Features
-
-- Entity-based organization (points, curves, surfaces, volumes)
-- Explicit entity topology
-- Node and element blocks grouped by entity
-- More efficient for large meshes
-- Better support for high-order elements
-
-### Example (MSH 4.1)
-
-```text
-$MeshFormat
-4.1 0 8
-$EndMeshFormat
-$Nodes
-1 6 1 6
-2 1 0 6
-1
-2
-3
-4
-5
-6
-0.0 0.0 0.0
-1.0 0.0 0.0
-1.0 1.0 0.0
-0.0 1.0 0.0
-2.0 0.0 0.0
-2.0 1.0 0.0
-$EndNodes
-$Elements
-1 2 1 2
-2 1 3 2
-1 1 2 3 4
-2 2 5 6 3
-$EndElements
-```
-
-## Element Types
-
-All formats use the same element type numbering:
-
-| Type | Name | Nodes | Dimension |
-|------|------|-------|-----------|
-| 1 | Line | 2 | 1D |
-| 2 | Triangle | 3 | 2D |
-| 3 | Quadrangle | 4 | 2D |
-| 4 | Tetrahedron | 4 | 3D |
-| 5 | Hexahedron | 8 | 3D |
-| 6 | Prism | 6 | 3D |
-| 7 | Pyramid | 5 | 3D |
-| 8 | Line (3-node) | 3 | 1D |
-| 9 | Triangle (6-node) | 6 | 2D |
-| 10 | Quadrangle (9-node) | 9 | 2D |
-| 11 | Tetrahedron (10-node) | 10 | 3D |
-| 15 | Point | 1 | 0D |
-| ... | Higher-order elements | ... | ... |
-
-See the [Gmsh documentation](https://gmsh.info/doc/texinfo/gmsh.html#MSH-file-format) for the complete list.
-
-## Version Detection
-
-gmshparser automatically detects the file format version:
+## Check the detected format
 
 ```python
 import gmshparser
 
 mesh = gmshparser.parse("mesh.msh")
-version = mesh.get_version()
-
-if version == 1.0:
-    print("Legacy MSH 1.0 format")
-elif version >= 2.0 and version < 3.0:
-    print("Standard MSH 2.x format")
-elif version >= 4.0:
-    print("Modern MSH 4.x format")
+print(mesh.get_version())
+print(mesh.is_ascii())
 ```
 
-### Detection Algorithm
+## Test coverage
 
-1. Read first line of file
-2. If line is `$MeshFormat`: Parse version from next line
-3. If line is `$NOD`: Assume MSH 1.0
-4. Otherwise: Error (unsupported format)
-
-## Format Compatibility
-
-### gmshparser → gmshparser
-
-All supported versions can be read and processed with the same API:
-
-```python
-# Same code works for all versions
-for entity in mesh.get_node_entities():
-    for node in entity.get_nodes():
-        print(node.get_tag(), node.get_coordinates())
-```
-
-### Gmsh → gmshparser
-
-gmshparser can read all mesh files generated by:
-
-- Gmsh 1.x (MSH 1.0)
-- Gmsh 2.x (MSH 2.0, 2.1, 2.2)
-- Gmsh 4.x (MSH 4.0, 4.1)
-
-### Limitations
-
-- **Binary format**: Not supported (ASCII only)
-- **Compressed format**: Not supported
-- **Post-processing data**: Node/element data sections not parsed (but can be added if needed)
-- **Periodic entities**: Not explicitly handled
-
-## Converting Between Versions
-
-To convert between formats, use Gmsh itself:
-
-```bash
-# Convert to MSH 2.2
-gmsh input.msh -format msh22 -o output.msh
-
-# Convert to MSH 4.1
-gmsh input.msh -format msh41 -o output.msh
-```
-
-Or in Python with gmshparser:
-
-```python
-# Read any version
-mesh = gmshparser.parse("input.msh")
-
-# Extract and rewrite (would need custom writer)
-# Note: gmshparser currently only reads, not writes
-```
-
-## Testing
-
-gmshparser is tested against real mesh files for all supported versions:
-
-- 10+ test files covering all versions
-- Elements from 0D (points) to 3D (tetrahedra)
-- Various mesh complexities
-- 100% success rate on test suite
-
-See the [Test Results](../developer-guide/test-results.md) for details.
-
-## Future Support
-
-Potential future additions:
-
-- Binary format support
-- Post-processing data sections
-- MSH format writing (currently read-only)
-- Compressed file support
-
-## References
-
-- [Official Gmsh MSH Format Documentation](https://gmsh.info/doc/texinfo/gmsh.html#MSH-file-format)
-- [Gmsh Website](https://gmsh.info/)
-- [Gmsh GitLab Repository](https://gitlab.onelab.info/gmsh/gmsh)
-
-## Next Steps
-
-- Try parsing different format versions
-- Check the [API Reference](../api/overview.md)
-- Learn about [Writing Custom Parsers](../developer-guide/writing-parsers.md)
+Repository test data includes files for each supported version family. Exact
+test and coverage totals are intentionally not duplicated here; the current
+GitHub Actions run is authoritative. See [Test Results](../developer-guide/test-results.md).
