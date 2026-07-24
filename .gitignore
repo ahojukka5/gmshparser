@@ -82,8 +82,10 @@ ipython_config.py
 # pyenv
 .python-version
 
-# pipenv
+# Dependency lock files
 Pipfile.lock
+poetry.lock
+uv.lock
 
 # PEP 582
 __pypackages__/
@@ -128,6 +130,3 @@ dmypy.json
 *.swp
 *.swo
 *~
-
-# Poetry
-poetry.lock

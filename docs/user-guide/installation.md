@@ -1,125 +1,113 @@
 # Installation
 
-## Install from PyPI (Recommended)
+## Install from PyPI
 
-The easiest way to install gmshparser is from the Python Package Index (PyPI):
+Install the latest stable release with `uv`:
+
+```bash
+uv add gmshparser
+```
+
+The package can also be installed with pip:
 
 ```bash
 pip install gmshparser
 ```
 
-This will install the latest stable release.
+## Install the development version
 
-## Install from GitHub (Development Version)
+Install directly from GitHub:
 
-To install the latest development version directly from GitHub:
+```bash
+uv add git+https://github.com/ahojukka5/gmshparser.git
+```
+
+or with pip:
 
 ```bash
 pip install git+https://github.com/ahojukka5/gmshparser.git
 ```
 
-## Install with Poetry
+## Visualization dependencies
 
-If you're using Poetry for dependency management:
-
-```bash
-poetry add gmshparser
-```
-
-## Install with Optional Dependencies
-
-If you want visualization support with matplotlib:
+The parser itself does not depend on matplotlib. Install it separately when using the visualization examples:
 
 ```bash
-pip install gmshparser matplotlib
+uv add matplotlib
 ```
 
-## Verify Installation
-
-After installation, verify that gmshparser is working correctly:
-
-```python
-import gmshparser
-print(gmshparser.__version__)
-```
-
-Or test the command-line interface:
+For a repository checkout, the predefined dependency group can be used instead:
 
 ```bash
-gmshparser --help
+uv sync --group visualization
 ```
 
-## Development Installation
-
-If you want to contribute to gmshparser, clone the repository and install in development mode:
+## Verify the installation
 
 ```bash
-# Clone the repository
+uv run python -c "import gmshparser; print(gmshparser.__version__)"
+```
+
+## Development installation
+
+Clone the repository and let `uv` create the environment:
+
+```bash
 git clone https://github.com/ahojukka5/gmshparser.git
 cd gmshparser
-
-# Install with Poetry (recommended)
-poetry install
-
-# Or install with pip in editable mode
-pip install -e .
+uv sync
 ```
 
-## System Requirements
+The default development environment contains the `test` and `lint` groups. Other groups are installed explicitly:
 
-### Minimum Requirements
+```bash
+# Documentation toolchain
+uv sync --group docs
 
-- Python 3.8.1 or later
-- pip or Poetry
+# Visualization examples
+uv sync --group visualization
 
-### Recommended Setup
+# Every development group
+uv sync --all-groups
+```
 
-- Python 3.10 or later
-- Virtual environment (venv, conda, or Poetry)
+Run commands through the managed environment:
 
-### Optional Dependencies
+```bash
+uv run pytest
+uv run black . --check
+uv run flake8 gmshparser tests
+```
 
-- **matplotlib** (>=3.5, <3.11): For mesh visualization
-- **mkdocs** (>=1.6): For building documentation (development only)
+Dependency lock files are intentionally not committed in this repository. `uv` may create a local `uv.lock`; it is ignored by Git.
+
+## System requirements
+
+- Python 3.12 or later
+- A current version of `uv`, recommended for development
 
 ## Troubleshooting
 
-### Python Version Issues
-
-If you see errors about Python version, ensure you're using Python 3.8.1 or later:
+Check the interpreter selected by `uv`:
 
 ```bash
-python --version
+uv run python --version
 ```
 
-### Permission Errors
-
-If you encounter permission errors during installation, try:
+Recreate the environment when dependency state becomes inconsistent:
 
 ```bash
-pip install --user gmshparser
-```
-
-Or use a virtual environment (recommended):
-
-```bash
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-pip install gmshparser
-```
-
-### Import Errors
-
-If you can install but can't import the package, check that you're using the correct Python environment:
-
-```bash
-which python
-which pip
+rm -rf .venv uv.lock
+uv sync
 ```
 
 ## Upgrading
 
-To upgrade to the latest version:
+```bash
+uv add --upgrade gmshparser
+```
+
+With pip:
 
 ```bash
 pip install --upgrade gmshparser
@@ -127,7 +115,11 @@ pip install --upgrade gmshparser
 
 ## Uninstalling
 
-To remove gmshparser:
+```bash
+uv remove gmshparser
+```
+
+With pip:
 
 ```bash
 pip uninstall gmshparser
