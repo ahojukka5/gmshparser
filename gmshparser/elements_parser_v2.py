@@ -1,4 +1,4 @@
-"""Parser for Elements section in MSH format version 2.x."""
+"""Parser for the MSH 2.x ``$Elements`` section."""
 
 from typing import TextIO
 
@@ -6,11 +6,13 @@ from .abstract_parser import AbstractParser
 from .element import Element
 from .element_entity import ElementEntity
 from .element_types import validate_element_connectivity
+from .errors import InvalidElementError
 from .mesh import Mesh
+from .parsing import expect_end_marker, read_required_line
 
 
 class ElementsParserV2(AbstractParser):
-    """Parse the flat MSH 2.x ``$Elements`` section."""
+    """Parse flat MSH 2.x element records."""
 
     @staticmethod
     def get_section_name():
@@ -18,28 +20,53 @@ class ElementsParserV2(AbstractParser):
 
     @staticmethod
     def parse(mesh: Mesh, io: TextIO) -> None:
-        line = io.readline()
+        line = read_required_line(io, "$Elements element count")
         if line.startswith("$Elements"):
-            line = io.readline()
+            line = read_required_line(io, "$Elements element count")
 
-        num_elements = int(line.strip())
-        mesh.set_number_of_elements(num_elements)
+        try:
+            number_of_elements = int(line.strip())
+        except ValueError as error:
+            raise InvalidElementError(
+                "$Elements element count must be an integer"
+            ) from error
+        if number_of_elements < 0:
+            raise InvalidElementError("$Elements element count cannot be negative")
 
+        mesh.set_number_of_elements(number_of_elements)
         element_groups: dict[tuple[int, int, int], list[tuple[int, list[int]]]] = {}
-        min_tag = float("inf")
-        max_tag = 0
+        min_tag: int | None = None
+        max_tag: int | None = None
 
-        for _ in range(num_elements):
-            fields = [int(value) for value in io.readline().strip().split()]
+        for _ in range(number_of_elements):
+            record = read_required_line(io, "an MSH 2 element record")
+            try:
+                fields = [int(value) for value in record.strip().split()]
+            except ValueError as error:
+                raise InvalidElementError(
+                    "MSH 2 element records must contain integers"
+                ) from error
+            if len(fields) < 3:
+                raise InvalidElementError(
+                    "An MSH 2 element record must contain at least three fields"
+                )
 
             element_tag = fields[0]
             element_type_id = fields[1]
-            num_tags = fields[2]
+            number_of_tags = fields[2]
+            if number_of_tags < 0:
+                raise InvalidElementError("Element tag counts cannot be negative")
+
             tags_start = 3
-            tags_end = tags_start + num_tags
+            tags_end = tags_start + number_of_tags
+            if len(fields) < tags_end:
+                raise InvalidElementError(
+                    f"Element {element_tag} declares {number_of_tags} tags, "
+                    f"but the record contains {max(0, len(fields) - tags_start)}"
+                )
+
             tags = fields[tags_start:tags_end]
             node_tags = fields[tags_end:]
-
             element_type = validate_element_connectivity(
                 element_type_id,
                 node_tags,
@@ -50,19 +77,17 @@ class ElementsParserV2(AbstractParser):
 
             physical_tags = (tags[0],) if tags and tags[0] > 0 else ()
             entity_tag = tags[1] if len(tags) > 1 else 1
-
             mesh.set_element_physical_tags(element_tag, physical_tags)
             mesh.add_entity_physical_tags(dimension, entity_tag, physical_tags)
 
-            min_tag = min(min_tag, element_tag)
-            max_tag = max(max_tag, element_tag)
-
+            min_tag = element_tag if min_tag is None else min(min_tag, element_tag)
+            max_tag = element_tag if max_tag is None else max(max_tag, element_tag)
             key = (dimension, entity_tag, int(element_type))
             element_groups.setdefault(key, []).append((element_tag, node_tags))
 
-        if num_elements:
-            mesh.set_min_element_tag(int(min_tag))
-            mesh.set_max_element_tag(int(max_tag))
+        if min_tag is not None and max_tag is not None:
+            mesh.set_min_element_tag(min_tag)
+            mesh.set_max_element_tag(max_tag)
         mesh.set_number_of_element_entities(len(element_groups))
 
         for (dimension, entity_tag, element_type), elements in element_groups.items():
@@ -79,3 +104,5 @@ class ElementsParserV2(AbstractParser):
                 entity.add_element(element)
 
             mesh.add_element_entity(entity)
+
+        expect_end_marker(io, "$EndElements")
