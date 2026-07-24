@@ -1,85 +1,87 @@
 # Helpers API
 
-Utility functions for common mesh operations.
-
-## get_triangles()
-
-Extract triangular elements from mesh for plotting.
+## `get_triangles()`
 
 ::: gmshparser.helpers.get_triangles
     options:
       show_source: true
       heading_level: 3
 
-**Example:**
+Returns `(X, Y, triangles)`. Triangle connectivity contains zero-based indices
+into `X` and `Y`.
 
 ```python
-import gmshparser
 import matplotlib.pyplot as plt
 from gmshparser.helpers import get_triangles
 
-mesh = gmshparser.parse("mesh.msh")
-X, Y, T = get_triangles(mesh)
-
-plt.triplot(X, Y, T)
-plt.show()
+X, Y, triangles = get_triangles(mesh)
+plt.triplot(X, Y, triangles)
 ```
 
-## get_quads()
+Only two-dimensional Gmsh type-2 elements are included.
 
-Extract quadrilateral elements from mesh.
+## `get_quads()`
 
 ::: gmshparser.helpers.get_quads
     options:
       show_source: true
       heading_level: 3
 
-**Example:**
+Returns `(X, Y, quads)`. Quad connectivity contains zero-based indices into `X`
+and `Y`.
 
 ```python
+from matplotlib.patches import Polygon
 from gmshparser.helpers import get_quads
 
-mesh = gmshparser.parse("quad_mesh.msh")
-X, Y, Q = get_quads(mesh)
-
-# Plot quads
-for quad in Q:
-    x = [X[n-1] for n in quad] + [X[quad[0]-1]]
-    y = [Y[n-1] for n in quad] + [Y[quad[0]-1]]
-    plt.plot(x, y, 'k-')
+X, Y, quads = get_quads(mesh)
+for quad in quads:
+    coordinates = [(X[index], Y[index]) for index in quad]
+    axes.add_patch(Polygon(coordinates, fill=False))
 ```
 
-## get_elements_2d()
+Only two-dimensional Gmsh type-3 elements are included.
 
-Extract all 2D elements (triangles and quads).
+## `get_elements_2d()`
 
 ::: gmshparser.helpers.get_elements_2d
     options:
       show_source: true
       heading_level: 3
 
-**Example:**
+Returns a dictionary rather than coordinate arrays:
 
 ```python
 from gmshparser.helpers import get_elements_2d
 
-mesh = gmshparser.parse("mixed_mesh.msh")
-X, Y, triangles, quads = get_elements_2d(mesh)
+data = get_elements_2d(mesh)
 
-print(f"Found {len(triangles)} triangles and {len(quads)} quads")
+nodes = data["nodes"]
+triangles = data["triangles"]
+quads = data["quads"]
+node_ids = data["node_ids"]
 ```
 
-## Utility Functions
+- `nodes` maps original Gmsh node tags to `(x, y)` coordinates.
+- `triangles` and `quads` preserve original node tags in their connectivity.
+- `node_ids` is the sorted list of referenced node tags.
 
-### parse_ints()
+Do not unpack this helper as `(X, Y, triangles, quads)` and do not apply a
+`-1` offset to its node tags.
 
-Parse space-separated integers from string.
+## Line parsers
 
-### parse_floats()
+### `parse_ints()`
 
-Parse space-separated floats from string.
+Reads one line from a text stream and returns its space-separated values as
+integers.
 
-## See Also
+### `parse_floats()`
 
-- [Visualization Guide](../user-guide/visualization.md)
+Reads one line from a text stream and returns its space-separated values as
+floating-point numbers.
+
+## See also
+
+- [Visualization](../user-guide/visualization.md)
 - [Basic Usage](../user-guide/basic-usage.md)
