@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
 from .element_types import ElementType
@@ -14,38 +13,13 @@ if TYPE_CHECKING:
 
 type EntityKey = tuple[int, int]
 type PhysicalGroupKey = tuple[int, int]
-
-
-@dataclass(frozen=True, slots=True)
-class _RawNode:
-    tag: int
-    coordinates: tuple[float, ...]
-    dimension: int
-    entity_tag: int
-
-
-@dataclass(frozen=True, slots=True)
-class _RawElement:
-    tag: int
-    node_tags: tuple[int, ...]
-
-
-@dataclass(frozen=True, slots=True)
-class _RawElementBlock:
-    dimension: int
-    entity_tag: int
-    element_type: int
-    elements: tuple[_RawElement, ...]
+type RawNode = tuple[int, tuple[float, ...], int, int]
+type RawElement = tuple[int, tuple[int, ...]]
+type RawElementBlock = tuple[int, int, int, tuple[RawElement, ...]]
 
 
 class ModernMeshBuilder:
-    """Parser target that builds the immutable API without a legacy mesh.
-
-    Existing section parsers populate this object through the same small mutable
-    protocol used by the compatibility :class:`gmshparser.mesh.Mesh`. Incoming
-    legacy node and element block objects are immediately flattened into compact
-    immutable records; the compatibility mesh itself is never constructed.
-    """
+    """Parser target that builds the immutable API without a legacy mesh."""
 
     def __init__(self, name: str = "New Mesh"):
         self._name = name
@@ -64,8 +38,8 @@ class ModernMeshBuilder:
         self._min_element_tag = 0
         self._max_element_tag = 0
 
-        self._raw_nodes: list[_RawNode] = []
-        self._raw_element_blocks: list[_RawElementBlock] = []
+        self._raw_nodes: list[RawNode] = []
+        self._raw_element_blocks: list[RawElementBlock] = []
         self._physical_names: dict[PhysicalGroupKey, str] = {}
         self._entity_physical_tags: dict[EntityKey, tuple[int, ...]] = {}
         self._element_physical_tags: dict[int, tuple[int, ...]] = {}
@@ -151,39 +125,61 @@ class ModernMeshBuilder:
     def get_max_element_tag(self) -> int:
         return self._max_element_tag
 
-    def add_node_entity(self, node_entity: NodeEntity) -> None:
-        dimension = node_entity.get_dimension()
-        entity_tag = node_entity.get_tag()
-        for legacy_node in node_entity.get_nodes():
-            coordinates = tuple(legacy_node.get_coordinates())
-            if len(coordinates) < 3:
+    def add_node_block(
+        self,
+        dimension: int,
+        entity_tag: int,
+        parametric_coordinate_count: int,
+        nodes,
+    ) -> None:
+        """Store one parsed node block as compact raw records."""
+        del parametric_coordinate_count
+        for node_tag, coordinates in nodes:
+            values = tuple(coordinates)
+            if len(values) < 3:
                 raise InvalidMeshError(
-                    f"Node {legacy_node.get_tag()} has fewer than three coordinates"
+                    f"Node {node_tag} has fewer than three coordinates"
                 )
-            self._raw_nodes.append(
-                _RawNode(
-                    tag=legacy_node.get_tag(),
-                    coordinates=coordinates,
-                    dimension=dimension,
-                    entity_tag=entity_tag,
-                )
-            )
+            self._raw_nodes.append((node_tag, values, dimension, entity_tag))
 
-    def add_element_entity(self, element_entity: ElementEntity) -> None:
-        elements = tuple(
-            _RawElement(
-                tag=legacy_element.get_tag(),
-                node_tags=tuple(legacy_element.get_connectivity()),
-            )
-            for legacy_element in element_entity.get_elements()
+    def add_node_entity(self, node_entity: NodeEntity) -> None:
+        """Accept legacy-style blocks from third-party section parsers."""
+        self.add_node_block(
+            node_entity.get_dimension(),
+            node_entity.get_tag(),
+            node_entity.get_number_of_parametric_coordinates(),
+            [
+                (node.get_tag(), tuple(node.get_coordinates()))
+                for node in node_entity.get_nodes()
+            ],
+        )
+
+    def add_element_block(
+        self,
+        dimension: int,
+        entity_tag: int,
+        element_type: int,
+        elements,
+    ) -> None:
+        """Store one parsed element block without compatibility objects."""
+        records = tuple(
+            (element_tag, tuple(connectivity))
+            for element_tag, connectivity in elements
         )
         self._raw_element_blocks.append(
-            _RawElementBlock(
-                dimension=element_entity.get_dimension(),
-                entity_tag=element_entity.get_tag(),
-                element_type=element_entity.get_element_type(),
-                elements=elements,
-            )
+            (dimension, entity_tag, int(element_type), records)
+        )
+
+    def add_element_entity(self, element_entity: ElementEntity) -> None:
+        """Accept legacy-style blocks from third-party section parsers."""
+        self.add_element_block(
+            element_entity.get_dimension(),
+            element_entity.get_tag(),
+            element_entity.get_element_type(),
+            [
+                (element.get_tag(), tuple(element.get_connectivity()))
+                for element in element_entity.get_elements()
+            ],
         )
 
     def set_physical_name(self, dimension: int, tag: int, name: str) -> None:
@@ -246,23 +242,19 @@ class ModernMeshBuilder:
         nodes_by_tag: dict[int, Node] = {}
         all_nodes: list[Node] = []
 
-        for raw_node in self._raw_nodes:
-            if raw_node.tag in nodes_by_tag:
-                raise InvalidMeshError(f"Duplicate node tag {raw_node.tag}")
-            key = raw_node.dimension, raw_node.entity_tag
+        for node_tag, coordinates, dimension, entity_tag in self._raw_nodes:
+            if node_tag in nodes_by_tag:
+                raise InvalidMeshError(f"Duplicate node tag {node_tag}")
+            key = dimension, entity_tag
             node = Node(
-                tag=raw_node.tag,
-                coordinates=(
-                    raw_node.coordinates[0],
-                    raw_node.coordinates[1],
-                    raw_node.coordinates[2],
-                ),
-                dimension=raw_node.dimension,
-                entity_tag=raw_node.entity_tag,
-                parametric_coordinates=raw_node.coordinates[3:],
+                tag=node_tag,
+                coordinates=(coordinates[0], coordinates[1], coordinates[2]),
+                dimension=dimension,
+                entity_tag=entity_tag,
+                parametric_coordinates=coordinates[3:],
                 physical_tags=self.get_entity_physical_tags(*key),
             )
-            nodes_by_tag[node.tag] = node
+            nodes_by_tag[node_tag] = node
             nodes_by_entity.setdefault(key, []).append(node)
             all_nodes.append(node)
 
@@ -276,39 +268,36 @@ class ModernMeshBuilder:
         element_tags: set[int] = set()
         all_elements: list[Element] = []
 
-        for block in self._raw_element_blocks:
-            key = block.dimension, block.entity_tag
+        for dimension, entity_tag, type_id, raw_elements in self._raw_element_blocks:
+            key = dimension, entity_tag
             entity_elements = elements_by_entity.setdefault(key, [])
-            element_type = ElementType(block.element_type)
+            element_type = ElementType(type_id)
             entity_physical_tags = self.get_entity_physical_tags(*key)
 
-            for raw_element in block.elements:
-                if raw_element.tag in element_tags:
-                    raise InvalidMeshError(f"Duplicate element tag {raw_element.tag}")
+            for element_tag, node_tags in raw_elements:
+                if element_tag in element_tags:
+                    raise InvalidMeshError(f"Duplicate element tag {element_tag}")
                 try:
-                    element_nodes = tuple(
-                        nodes_by_tag[node_tag] for node_tag in raw_element.node_tags
-                    )
+                    element_nodes = tuple(nodes_by_tag[tag] for tag in node_tags)
                 except KeyError as error:
                     missing_tag = int(error.args[0])
                     raise InvalidMeshError(
-                        f"Element {raw_element.tag} references unknown node "
-                        f"{missing_tag}"
+                        f"Element {element_tag} references unknown node {missing_tag}"
                     ) from error
 
-                physical_tags = self.get_element_physical_tags(raw_element.tag)
+                physical_tags = self.get_element_physical_tags(element_tag)
                 if not physical_tags:
                     physical_tags = entity_physical_tags
 
                 element = Element(
-                    tag=raw_element.tag,
+                    tag=element_tag,
                     element_type=element_type,
                     nodes=element_nodes,
-                    dimension=block.dimension,
-                    entity_tag=block.entity_tag,
+                    dimension=dimension,
+                    entity_tag=entity_tag,
                     physical_tags=physical_tags,
                 )
-                element_tags.add(element.tag)
+                element_tags.add(element_tag)
                 entity_elements.append(element)
                 all_elements.append(element)
 
@@ -330,7 +319,6 @@ class ModernMeshBuilder:
                 for physical_tag in element.physical_tags:
                     if physical_tag not in physical_tags:
                         physical_tags.append(physical_tag)
-
             entity_values.append(
                 Entity(
                     dimension=dimension,
