@@ -154,22 +154,66 @@ class Mesh:
         """Get element maximum tag."""
         return self.max_element_tag_
 
-    def has_element_entity(self, dim: int, tag: int) -> bool:
-        """Test does mesh have element entity with `(dim, tag)`."""
-        return (dim, tag) in self.element_entities_
+    def has_element_entity(
+        self,
+        dim: int,
+        tag: int,
+        element_type: int | None = None,
+    ) -> bool:
+        """Return whether an element block exists for an entity.
+
+        When ``element_type`` is omitted, this reports whether any element block
+        exists for ``(dim, tag)``. Supplying it checks one exact block.
+        """
+        if element_type is not None:
+            return (dim, tag, int(element_type)) in self.element_entities_
+        return any(
+            entity_dim == dim and entity_tag == tag
+            for entity_dim, entity_tag, _ in self.element_entities_
+        )
 
     def add_element_entity(self, element_entity: ElementEntity):
-        """Add element entity to mesh."""
+        """Add an element block without overwriting other element types."""
         dim = element_entity.get_dimension()
         tag = element_entity.get_tag()
-        self.element_entities_[(dim, tag)] = element_entity
+        element_type = element_entity.get_element_type()
+        self.element_entities_[(dim, tag, element_type)] = element_entity
 
-    def get_element_entity(self, dim: int, tag: int) -> ElementEntity:
-        """Get element entity based on dimension `dim` and tag `tag`."""
-        return self.element_entities_[(dim, tag)]
+    def get_element_entity(
+        self,
+        dim: int,
+        tag: int,
+        element_type: int | None = None,
+    ) -> ElementEntity:
+        """Get one element block by entity and optionally element type.
+
+        The two-argument form is retained for compatibility and succeeds when
+        exactly one element type exists for ``(dim, tag)``. Mixed entities require
+        ``element_type`` to avoid returning an arbitrary block.
+        """
+        if element_type is not None:
+            return self.element_entities_[(dim, tag, int(element_type))]
+
+        matches = [
+            entity
+            for (entity_dim, entity_tag, _), entity in self.element_entities_.items()
+            if entity_dim == dim and entity_tag == tag
+        ]
+        if len(matches) == 1:
+            return matches[0]
+        if not matches:
+            raise KeyError((dim, tag))
+
+        available_types = ", ".join(
+            str(entity.get_element_type()) for entity in matches
+        )
+        raise KeyError(
+            f"Element entity ({dim}, {tag}) is ambiguous; provide element_type. "
+            f"Available element types: {available_types}"
+        )
 
     def get_element_entities(self) -> list[ElementEntity]:
-        """Get all element entities as dictionary."""
+        """Get all element blocks in parser order."""
         return self.element_entities_.values()
 
     def set_physical_name(self, dimension: int, tag: int, name: str):

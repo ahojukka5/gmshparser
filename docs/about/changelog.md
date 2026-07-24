@@ -50,6 +50,8 @@ semantic versioning.
 - made section parsers validate declared record counts and consume their own
   `$End...` markers
 - made legacy `parse()` and modern `read()` expose the same parser error types
+- made legacy element-block lookup accept an optional element type while
+  retaining two-argument lookup for unambiguous entities
 - exported modern value and collection types at package level while retaining
   `gmshparser.Mesh` as the original compatibility class
 - made visualization helpers accept both the modern `read()` model and the
@@ -70,6 +72,8 @@ semantic versioning.
 
 ### Fixed
 
+- preserved multiple element-type blocks on the same MSH 1.x or 2.x entity
+  instead of overwriting all but the last type
 - removed parser-side failure printing to stdout
 - rejected binary MSH files before attempting to parse ASCII sections
 - reported truncated and malformed records as contextual parser errors instead of
