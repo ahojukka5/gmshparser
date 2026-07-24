@@ -8,9 +8,7 @@ from typing import Any
 try:
     import numpy as np
     from numpy.typing import DTypeLike, NDArray
-except (
-    ModuleNotFoundError
-) as error:  # pragma: no cover - exercised by package smoke tests
+except ModuleNotFoundError as error:  # pragma: no cover
     raise ModuleNotFoundError(
         "NumPy support is optional; install it with 'pip install gmshparser[numpy]'"
     ) from error
