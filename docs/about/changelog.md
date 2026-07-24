@@ -31,6 +31,10 @@ semantic versioning.
   original node tags, node entity keys, and element-type-specific cell blocks
 - zero-based NumPy connectivity with original Gmsh node and element tags retained
   for round-trip identification
+- structured `GmshError` and `ParseError` hierarchy with source filename, line
+  number, section, and offending line attributes
+- explicit errors for unsupported versions, binary input, unexpected EOF,
+  malformed sections, nodes, elements, connectivity, and unknown element types
 - separate Cartesian and parametric node coordinates
 - PEP 621 console-script metadata for the installed `gmshparser` command
 - `gmshparser --version` support
@@ -43,6 +47,9 @@ semantic versioning.
   `Element.type` as an alias
 - unified MSH 1.x, 2.x, and 4.x dimension and connectivity validation around the
   centralized element registry
+- made section parsers validate declared record counts and consume their own
+  `$End...` markers
+- made legacy `parse()` and modern `read()` expose the same parser error types
 - exported modern value and collection types at package level while retaining
   `gmshparser.Mesh` as the original compatibility class
 - made visualization helpers accept both the modern `read()` model and the
@@ -63,6 +70,10 @@ semantic versioning.
 
 ### Fixed
 
+- removed parser-side failure printing to stdout
+- rejected binary MSH files before attempting to parse ASCII sections
+- reported truncated and malformed records as contextual parser errors instead of
+  leaking incidental `IndexError` and conversion failures
 - synchronized `gmshparser.__version__` with package version 0.3.1
 - restored the packaged CLI entry point in `pyproject.toml`
 - removed incorrect claims that binary MSH files or Git LFS are supported
