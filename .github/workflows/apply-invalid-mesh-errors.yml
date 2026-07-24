@@ -25,44 +25,43 @@ jobs:
           path = Path("gmshparser/api.py")
           text = path.read_text()
 
-          old = '''from .element_types import ElementFamily, ElementType, ElementTypeInfo
-          from .main_parser import MainParser
-          '''
-          new = '''from .element_types import ElementFamily, ElementType, ElementTypeInfo
-          from .errors import InvalidMeshError
-          from .main_parser import MainParser
-          '''
-          if old not in text:
-              raise SystemExit("api import target not found")
-          text = text.replace(old, new, 1)
+          import_line = "from .element_types import ElementFamily, ElementType, ElementTypeInfo\n"
+          if "from .errors import InvalidMeshError\n" not in text:
+              if import_line not in text:
+                  raise SystemExit("api import target not found")
+              text = text.replace(
+                  import_line,
+                  import_line + "from .errors import InvalidMeshError\n",
+                  1,
+              )
 
           old = '''                    raise ValueError(
                               f"Node {legacy_node.get_tag()} has fewer than three coordinates"
-                          )
-          '''
+                          )'''
           new = '''                    raise InvalidMeshError(
                               f"Node {legacy_node.get_tag()} has fewer than three coordinates",
                               filename=mesh.get_name(),
-                          )
-          '''
-          if old not in text:
+                          )'''
+          if old in text:
+              text = text.replace(old, new, 1)
+          elif "fewer than three coordinates" in text and "raise InvalidMeshError" not in text:
               raise SystemExit("node validation target not found")
-          text = text.replace(old, new, 1)
 
           old = '''                        raise ValueError(
                                   f"Element {legacy_element.get_tag()} references "
                                   f"unknown node {node_tag}"
-                              )
-          '''
+                              )'''
           new = '''                        raise InvalidMeshError(
                                   f"Element {legacy_element.get_tag()} references "
                                   f"unknown node {node_tag}",
                                   filename=mesh.get_name(),
-                              )
-          '''
-          if old not in text:
+                              )'''
+          if old in text:
+              text = text.replace(old, new, 1)
+          elif "references " in text and "unknown node" in text and text.count("raise InvalidMeshError") < 2:
               raise SystemExit("element validation target not found")
-          path.write_text(text.replace(old, new, 1))
+
+          path.write_text(text)
           PY
           uv run --no-sync ruff format gmshparser/api.py
       - name: Commit patch
