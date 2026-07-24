@@ -139,6 +139,30 @@ domain = mesh.physical_group(2, dimension=3)
 [Pythonic API guide](https://ahojukka5.github.io/gmshparser/user-guide/pythonic-api/)
 for the complete model.
 
+## NumPy interoperability
+
+NumPy support is optional:
+
+```bash
+uv add "gmshparser[numpy]"
+```
+
+Convert the modern mesh into detached array data:
+
+```python
+import gmshparser.numpy as gnp
+from gmshparser import ElementType
+
+arrays = gnp.to_numpy(mesh)
+triangles = arrays.cells[ElementType.TRIANGLE]
+triangle_points = arrays.points[triangles.connectivity]
+triangle_node_tags = arrays.cell_node_tags(ElementType.TRIANGLE)
+```
+
+Cell connectivity contains zero-based rows into `arrays.points`. Original Gmsh
+node tags, element tags, and entity keys remain available alongside the arrays.
+Mixed meshes are represented as rectangular cell blocks grouped by element type.
+
 ## Compatibility API
 
 Existing applications using the original mutable `get_*` / `set_*` model can
