@@ -4,15 +4,19 @@ from .abstract_parser import AbstractParser
 from .elements_parser import ElementsParser
 from .elements_parser_v1 import ElementsParserV1
 from .elements_parser_v2 import ElementsParserV2
+from .entities_parser import EntitiesParser
 from .mesh import Mesh
 from .mesh_format_parser import MeshFormatParser
 from .nodes_parser import NodesParser
 from .nodes_parser_v1 import NodesParserV1
 from .nodes_parser_v2 import NodesParserV2
+from .physical_names_parser import PhysicalNamesParser
 
 # Default parsers for MSH 4.x format
 DEFAULT_PARSERS_V4 = [
     MeshFormatParser,
+    PhysicalNamesParser,
+    EntitiesParser,
     NodesParser,
     ElementsParser,
 ]
@@ -20,6 +24,7 @@ DEFAULT_PARSERS_V4 = [
 # Default parsers for MSH 2.x format
 DEFAULT_PARSERS_V2 = [
     MeshFormatParser,
+    PhysicalNamesParser,
     NodesParserV2,
     ElementsParserV2,
 ]
@@ -74,17 +79,13 @@ class MainParser(AbstractParser):
         for line in io:
             line = line.strip()
 
-            # Check for MSH 1.0 format (starts with $NOD instead of $MeshFormat)
             if line == "$NOD" and not self.version_detected:
-                # Set version to 1.0
                 mesh.set_version(1.0)
                 self.version_detected = True
 
-                # Select MSH 1.0 parsers
                 if self.parsers is None:
                     self.parsers = DEFAULT_PARSERS_V1
 
-                # Parse the $NOD section
                 try:
                     NodesParserV1.parse(mesh, io)
                 except Exception:
@@ -92,13 +93,11 @@ class MainParser(AbstractParser):
                     raise
                 continue
 
-            # Handle MeshFormat for MSH 2.x and 4.x
             if line == "$MeshFormat" and not self.version_detected:
                 try:
                     MeshFormatParser.parse(mesh, io)
                     self.version_detected = True
 
-                    # Select parsers based on detected version if not explicitly set
                     if self.parsers is None:
                         self.parsers = self._get_parsers_for_version(mesh)
 
@@ -107,7 +106,6 @@ class MainParser(AbstractParser):
                     raise
                 continue
 
-            # Then, handle other sections with version-specific parsers
             if self.parsers:
                 for parser in self.parsers:
                     if parser.get_section_name() == line:
@@ -144,9 +142,8 @@ class MainParser(AbstractParser):
 
         if major == 1:
             return DEFAULT_PARSERS_V1
-        elif major == 2:
+        if major == 2:
             return DEFAULT_PARSERS_V2
-        elif major == 4:
+        if major == 4:
             return DEFAULT_PARSERS_V4
-        else:
-            raise ValueError(f"Unsupported MSH format version: {version}")
+        raise ValueError(f"Unsupported MSH format version: {version}")
