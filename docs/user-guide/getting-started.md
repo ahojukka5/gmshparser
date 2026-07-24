@@ -1,69 +1,73 @@
 # Getting Started
 
-Welcome to gmshparser! This guide will help you get started with parsing Gmsh mesh files in Python.
+gmshparser is a lightweight Python library for reading ASCII Gmsh `.msh`
+files. It parses the mesh into objects representing nodes, elements, and their
+entities.
 
-## What is gmshparser?
+## Requirements
 
-gmshparser is a lightweight Python library for reading Gmsh `.msh` files. It focuses on doing one thing well: parsing mesh files with a clean, simple API.
+- Python 3.12 or newer
+- no runtime dependencies for parsing
+- matplotlib only for the optional visualization examples
 
-## Why gmshparser?
+## Supported files
 
-- **No external dependencies**: Pure Python implementation
-- **Universal format support**: Works with MSH 1.0 through 4.1
-- **Automatic detection**: Detects file format version automatically
-- **Well tested**: 100% test coverage with 34+ test cases
-- **Easy to use**: Simple, intuitive API
+The parser detects these MSH versions automatically:
 
-## What can you do with gmshparser?
+- 1.0
+- 2.0, 2.1, and 2.2
+- 4.0 and 4.1
 
-- Parse Gmsh mesh files of any supported version
-- Extract nodes and their coordinates
-- Extract elements and their connectivity
-- Access physical groups and entities
-- Export mesh data for other FEM codes
-- Visualize 2D meshes using matplotlib
+Only ASCII MSH files are supported. See [Supported Formats](supported-formats.md)
+for details and limitations.
 
-## System Requirements
+## Install
 
-- Python 3.8.1 or later
-- No external dependencies required for core functionality
-- matplotlib (optional, for visualization)
+```bash
+uv add gmshparser
+```
 
-## Next Steps
+or:
 
-1. [Install gmshparser](installation.md)
-2. [Learn basic usage](basic-usage.md)
-3. [Try the command-line interface](cli.md)
-4. [Visualize your meshes](visualization.md)
+```bash
+pip install gmshparser
+```
 
-## Quick Example
-
-Here's a simple example to get you started:
+## Parse a mesh
 
 ```python
 import gmshparser
 
-# Parse a mesh file
-mesh = gmshparser.parse("my_mesh.msh")
-
-# Print mesh information
-print(f"Mesh version: {mesh.get_version()}")
-print(f"Number of nodes: {mesh.get_number_of_nodes()}")
-print(f"Number of elements: {mesh.get_number_of_elements()}")
-
-# Access first node
-for entity in mesh.get_node_entities():
-    for node in entity.get_nodes():
-        print(f"First node: {node.get_tag()} at {node.get_coordinates()}")
-        break
-    break
+mesh = gmshparser.parse("mesh.msh")
+print(f"MSH version: {mesh.get_version()}")
+print(f"Nodes: {mesh.get_number_of_nodes()}")
+print(f"Elements: {mesh.get_number_of_elements()}")
 ```
 
-## Getting Help
+## Inspect nodes
 
-If you encounter issues or have questions:
+```python
+for entity in mesh.get_node_entities():
+    for node in entity.get_nodes():
+        print(node.get_tag(), node.get_coordinates())
+```
 
-- Check the [API Reference](../api/overview.md)
-- Review [examples in the repository](https://github.com/ahojukka5/gmshparser/tree/master/examples)
-- [Open an issue on GitHub](https://github.com/ahojukka5/gmshparser/issues)
-- Contact the author: <ahojukka5@gmail.com>
+## Inspect elements
+
+```python
+for entity in mesh.get_element_entities():
+    element_type = entity.get_element_type()
+    for element in entity.get_elements():
+        print(element.get_tag(), element_type, element.get_connectivity())
+```
+
+## Next steps
+
+1. [Installation and development setup](installation.md)
+2. [Basic API usage](basic-usage.md)
+3. [Command-line interface](cli.md)
+4. [Visualization helpers](visualization.md)
+5. [Repository test meshes](https://github.com/ahojukka5/gmshparser/tree/master/testdata)
+
+For bugs or unsupported files, open an issue and attach the smallest mesh that
+reproduces the problem.
