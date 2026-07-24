@@ -1,14 +1,34 @@
 # Architecture
 
-gmshparser is a read-only parser built around a shared mesh model and separate
-section parsers for the supported MSH version families.
+gmshparser separates parsing from the recommended public data model. Section
+parsers continue to populate the original mutable compatibility model, and the
+modern API converts that result into immutable Python value objects.
 
 ## Parsing flow
 
-`gmshparser.parse(filename)` creates a `Mesh`, opens the file in text mode, and
-calls `MainParser.parse(mesh, stream)`. The populated `Mesh` is then returned.
-Because files are opened as text, the current implementation supports ASCII MSH
+Both public entry points use the same section parsers:
+
+```text
+ASCII MSH stream
+      │
+      ▼
+MainParser + version-specific section parsers
+      │
+      ▼
+mutable compatibility Mesh
+      ├──────────────► gmshparser.parse()
+      │
+      └─ conversion ─► gmshparser.read() / gmshparser.api.Mesh
+```
+
+`gmshparser.parse(filename)` returns the mutable compatibility model directly.
+`gmshparser.read(source)` accepts a path or open text stream, runs the same
+parsers, and converts the populated model into the immutable modern model.
+
+Because inputs are read in text mode, the implementation supports ASCII MSH
 files only.
+
+## Version routing
 
 `MainParser` detects the format and chooses one of these parser lists:
 
@@ -23,25 +43,47 @@ A leading `$NOD` selects MSH 1.0. `$MeshFormat` is parsed and validated for MSH
 the V4 parsers.
 
 The main loop dispatches registered section headers to their parser. Optional
-sections without a registered parser are not retained by the data model.
+sections without a registered parser are not retained.
 
-## Data model
+## Compatibility model
 
 ```text
-Mesh
+mesh.Mesh
   ├─ NodeEntity[]
   │    └─ Node[]
   └─ ElementEntity[]
        └─ Element[]
 ```
 
-`Mesh` stores format metadata, aggregate counts, tag ranges, and entity lists.
-A `Node` stores a tag and coordinates. A `NodeEntity` groups nodes. An `Element`
-stores a tag and connectivity. An `ElementEntity` groups elements with a shared
-dimension, entity tag, and Gmsh element type.
+This mutable model closely follows parser and MSH block structure. It stores
+aggregate counts, tag ranges, and uses explicit `get_*` and `set_*` methods. It
+is retained to avoid breaking existing applications and remains the target that
+section parsers populate.
 
-Legacy and flat formats are normalized into the same entity-based API used for
-MSH 4.x.
+## Modern public model
+
+```text
+api.Mesh
+  ├─ nodes: NodeCollection
+  ├─ elements: ElementCollection
+  ├─ node_entities: EntityCollection[NodeEntity]
+  └─ element_entities: EntityCollection[ElementEntity]
+```
+
+The conversion in `api.Mesh.from_legacy()` produces immutable dataclass value
+objects. Flat node and element collections are the default access path, while
+each value retains its entity dimension and entity tag.
+
+Collection conventions are intentional:
+
+- iteration yields value objects
+- integer indexing uses a globally unique Gmsh tag
+- entity indexing uses `(dimension, tag)`
+- filtering returns a new immutable collection
+- counts come from `len(collection)` rather than duplicated metadata
+
+The compatibility and modern models are separate so parser mutation cannot leak
+into application-facing values.
 
 ## Version management
 
@@ -72,24 +114,23 @@ called.
 A new section normally requires:
 
 1. an `AbstractParser` implementation
-2. data-model changes when values must be exposed
-3. registration in each applicable version-specific parser list
-4. a small fixture and focused tests
-5. updated user and API documentation
-
-The public `gmshparser.parse()` uses the default registries. `MainParser` also
-accepts an explicit parser list for specialized use.
+2. compatibility-model changes for parser storage
+3. conversion changes in `api.Mesh.from_legacy()` for modern exposure
+4. registration in each applicable version-specific parser list
+5. a small fixture and focused tests for both public entry points
+6. updated user and API documentation
 
 ## Helpers
 
-`helpers.py` contains line-parsing utilities and visualization adapters.
-`get_triangles()` and `get_quads()` return zero-based plotting connectivity.
-`get_elements_2d()` returns a dictionary that preserves original Gmsh node tags.
+`helpers.py` contains line-parsing utilities and visualization adapters. The
+visualization functions use a small duck-typed adapter layer and therefore
+accept both public mesh models.
 
 ## Constraints
 
 - the complete mesh is loaded into memory
-- lazy loading and streaming are not implemented
+- the modern API currently performs an eager conversion after parsing
+- lazy loading and streaming iteration are not implemented
 - the library reads but does not write meshes
 - binary data and many optional MSH sections are not represented
 
