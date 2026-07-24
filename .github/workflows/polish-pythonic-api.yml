@@ -1,20 +1,17 @@
 name: Polish Pythonic API
 
 on:
-  pull_request:
-    branches: [master]
+  push:
+    branches: [agent/pythonic-api]
 
 permissions:
   contents: write
 
 jobs:
   polish:
-    if: github.head_ref == 'agent/pythonic-api'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-        with:
-          ref: ${{ github.head_ref }}
 
       - name: Install uv and Python
         uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
@@ -72,6 +69,4 @@ __all__ = [
             exit 0
           fi
           git commit -m "Polish Pythonic API exports"
-          git push origin HEAD:${{ github.head_ref }}
-
-# This second commit ensures the PR event sees the workflow from its parent.
+          git push origin HEAD:agent/pythonic-api
