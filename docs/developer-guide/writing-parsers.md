@@ -145,11 +145,11 @@ Avoid silently inventing defaults for malformed mandatory fields.
 - cover each applicable MSH version family
 - add malformed-input tests when the parser performs validation
 - ensure an unrelated optional section remains harmless
-- run Black, flake8, pytest, and the documentation build
+- run Ruff, pytest, and the documentation build
 
 ```bash
-uv run black gmshparser tests examples --check
-uv run flake8 gmshparser tests
+uv run ruff format --check gmshparser tests examples
+uv run ruff check gmshparser tests examples
 uv run pytest
 uv sync --group docs
 uv run mkdocs build
