@@ -8,6 +8,15 @@ semantic versioning.
 
 ### Added
 
+- Pythonic `gmshparser.read()` entry point for paths and open text streams
+- immutable modern mesh, node, element, entity, collection, and version value
+  objects in `gmshparser.api`
+- flat tag-addressable node and element collections with filtering by element
+  type, dimension, entity, and parametric status
+- direct element-to-node object relationships
+- unified `mesh.entities` view combining legacy node and element blocks
+- descriptive `ElementType` integer enum with support for unnamed numeric types
+- separate Cartesian and parametric node coordinates
 - PEP 621 console-script metadata for the installed `gmshparser` command
 - `gmshparser --version` support
 - wheel and source-distribution smoke tests for the installed CLI
@@ -15,6 +24,8 @@ semantic versioning.
 
 ### Changed
 
+- made visualization helpers accept both the modern `read()` model and the
+  compatibility `parse()` model
 - corrected README, user-guide, API, architecture, testing, and test-data
   documentation to match the current implementation
 - documented Python 3.12+, ASCII-only parsing, version-specific parser routing,

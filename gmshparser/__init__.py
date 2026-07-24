@@ -1,15 +1,20 @@
-from . import helpers
+from . import api, helpers
+from .api import ElementType, Version, read
 from .main_parser import MainParser
 from .mesh import Mesh
 from .version_manager import MshFormatVersion, VersionManager
 
 __all__ = [
+    "ElementType",
     "MainParser",
     "Mesh",
     "MshFormatVersion",
+    "Version",
     "VersionManager",
+    "api",
     "helpers",
     "parse",
+    "read",
 ]
 
 __version__ = "0.3.1"
@@ -17,20 +22,21 @@ __author__ = "Jukka Aho <ahojukka5@gmail.com>"
 
 
 def parse(filename: str) -> Mesh:
-    """Parse an ASCII Gmsh MSH file and return a :class:`Mesh` object.
+    """Parse a file into the compatibility data model.
 
-    The file format version is detected automatically. Supported versions are
-    MSH 1.0, 2.0, 2.1, 2.2, 4.0, and 4.1.
+    The compatibility model preserves the original ``get_*`` and ``set_*`` API.
+    New code should normally use :func:`read`, which returns the modern,
+    immutable model from :mod:`gmshparser.api`.
 
     Parameters
     ----------
     filename : str
-        Path to the MSH file.
+        Path to an ASCII Gmsh MSH file.
 
     Returns
     -------
     Mesh
-        Parsed mesh containing nodes, elements, and format metadata.
+        Compatibility mesh containing parser-oriented entities.
 
     Raises
     ------

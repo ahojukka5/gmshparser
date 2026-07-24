@@ -8,18 +8,20 @@
 
 **A lightweight, dependency-free Python package for parsing ASCII Gmsh MSH files.**
 
-gmshparser reads supported [Gmsh](https://gmsh.info/) mesh formats into a
-consistent Python object model. The package focuses on parsing and inspection;
-it does not write meshes or support binary MSH files.
+gmshparser reads supported [Gmsh](https://gmsh.info/) mesh formats into a modern,
+immutable Python model. The original mutable parser-oriented model remains
+available for backward compatibility.
 
 ## Key features
 
 - MSH 1.0, 2.0, 2.1, 2.2, 4.0, and 4.1 support
 - automatic format-version detection
+- flat, tag-addressable node and element collections
+- filtering by element type, dimension, and entity tag
+- immutable Python value objects
 - no runtime dependencies
 - Python 3.12 or newer
-- Python API and command-line interface
-- optional matplotlib helpers for 2D meshes
+- command-line interface and optional matplotlib helpers
 
 ## Quick start
 
@@ -35,17 +37,22 @@ or:
 pip install gmshparser
 ```
 
-Parse a mesh:
+Read a mesh:
 
 ```python
 import gmshparser
 
-mesh = gmshparser.parse("mesh.msh")
-print(
-    f"Loaded {mesh.get_number_of_nodes()} nodes and "
-    f"{mesh.get_number_of_elements()} elements"
-)
+mesh = gmshparser.read("mesh.msh")
+print(f"Loaded {len(mesh.nodes)} nodes and {len(mesh.elements)} elements")
+
+for node in mesh.nodes:
+    print(node.tag, node.coordinates)
+
+triangles = mesh.elements.by_type(2)
 ```
+
+Existing applications may continue using `gmshparser.parse()` and the original
+`get_*` API.
 
 ## Supported formats
 
@@ -61,11 +68,12 @@ format-specific notes.
 ## Documentation
 
 - [Getting Started](user-guide/getting-started.md)
+- [Pythonic API](user-guide/pythonic-api.md)
 - [Basic Usage](user-guide/basic-usage.md)
 - [Command-line Interface](user-guide/cli.md)
 - [Visualization](user-guide/visualization.md)
-- [Contributing](developer-guide/contributing.md)
 - [API Reference](api/overview.md)
+- [Contributing](developer-guide/contributing.md)
 
 ## Project links
 

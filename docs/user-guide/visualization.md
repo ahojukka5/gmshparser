@@ -1,7 +1,8 @@
 # Visualization
 
 gmshparser itself has no plotting dependency. The helper functions in
-`gmshparser.helpers` prepare 2D mesh data for optional matplotlib use.
+`gmshparser.helpers` prepare 2D mesh data for optional matplotlib use and accept
+both modern `read()` meshes and compatibility `parse()` meshes.
 
 Install matplotlib:
 
@@ -24,7 +25,7 @@ into `X` and `Y`:
 import gmshparser
 import matplotlib.pyplot as plt
 
-mesh = gmshparser.parse("mesh.msh")
+mesh = gmshparser.read("mesh.msh")
 X, Y, triangles = gmshparser.helpers.get_triangles(mesh)
 
 plt.triplot(X, Y, triangles, color="black", linewidth=0.5)
@@ -32,7 +33,7 @@ plt.axis("equal")
 plt.show()
 ```
 
-Only three-node triangular elements (Gmsh type 2) are included.
+Only three-node triangular elements are included.
 
 ## Quadrilateral meshes
 
@@ -43,7 +44,7 @@ import gmshparser
 import matplotlib.pyplot as plt
 from matplotlib.patches import Polygon
 
-mesh = gmshparser.parse("quad_mesh.msh")
+mesh = gmshparser.read("quad_mesh.msh")
 X, Y, quads = gmshparser.helpers.get_quads(mesh)
 
 figure, axes = plt.subplots()
@@ -56,19 +57,19 @@ axes.set_aspect("equal")
 plt.show()
 ```
 
-Only four-node quadrilateral elements (Gmsh type 3) are included.
+Only four-node quadrilateral elements are included.
 
 ## Mixed triangle and quadrilateral meshes
 
-`get_elements_2d()` has a different return shape: it returns a dictionary and
-retains original Gmsh node tags in the connectivity lists.
+`get_elements_2d()` returns a dictionary and retains original Gmsh node tags in
+the connectivity lists.
 
 ```python
 import gmshparser
 import matplotlib.pyplot as plt
 from matplotlib.patches import Polygon
 
-mesh = gmshparser.parse("mixed_mesh.msh")
+mesh = gmshparser.read("mixed_mesh.msh")
 data = gmshparser.helpers.get_elements_2d(mesh)
 
 nodes = data["nodes"]
@@ -96,12 +97,30 @@ The triangle helper connectivity refers to positions in `X` and `Y`, not to
 original Gmsh node tags. Label the plotted positions accordingly:
 
 ```python
-for index, (x, y) in enumerate(zip(X, Y)):
+for index, (x, y) in enumerate(zip(X, Y, strict=True)):
     axes.text(x, y, str(index))
 ```
 
 To preserve original node tags, use `get_elements_2d()` and its `nodes`
 dictionary instead.
+
+## Filtering before plotting
+
+The modern API can select elements before custom plotting:
+
+```python
+from gmshparser.api import ElementType
+
+surface_triangles = mesh.elements.where(
+    element_type=ElementType.TRIANGLE,
+    dimension=2,
+)
+for triangle in surface_triangles:
+    coordinates = [node.coordinates[:2] for node in triangle]
+```
+
+The convenience helpers currently operate on the complete mesh. Direct
+collection filtering is useful when plotting only selected entities.
 
 ## Large meshes
 

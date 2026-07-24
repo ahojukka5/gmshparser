@@ -1,50 +1,40 @@
-# Mesh API
+# Compatibility Mesh API
+
+This page documents the original mutable parser-oriented model returned by
+`gmshparser.parse()`. New code should normally use `gmshparser.read()` and the
+[modern API](modern.md).
 
 ::: gmshparser.mesh.Mesh
     options:
       show_source: true
       heading_level: 2
 
-## Usage Examples
-
-### Basic Information
+## Usage examples
 
 ```python
+import gmshparser
+
 mesh = gmshparser.parse("mesh.msh")
 
-# Version info
 version = mesh.get_version()
-is_ascii = mesh.is_ascii()
-
-# Counts
+is_ascii = mesh.get_ascii()
 num_nodes = mesh.get_number_of_nodes()
 num_elements = mesh.get_number_of_elements()
-num_node_entities = mesh.get_number_of_node_entities()
-num_element_entities = mesh.get_number_of_element_entities()
-
-# Tag ranges
-min_node_tag = mesh.get_min_node_tag()
-max_node_tag = mesh.get_max_node_tag()
-min_element_tag = mesh.get_min_element_tag()
-max_element_tag = mesh.get_max_element_tag()
+node_entities = mesh.get_node_entities()
+element_entities = mesh.get_element_entities()
 ```
 
-### Accessing Data
+The compatibility API is retained for existing applications and for low-level
+parser development. It remains mutable and mirrors the internal MSH entity-block
+structure.
+
+Equivalent modern access is considerably flatter:
 
 ```python
-# Get all node entities
-node_entities = mesh.get_node_entities()
+mesh = gmshparser.read("mesh.msh")
 
-# Get all element entities
-element_entities = mesh.get_element_entities()
-
-# Get mesh name (filename)
-name = mesh.get_name()
+version = mesh.version
+is_ascii = mesh.is_ascii
+num_nodes = len(mesh.nodes)
+num_elements = len(mesh.elements)
 ```
-
-## Related Classes
-
-- [Node](../api/overview.md#node) - Individual node
-- [NodeEntity](../api/overview.md#nodeentity) - Group of nodes
-- [Element](../api/overview.md#element) - Individual element
-- [ElementEntity](../api/overview.md#elemententity) - Group of elements

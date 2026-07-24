@@ -62,6 +62,7 @@ nav:
   - User Guide:
       - Getting Started: user-guide/getting-started.md
       - Installation: user-guide/installation.md
+      - Pythonic API: user-guide/pythonic-api.md
       - Basic Usage: user-guide/basic-usage.md
       - Command Line Interface: user-guide/cli.md
       - Visualization: user-guide/visualization.md
@@ -74,7 +75,8 @@ nav:
       - Test Results: developer-guide/test-results.md
   - API Reference:
       - Overview: api/overview.md
-      - Mesh: api/mesh.md
+      - Modern API: api/modern.md
+      - Compatibility Mesh: api/mesh.md
       - Parsers: api/parsers.md
       - Helpers: api/helpers.md
   - About:
