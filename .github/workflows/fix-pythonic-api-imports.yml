@@ -1,0 +1,41 @@
+name: Fix Pythonic API imports
+
+on:
+  pull_request:
+    branches: [master]
+
+permissions:
+  contents: write
+
+jobs:
+  fix:
+    if: github.head_ref == 'agent/pythonic-api'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.head_ref }}
+
+      - name: Install uv and Python
+        uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
+        with:
+          version: "0.11.32"
+          python-version: "3.12"
+
+      - name: Install quality dependencies
+        run: uv sync --no-default-groups --group lint
+
+      - name: Fix import ordering
+        run: uv run --no-sync ruff check --select I --fix tests/test_pythonic_api.py
+
+      - name: Commit import ordering
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add tests/test_pythonic_api.py
+          if git diff --cached --quiet; then
+            echo "No import changes"
+            exit 0
+          fi
+          git commit -m "Fix Pythonic API test import ordering"
+          git push origin HEAD:${{ github.head_ref }}
