@@ -1,14 +1,13 @@
 site_name: gmshparser
-site_description: A lightweight Python package for parsing Gmsh .msh mesh files
+site_description: A lightweight Python package for parsing ASCII Gmsh MSH files
 site_author: Jukka Aho
-site_url: https://gmshparser.readthedocs.io
+site_url: https://ahojukka5.github.io/gmshparser/
 repo_url: https://github.com/ahojukka5/gmshparser
 repo_name: ahojukka5/gmshparser
 
 theme:
   name: material
   palette:
-    # Light mode
     - media: "(prefers-color-scheme: light)"
       scheme: default
       primary: indigo
@@ -16,7 +15,6 @@ theme:
       toggle:
         icon: material/brightness-7
         name: Switch to dark mode
-    # Dark mode
     - media: "(prefers-color-scheme: dark)"
       scheme: slate
       primary: indigo
@@ -39,7 +37,7 @@ plugins:
       handlers:
         python:
           options:
-            docstring_style: google
+            docstring_style: numpy
             show_source: true
             show_root_heading: true
             show_symbol_type_heading: true
