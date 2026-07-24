@@ -33,7 +33,7 @@ plt.axis("equal")
 plt.show()
 ```
 
-Only three-node triangular elements (Gmsh type 2) are included.
+Only three-node triangular elements are included.
 
 ## Quadrilateral meshes
 
@@ -57,7 +57,7 @@ axes.set_aspect("equal")
 plt.show()
 ```
 
-Only four-node quadrilateral elements (Gmsh type 3) are included.
+Only four-node quadrilateral elements are included.
 
 ## Mixed triangle and quadrilateral meshes
 
@@ -109,9 +109,14 @@ dictionary instead.
 The modern API can select elements before custom plotting:
 
 ```python
-surface_triangles = mesh.elements.where(element_type=2, dimension=2)
+from gmshparser.api import ElementType
+
+surface_triangles = mesh.elements.where(
+    element_type=ElementType.TRIANGLE,
+    dimension=2,
+)
 for triangle in surface_triangles:
-    coordinates = [mesh.nodes[tag].coordinates[:2] for tag in triangle]
+    coordinates = [node.coordinates[:2] for node in triangle]
 ```
 
 The convenience helpers currently operate on the complete mesh. Direct
