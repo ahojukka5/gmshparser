@@ -1,417 +1,97 @@
 # Architecture
 
-This document explains gmshparser's internal architecture and design decisions.
+gmshparser is a read-only parser built around a shared mesh model and separate
+section parsers for the supported MSH version families.
 
-## Design Philosophy
+## Parsing flow
 
-gmshparser follows these principles:
+`gmshparser.parse(filename)` creates a `Mesh`, opens the file in text mode, and
+calls `MainParser.parse(mesh, stream)`. The populated `Mesh` is then returned.
+Because files are opened as text, the current implementation supports ASCII MSH
+files only.
 
-1. **Single responsibility**: Parse Gmsh mesh files, nothing more
-2. **Zero dependencies**: Pure Python, no external dependencies
-3. **Extensibility**: Easy to add new parsers for new sections
-4. **Version agnostic**: Same API regardless of MSH version
-5. **Test-driven**: 100% test coverage goal
-
-## System Overview
-
-```
-┌─────────────┐
-│  User Code  │
-└──────┬──────┘
-       │ gmshparser.parse("mesh.msh")
-       ▼
-┌─────────────┐
-│ MainParser  │ ◄─── Coordinates parsing
-└──────┬──────┘
-       │ Detects version
-       ├─► MSH 1.0 → V1 Parsers
-       ├─► MSH 2.x → V2 Parsers
-       └─► MSH 4.x → V4 Parsers
-       ▼
-┌─────────────┐
-│    Mesh     │ ◄─── Data model
-└─────────────┘
-```
-
-## Core Components
-
-### 1. Mesh Data Model
-
-The `Mesh` class is the central data structure:
+`MainParser` detects the format and chooses one of these parser lists:
 
 ```python
-class Mesh:
-    - name: str
-    - version: float
-    - node_entities: List[NodeEntity]
-    - element_entities: List[ElementEntity]
-    # ... accessors and methods
+DEFAULT_PARSERS_V1 = [NodesParserV1, ElementsParserV1]
+DEFAULT_PARSERS_V2 = [MeshFormatParser, NodesParserV2, ElementsParserV2]
+DEFAULT_PARSERS_V4 = [MeshFormatParser, NodesParser, ElementsParser]
 ```
 
-**Node hierarchy:**
+A leading `$NOD` selects MSH 1.0. `$MeshFormat` is parsed and validated for MSH
+2.x and 4.x. MSH 2.0, 2.1, and 2.2 share the V2 parsers; MSH 4.0 and 4.1 share
+the V4 parsers.
 
-```
+The main loop dispatches registered section headers to their parser. Optional
+sections without a registered parser are not retained by the data model.
+
+## Data model
+
+```text
 Mesh
-  └─► NodeEntity (dimension, tag, parametric)
-        └─► Node (tag, coordinates)
+  ├─ NodeEntity[]
+  │    └─ Node[]
+  └─ ElementEntity[]
+       └─ Element[]
 ```
 
-**Element hierarchy:**
+`Mesh` stores format metadata, aggregate counts, tag ranges, and entity lists.
+A `Node` stores a tag and coordinates. A `NodeEntity` groups nodes. An `Element`
+stores a tag and connectivity. An `ElementEntity` groups elements with a shared
+dimension, entity tag, and Gmsh element type.
 
-```
-Mesh
-  └─► ElementEntity (dimension, tag, element_type)
-        └─► Element (tag, connectivity)
-```
+Legacy and flat formats are normalized into the same entity-based API used for
+MSH 4.x.
 
-### 2. Parser System
+## Version management
 
-#### Abstract Parser
+`MshFormatVersion` enumerates MSH 1.0, 2.0, 2.1, 2.2, 4.0, and 4.1.
+`VersionManager` parses version strings, validates support, and provides helpers
+for the 1.x, 2.x, and 4.x families.
 
-All parsers inherit from `AbstractParser`:
+## Parser interface
+
+Section parsers implement `AbstractParser`:
 
 ```python
 class AbstractParser:
     @staticmethod
-    def get_section_name() -> str:
-        """Return section name like '$MeshFormat'"""
-        pass
-    
-    @staticmethod
-    def parse(mesh: Mesh, io: TextIO) -> None:
-        """Parse section and populate mesh"""
-        pass
-```
-
-#### Parser Registry
-
-The `MainParser` maintains a registry of parsers:
-
-```python
-DEFAULT_PARSERS = [
-    MeshFormatParser,
-    NodesParser,
-    ElementsParser,
-]
-```
-
-When a section is encountered (e.g., `$Nodes`), `MainParser` finds the appropriate parser and delegates.
-
-### 3. Version Manager
-
-The `VersionManager` handles version detection and validation:
-
-```python
-class MSHVersion(Enum):
-    V1_0 = 1.0
-    V2_0 = 2.0
-    V2_1 = 2.1
-    V2_2 = 2.2
-    V4_0 = 4.0
-    V4_1 = 4.1
-```
-
-Functions:
-
-- `parse_version(version_str: str) -> float`
-- `is_supported(version: float) -> bool`
-- `validate_version(version: float) -> None`
-- `is_version_1(version: float) -> bool`
-- `is_version_2(version: float) -> bool`
-- `is_version_4(version: float) -> bool`
-
-## Parsing Flow
-
-### High-Level Flow
-
-```
-parse("mesh.msh")
-    │
-    ├─► Open file
-    │
-    ├─► Create Mesh object
-    │
-    ├─► MainParser.parse(mesh, file)
-    │     │
-    │     ├─► Detect version (first line)
-    │     │
-    │     ├─► Select parsers based on version
-    │     │
-    │     └─► For each section:
-    │           └─► Find matching parser
-    │               └─► Parser.parse(mesh, file)
-    │
-    └─► Return populated Mesh
-```
-
-### Version Detection
-
-```python
-# Read first line
-line = io.readline().strip()
-
-if line == "$MeshFormat":
-    # MSH 2.x or 4.x
-    version_line = io.readline().strip()
-    version = float(version_line.split()[0])
-elif line == "$NOD":
-    # MSH 1.0 (legacy)
-    version = 1.0
-else:
-    raise ValueError("Unknown format")
-```
-
-### Version-Specific Routing
-
-**MSH 1.0:**
-
-```python
-parsers = [
-    NodesParserV1,      # Parses $NOD section
-    ElementsParserV1,   # Parses $ELM section
-]
-```
-
-**MSH 2.x:**
-
-```python
-parsers = [
-    MeshFormatParser,   # Parses $MeshFormat
-    NodesParser,        # Parses $Nodes (V2 format)
-    ElementsParser,     # Parses $Elements (V2 format)
-]
-```
-
-**MSH 4.x:**
-
-```python
-parsers = [
-    MeshFormatParser,   # Parses $MeshFormat
-    NodesParser,        # Parses $Nodes (V4 format)
-    ElementsParser,     # Parses $Elements (V4 format)
-]
-```
-
-Note: MSH 4.x uses the same parser classes as MSH 2.x, but they handle the format differences internally.
-
-## Module Structure
-
-```
-gmshparser/
-├── __init__.py           # Public API: parse()
-├── mesh.py               # Mesh data model
-├── node.py               # Node class
-├── node_entity.py        # NodeEntity class
-├── element.py            # Element class
-├── element_entity.py     # ElementEntity class
-├── abstract_parser.py    # Parser base class
-├── main_parser.py        # Main parser coordinator
-├── version_manager.py    # Version detection/validation
-├── mesh_format_parser.py # $MeshFormat parser
-├── nodes_parser.py       # $Nodes parser (V2/V4)
-├── nodes_parser_v1.py    # $NOD parser (V1)
-├── nodes_parser_v2.py    # Specialized V2 $Nodes parser
-├── elements_parser.py    # $Elements parser (V2/V4)
-├── elements_parser_v1.py # $ELM parser (V1)
-├── elements_parser_v2.py # Specialized V2 $Elements parser
-├── helpers.py            # Utility functions
-└── cli.py                # Command-line interface
-```
-
-## Data Flow Example
-
-### Parsing MSH 4.1 File
-
-```
-File: mesh.msh (MSH 4.1)
-    │
-    ▼
-$MeshFormat
-4.1 0 8
-$EndMeshFormat
-    │
-    ├─► MeshFormatParser
-    │     └─► mesh.set_version(4.1)
-    │
-$Nodes
-1 6 1 6
-...
-$EndNodes
-    │
-    ├─► NodesParser
-    │     └─► Parse entity blocks
-    │           └─► Create NodeEntity
-    │                 └─► Add Node objects
-    │
-$Elements
-1 2 1 2
-...
-$EndElements
-    │
-    └─► ElementsParser
-          └─► Parse entity blocks
-                └─► Create ElementEntity
-                      └─► Add Element objects
-```
-
-## Extension Points
-
-### Adding a New Parser
-
-To parse a new section (e.g., `$PhysicalNames`):
-
-1. **Create parser class:**
-
-```python
-class PhysicalNamesParser(AbstractParser):
-    @staticmethod
     def get_section_name():
-        return "$PhysicalNames"
-    
+        ...
+
     @staticmethod
-    def parse(mesh: Mesh, io: TextIO) -> None:
-        num_names = int(io.readline().strip())
-        for _ in range(num_names):
-            line = io.readline().strip().split()
-            dimension = int(line[0])
-            tag = int(line[1])
-            name = " ".join(line[2:]).strip('"')
-            # Store in mesh...
+    def parse(mesh, io):
+        ...
 ```
 
-2. **Register parser:**
+The stream is positioned immediately after the section header when `parse()` is
+called.
 
-```python
-# In main_parser.py
-DEFAULT_PARSERS = [
-    MeshFormatParser,
-    PhysicalNamesParser,  # ← Add here
-    NodesParser,
-    ElementsParser,
-]
-```
+## Adding section support
 
-3. **Test:**
+A new section normally requires:
 
-```python
-def test_physical_names_parser():
-    mesh = gmshparser.parse("mesh_with_physical_names.msh")
-    # Verify physical names were parsed...
-```
+1. an `AbstractParser` implementation
+2. data-model changes when values must be exposed
+3. registration in each applicable version-specific parser list
+4. a small fixture and focused tests
+5. updated user and API documentation
 
-### Adding Helper Functions
+The public `gmshparser.parse()` uses the default registries. `MainParser` also
+accepts an explicit parser list for specialized use.
 
-Helper functions for common operations go in `helpers.py`:
+## Helpers
 
-```python
-def get_quads(mesh: Mesh) -> Tuple[List[float], List[float], List[List[int]]]:
-    """Extract quadrilateral elements from mesh."""
-    # Implementation...
-```
+`helpers.py` contains line-parsing utilities and visualization adapters.
+`get_triangles()` and `get_quads()` return zero-based plotting connectivity.
+`get_elements_2d()` returns a dictionary that preserves original Gmsh node tags.
 
-## Performance Considerations
+## Constraints
 
-### Memory
+- the complete mesh is loaded into memory
+- lazy loading and streaming are not implemented
+- the library reads but does not write meshes
+- binary data and many optional MSH sections are not represented
 
-- **Lazy loading**: Not implemented (all data loaded at once)
-- **Memory usage**: Proportional to mesh size
-- **Large meshes**: May require significant RAM
-
-### Speed
-
-- **File I/O**: Uses standard Python `open()`
-- **Parsing**: Simple string operations
-- **Bottleneck**: Usually file I/O, not parsing logic
-
-### Optimization Opportunities
-
-1. **Binary format support**: Faster parsing
-2. **Streaming**: Parse nodes/elements on-demand
-3. **Cython**: Compile performance-critical sections
-4. **NumPy**: Use arrays for coordinate storage
-
-## Testing Architecture
-
-### Test Structure
-
-```
-tests/
-├── test_mesh.py              # Mesh class
-├── test_node.py              # Node class
-├── test_element.py           # Element class
-├── test_mesh_format_parser.py # Format parser
-├── test_nodes_parser.py       # Nodes parser
-├── test_elements_parser.py    # Elements parser
-├── test_multi_version.py      # Version support
-├── test_version_manager.py    # Version detection
-├── test_helpers.py            # Helper functions
-└── test_cli.py                # CLI
-```
-
-### Test Data
-
-Located in `testdata/`:
-
-- Simple meshes for unit tests
-- Complex meshes from real-world use
-- Version-specific meshes (v1.0, v2.0, v4.1, etc.)
-
-## Design Decisions
-
-### Why No Dependencies?
-
-**Pros:**
-
-- Easy installation
-- No dependency conflicts
-- Portable and lightweight
-- Works in restricted environments
-
-**Cons:**
-
-- Can't use NumPy for faster array operations
-- No XML parsing (if needed for newer Gmsh features)
-
-**Decision**: Prioritize simplicity and portability.
-
-### Why Read-Only?
-
-**Rationale:**
-
-- Writing MSH files is complex and error-prone
-- Gmsh itself is better for mesh generation
-- Parser's job is to read, not write
-- Keeps codebase focused
-
-### Why Not Support Binary Format?
-
-**Reasons:**
-
-- Binary format is version-specific
-- Requires careful endianness handling
-- ASCII is "good enough" for most use cases
-- Can be added later if needed
-
-## Future Architecture Considerations
-
-### Potential Improvements
-
-1. **Pluggable parsers**: Allow users to register custom parsers
-2. **Streaming API**: For very large meshes
-3. **Binary support**: Faster parsing
-4. **Writer**: Mesh export functionality
-5. **NumPy integration**: Optional NumPy arrays for coordinates
-
-### Backward Compatibility
-
-All public API changes will:
-
-- Follow semantic versioning
-- Maintain backward compatibility for minor versions
-- Provide deprecation warnings before removal
-
-## Related Documentation
-
-- [Writing Parsers](writing-parsers.md)
-- [Testing Guide](testing.md)
-- [API Reference](../api/overview.md)
+See [Writing Parsers](writing-parsers.md), [Testing](testing.md), and the
+[API Reference](../api/overview.md).
