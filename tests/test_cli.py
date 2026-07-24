@@ -2,6 +2,9 @@ from gmshparser.cli import main
 from io import StringIO
 import os
 
+import pytest
+
+
 __content__ = """
 $MeshFormat
 4.1 0 8
@@ -51,11 +54,9 @@ def test_main(tmpdir):
     fh = tmpdir.join("mesh1.msh")
     fh.write(__content__.strip())
     filename = os.path.join(fh.dirname, fh.basename)
-    # We just check that there comes some print from functions to stdout
 
     output = StringIO()
     main([filename, "info"], output)
-    print(output.getvalue())
     assert len(output.getvalue()) > 100
 
     output = StringIO()
@@ -65,3 +66,11 @@ def test_main(tmpdir):
     output = StringIO()
     main([filename, "elements"], output)
     assert len(output.getvalue()) == 26
+
+
+def test_version(capsys):
+    with pytest.raises(SystemExit) as error:
+        main(["--version"])
+
+    assert error.value.code == 0
+    assert capsys.readouterr().out.strip() == "gmshparser 0.3.1"
