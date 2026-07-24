@@ -1,0 +1,33 @@
+name: Format direct modern builder
+
+on:
+  push:
+    branches: [direct-modern-builder]
+
+permissions:
+  contents: write
+
+jobs:
+  format:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: direct-modern-builder
+      - uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9
+        with:
+          version: "0.11.32"
+          python-version: "3.12"
+      - run: uv sync --no-default-groups --group lint
+      - run: uv run --no-sync ruff format gmshparser tests
+      - name: Commit formatting
+        run: |
+          if git diff --quiet; then
+            exit 0
+          fi
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add gmshparser tests
+          git commit -m "Format direct modern builder"
+          git push origin HEAD:direct-modern-builder
