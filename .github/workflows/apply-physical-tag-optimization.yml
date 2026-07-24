@@ -1,0 +1,109 @@
+name: Apply physical tag optimization
+
+on:
+  push:
+    branches: [direct-modern-builder]
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: direct-modern-builder
+      - name: Update block targets
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          mesh_path = Path("gmshparser/mesh.py")
+          mesh = mesh_path.read_text()
+          old = '''        for element_tag, connectivity in elements:
+              element = Element()
+              element.set_tag(element_tag)
+              element.set_connectivity(list(connectivity))
+              entity.add_element(element)
+          self.add_element_entity(entity)
+          '''
+          new = '''        for element_tag, connectivity, physical_tags in elements:
+              if physical_tags:
+                  self.set_element_physical_tags(element_tag, physical_tags)
+              element = Element()
+              element.set_tag(element_tag)
+              element.set_connectivity(list(connectivity))
+              entity.add_element(element)
+          self.add_element_entity(entity)
+          '''
+          if old not in mesh:
+              raise SystemExit("Mesh add_element_block snippet not found")
+          mesh_path.write_text(mesh.replace(old, new))
+
+          builder_path = Path("gmshparser/modern_builder.py")
+          builder = builder_path.read_text()
+          replacements = [
+              (
+                  'type RawElement = tuple[int, list[int]]\n',
+                  'type RawElement = tuple[int, list[int], tuple[int, ...]]\n',
+              ),
+              (
+                  '''            [
+                      (element.get_tag(), tuple(element.get_connectivity()))
+                      for element in element_entity.get_elements()
+                  ],
+              )
+              ''',
+                  '''            [
+                      (
+                          element.get_tag(),
+                          list(element.get_connectivity()),
+                          self.get_element_physical_tags(element.get_tag()),
+                      )
+                      for element in element_entity.get_elements()
+                  ],
+              )
+              ''',
+              ),
+              (
+                  '''            for element_tag, node_tags in raw_elements:
+                  if element_tag in element_tags:
+              ''',
+                  '''            for element_tag, node_tags, record_physical_tags in raw_elements:
+                  if element_tag in element_tags:
+              ''',
+              ),
+              (
+                  '''                physical_tags = self.get_element_physical_tags(element_tag)
+                  if not physical_tags:
+                      physical_tags = entity_physical_tags
+              ''',
+                  '''                physical_tags = record_physical_tags
+                  if not physical_tags:
+                      physical_tags = self.get_element_physical_tags(element_tag)
+                  if not physical_tags:
+                      physical_tags = entity_physical_tags
+              ''',
+              ),
+          ]
+          for old, new in replacements:
+              if old not in builder:
+                  raise SystemExit(f"Builder snippet not found:\n{old}")
+              builder = builder.replace(old, new)
+          builder_path.write_text(builder)
+          PY
+      - uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9
+        with:
+          version: "0.11.32"
+          python-version: "3.12"
+      - run: uv sync --no-default-groups --group lint
+      - run: uv run --no-sync ruff format gmshparser
+      - name: Commit changes
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add gmshparser
+          git commit -m "Carry physical tags in element blocks"
+          git push origin HEAD:direct-modern-builder
