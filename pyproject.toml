@@ -23,6 +23,9 @@ Issues = "https://github.com/ahojukka5/gmshparser/issues"
 Repository = "https://github.com/ahojukka5/gmshparser"
 
 [dependency-groups]
+benchmark = [
+    "numpy>=1.26,<3",
+]
 test = [
     "numpy>=1.26,<3",
     "pytest>=8,<10",
