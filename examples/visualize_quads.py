@@ -12,7 +12,7 @@ TESTDATA = REPOSITORY_ROOT / "testdata"
 
 def visualize_quads_simple() -> None:
     """Visualize the quadrilateral MSH 2.0 test mesh."""
-    mesh = gmshparser.parse(str(TESTDATA / "simple" / "testmesh_v2_0.msh"))
+    mesh = gmshparser.read(TESTDATA / "simple" / "testmesh_v2_0.msh")
     x_coordinates, y_coordinates, quads = gmshparser.helpers.get_quads(mesh)
 
     _, axes = plt.subplots(figsize=(8, 6))
@@ -48,8 +48,8 @@ def visualize_quads_simple() -> None:
 
 def visualize_mixed_mesh() -> None:
     """Visualize a mesh containing both triangles and quadrilaterals."""
-    mesh = gmshparser.parse(
-        str(TESTDATA / "complex" / "test_from_internet" / "mixed_v2_0.msh")
+    mesh = gmshparser.read(
+        TESTDATA / "complex" / "test_from_internet" / "mixed_v2_0.msh"
     )
     data = gmshparser.helpers.get_elements_2d(mesh)
     nodes = data["nodes"]
