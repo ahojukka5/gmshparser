@@ -73,3 +73,5 @@ __all__ = [
           fi
           git commit -m "Polish Pythonic API exports"
           git push origin HEAD:${{ github.head_ref }}
+
+# This second commit ensures the PR event sees the workflow from its parent.
