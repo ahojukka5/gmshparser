@@ -1,26 +1,46 @@
-[tool.poetry]
+[project]
 name = "gmshparser"
 version = "0.3.1"
 description = "gmshparser is a lightweight, 100 % tested and well documented package that parses Gmsh ascii file format (.msh)"
-authors = ["Jukka Aho <ahojukka5@gmail.com>"]
+authors = [
+    { name = "Jukka Aho", email = "ahojukka5@gmail.com" },
+]
 readme = "README.md"
+requires-python = ">=3.12"
+dependencies = []
 
-[tool.poetry.dependencies]
-python = "^3.12"
+[dependency-groups]
+test = [
+    "pytest>=8,<10",
+    "pytest-cov>=4,<8",
+]
+lint = [
+    "black>=24,<27",
+    "flake8>=7,<8",
+]
+docs = [
+    "mkdocs>=1.6,<2",
+    "mkdocs-material>=9.5,<10",
+    "mkdocstrings[python]>=0.26,<1.1",
+]
+visualization = [
+    "matplotlib>=3.5,<3.12",
+]
+dev = [
+    { include-group = "test" },
+    { include-group = "lint" },
+]
 
-[tool.poetry.group.dev.dependencies]
-pytest = ">=8,<10"
-black = ">=24,<27"
-flake8 = "^7.0.0"
-pytest-cov = ">=4,<8"
-matplotlib = ">=3.5,<3.12"
-mkdocs = "^1.6.0"
-mkdocs-material = "^9.5.0"
-mkdocstrings = {extras = ["python"], version = ">=0.26,<1.1"}
+[tool.uv]
+default-groups = ["dev"]
 
 [build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
+requires = ["uv_build>=0.11.32,<0.12"]
+build-backend = "uv_build"
+
+[tool.uv.build-backend]
+module-name = "gmshparser"
+module-root = ""
 
 [tool.pytest.ini_options]
 minversion = "8.0"
