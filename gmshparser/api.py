@@ -3,7 +3,7 @@ from __future__ import annotations
 import os
 from collections.abc import Iterable, Iterator
 from dataclasses import dataclass
-from typing import Generic, TextIO, TypeVar, cast
+from typing import TextIO, TypeVar, cast
 
 from .main_parser import MainParser
 from .mesh import Mesh as LegacyMesh
@@ -12,7 +12,7 @@ T = TypeVar("T")
 E = TypeVar("E")
 
 
-class TaggedCollection(Generic[T]):
+class TaggedCollection[T]:
     """Immutable values that iterate naturally and can be indexed by tag.
 
     Iteration yields objects rather than tags:
@@ -222,7 +222,7 @@ class ElementEntity:
         return len(self.elements)
 
 
-class EntityCollection(Generic[E]):
+class EntityCollection[E]:
     """Immutable entities keyed by ``(dimension, tag)``."""
 
     __slots__ = ("_items", "_by_key")
