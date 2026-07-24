@@ -31,7 +31,21 @@ return the original compatibility model.
       heading_level: 3
       members: true
 
+## Element topology
+
 ::: gmshparser.api.ElementType
+    options:
+      show_source: true
+      heading_level: 3
+      members: true
+
+::: gmshparser.api.ElementFamily
+    options:
+      show_source: true
+      heading_level: 3
+      members: true
+
+::: gmshparser.api.ElementTypeInfo
     options:
       show_source: true
       heading_level: 3
