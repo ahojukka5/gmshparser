@@ -163,6 +163,37 @@ Cell connectivity contains zero-based rows into `arrays.points`. Original Gmsh
 node tags, element tags, and entity keys remain available alongside the arrays.
 Mixed meshes are represented as rectangular cell blocks grouped by element type.
 
+## Structured parser errors
+
+Both entry points expose the same error hierarchy and source context:
+
+```python
+try:
+    mesh = gmshparser.read("broken.msh")
+except gmshparser.ParseError as error:
+    print(error)
+    print(error.filename)
+    print(error.line_number)
+    print(error.section)
+    print(error.line)
+```
+
+A typical message is:
+
+```text
+broken.msh:127 [$Elements]: Element 42 requires 3 nodes, got 4
+```
+
+Specific errors include `UnsupportedVersionError`,
+`UnsupportedBinaryFormatError`, `UnexpectedEndOfFileError`,
+`InvalidNodeError`, `InvalidElementError`, and
+`InvalidElementConnectivityError`. Every `ParseError` is also a `ValueError`, so
+existing broad handlers continue to work. The parser does not print failures to
+stdout or stderr.
+
+See the [error-handling guide](https://ahojukka5.github.io/gmshparser/user-guide/error-handling/)
+for the full hierarchy and recovery examples.
+
 ## Compatibility API
 
 Existing applications using the original mutable `get_*` / `set_*` model can
