@@ -19,7 +19,7 @@ def nodes(mesh, file) -> None:
         for node in entity.get_nodes():
             nid = node.get_tag()
             x, y, z = node.get_coordinates()
-            print("%d %f %f %f" % (nid, x, y, z), file=file)
+            print(f"{nid:d} {x:f} {y:f} {z:f}", file=file)
 
 
 def elements(mesh, file) -> None:
