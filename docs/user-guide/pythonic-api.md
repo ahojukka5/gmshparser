@@ -1,8 +1,8 @@
 # Pythonic API
 
 `gmshparser.read()` is the recommended entry point for new code. It returns an
-immutable mesh model designed around normal Python attributes, iteration, tag
-lookup, and small filtering operations.
+immutable model built around normal Python attributes, iteration, tag lookup,
+direct object relationships, and small filtering operations.
 
 ```python
 import gmshparser
@@ -14,29 +14,28 @@ The original `gmshparser.parse()` API remains available for compatibility.
 
 ## Mesh metadata
 
-Metadata is exposed as attributes rather than `get_*` methods:
-
 ```python
 print(mesh.name)
-print(mesh.version)       # 4.1
-print(mesh.version_info)  # (4, 1)
+print(mesh.version)        # 4.1
+print(mesh.version.major)  # 4
+print(mesh.version.minor)  # 1
 print(mesh.is_ascii)
-print(mesh.precision)
-print(mesh.bounds)        # ((xmin, ymin, zmin), (xmax, ymax, zmax))
+print(mesh.data_size)      # 8 bytes in the MSH header
+print(mesh.dimension)
+print(mesh.bounds)         # ((xmin, ymin, zmin), (xmax, ymax, zmax))
 ```
 
-Counts follow normal Python collection conventions:
+Counts follow normal collection conventions:
 
 ```python
 print(len(mesh.nodes))
 print(len(mesh.elements))
-print(len(mesh.node_entities))
-print(len(mesh.element_entities))
+print(len(mesh.entities))
 ```
 
 ## Nodes
 
-`mesh.nodes` iterates over node objects and uses Gmsh tags for indexing:
+`mesh.nodes` iterates over node objects and uses original Gmsh tags for lookup:
 
 ```python
 for node in mesh.nodes:
@@ -46,7 +45,7 @@ node = mesh.nodes[42]
 print(node.coordinates)
 ```
 
-A node can also be unpacked as coordinates:
+A node can be unpacked as Cartesian coordinates:
 
 ```python
 x, y, z = mesh.nodes[42]
@@ -58,67 +57,90 @@ Useful collection operations include:
 print(mesh.nodes.tags)
 node = mesh.nodes.get(42)
 surface_nodes = mesh.nodes.where(dimension=2)
-entity_nodes = mesh.nodes.where(dimension=2, entity_tag=7)
+entity_nodes = mesh.nodes.where(entity=(2, 7))
 coordinates = mesh.nodes.coordinates
 ```
 
-Iteration deliberately yields node objects rather than dictionary keys. Integer
-indexing always means a Gmsh tag, not a positional index.
+Parametric MSH node coordinates are kept separately instead of being mixed into
+the Cartesian tuple:
+
+```python
+print(node.parametric_coordinates)
+print(node.is_parametric)
+```
+
+Integer indexing always means a Gmsh tag, not a positional index.
 
 ## Elements
 
-Elements are similarly flat and tag-addressable:
+Elements are flat and tag-addressable. They reference `Node` objects directly:
 
 ```python
 for element in mesh.elements:
-    print(
-        element.tag,
-        element.element_type,
-        element.node_tags,
-        element.dimension,
-        element.entity_tag,
-    )
+    print(element.tag, element.type, element.node_tags)
+    for node in element:
+        print(node.coordinates)
 
 quad = mesh.elements[12]
+print(quad.nodes)
 print(quad.connectivity)
 ```
 
-`element.type` is a concise alias for `element.element_type`, and iterating an
-element yields its node tags.
-
-Filter without manually traversing entity blocks:
+Element kinds are `IntEnum` values, so they are descriptive while remaining
+compatible with numeric Gmsh IDs:
 
 ```python
-triangles = mesh.elements.by_type(2)
-surface_quads = mesh.elements.where(element_type=3, dimension=2)
-entity_elements = mesh.elements.where(dimension=2, entity_tag=7)
-print(mesh.elements.types)
+from gmshparser.api import ElementType
+
+triangles = mesh.elements.by_type(ElementType.TRIANGLE)
+assert ElementType.TRIANGLE == 2
+assert int(ElementType.QUADRANGLE) == 3
 ```
 
-The returned filtered collections support the same iteration, tag lookup, and
-collection operations as `mesh.elements`.
+Unnamed higher-order or future values remain usable as `TYPE_<id>` enum
+pseudo-members.
 
-## Entity-level access
-
-Entity information is still available when it matters. Entity collections are
-indexed by `(dimension, tag)`:
+Filter without traversing entity blocks:
 
 ```python
-surface = mesh.node_entities[(2, 7)]
-for node in surface:
+surface_quads = mesh.elements.where(
+    element_type=ElementType.QUADRANGLE,
+    dimension=2,
+)
+entity_elements = mesh.elements.where(entity=(2, 7))
+print(mesh.element_types)
+```
+
+Filtered collections support the same iteration and tag lookup as
+`mesh.elements`.
+
+## Unified entities
+
+The modern API combines legacy node and element blocks into one entity view.
+Entities are indexed by `(dimension, tag)`:
+
+```python
+surface = mesh.entities[(2, 7)]
+
+for node in surface.nodes:
     print(node.tag)
 
-cell_block = mesh.element_entities[(3, 1)]
-print(cell_block.element_type)
-for element in cell_block:
-    print(element.tag)
+for element in surface.elements:
+    print(element.tag, element.type)
+
+print(surface.element_types)
 ```
 
-Filter entities by dimension:
+Filter entities by their contents:
 
 ```python
-surfaces = mesh.element_entities.where(dimension=2)
+surfaces = mesh.entities.where(dimension=2)
+triangle_entities = mesh.entities.where(element_type=ElementType.TRIANGLE)
+entities_with_nodes = mesh.entities.where(has_nodes=True)
 ```
+
+The separate node-entity and element-entity collections remain only in the
+compatibility API.
 
 ## Read from a text stream
 
