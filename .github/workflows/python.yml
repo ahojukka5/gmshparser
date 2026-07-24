@@ -32,7 +32,12 @@ jobs:
         run: uv run --no-sync ruff format --check gmshparser tests examples
 
       - name: Lint
-        run: uv run --no-sync ruff check --output-format=concise gmshparser tests examples 2>&1 | tee ruff.txt
+        run: |
+          set +e
+          uv run --no-sync ruff check --output-format=concise gmshparser tests examples > ruff.txt 2>&1
+          status=$?
+          cat ruff.txt
+          exit $status
 
       - name: Upload Ruff diagnostics
         if: failure()
