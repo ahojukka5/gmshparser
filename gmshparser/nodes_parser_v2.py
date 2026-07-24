@@ -5,7 +5,6 @@ from .node_entity import NodeEntity
 from .node import Node
 from .abstract_parser import AbstractParser
 from .mesh import Mesh
-from .helpers import parse_floats
 
 
 class NodesParserV2(AbstractParser):
