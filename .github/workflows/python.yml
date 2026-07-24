@@ -32,7 +32,19 @@ jobs:
       - name: Install test and lint dependencies
         run: uv sync --no-default-groups --group test --group lint
 
-      - name: Check formatting
+      - name: Check formatting of package metadata
+        continue-on-error: true
+        run: uv run --no-sync black gmshparser/__init__.py --check
+
+      - name: Check formatting of CLI
+        continue-on-error: true
+        run: uv run --no-sync black gmshparser/cli.py --check
+
+      - name: Check formatting of CLI tests
+        continue-on-error: true
+        run: uv run --no-sync black tests/test_cli.py --check
+
+      - name: Check all formatting
         run: uv run --no-sync black . --check
 
       - name: Lint
