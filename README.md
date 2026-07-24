@@ -54,36 +54,37 @@ Use `read()` for new code:
 import gmshparser
 
 mesh = gmshparser.read("mesh.msh")
-print(mesh)
 print(mesh.version, len(mesh.nodes), len(mesh.elements))
 ```
 
-Collections iterate over objects and use Gmsh tags for indexing:
+Collections iterate over value objects and use original Gmsh tags for lookup:
 
 ```python
 for node in mesh.nodes:
     print(node.tag, node.x, node.y, node.z)
 
 node = mesh.nodes[42]
-triangle = mesh.elements[17]
+element = mesh.elements[17]
 ```
 
-Filter elements without manually traversing entity blocks:
+Elements link directly to their nodes and expose a typed element kind:
 
 ```python
-triangles = mesh.elements.by_type(2)
-surface_quads = mesh.elements.where(element_type=3, dimension=2)
+from gmshparser.api import ElementType
 
-for element in triangles:
-    print(element.tag, element.node_tags)
+triangles = mesh.elements.by_type(ElementType.TRIANGLE)
+
+for triangle in triangles:
+    print(triangle.tag, triangle.node_tags)
+    for node in triangle:
+        print(node.coordinates)
 ```
 
-Entity context remains available through each value object and through entity
-collections indexed by `(dimension, tag)`:
+Entity context is available without separate node and element block APIs:
 
 ```python
-entity = mesh.element_entities[(2, 7)]
-print(entity.element_type, len(entity))
+entity = mesh.entities[(2, 7)]
+print(len(entity.nodes), len(entity.elements), entity.element_types)
 ```
 
 `read()` also accepts open text streams. See the
