@@ -1,7 +1,9 @@
 from io import StringIO
 
 import gmshparser
-from gmshparser.api import ElementType, Mesh as ModernMesh, parse as parse_modern
+from gmshparser.api import ElementType
+from gmshparser.api import Mesh as ModernMesh
+from gmshparser.api import parse as parse_modern
 
 MSH2 = """$MeshFormat
 2.1 0 8
@@ -87,7 +89,7 @@ def test_msh4_entities_resolve_to_named_physical_groups():
     assert wall.nodes.tags == (1, 2, 3)
     assert domain.entities.keys == ((3, 1),)
     assert domain.elements.tags == (2,)
-    assert domain.nodes.tags == (4, 1, 2, 3)
+    assert domain.nodes.tags == (1, 2, 3, 4)
 
 
 def test_entity_helpers_and_element_type_naming_are_pythonic():
@@ -102,6 +104,8 @@ def test_entity_helpers_and_element_type_naming_are_pythonic():
     element = mesh.elements[1]
     assert element.element_type is ElementType.TRIANGLE
     assert element.type is ElementType.TRIANGLE
+    assert gmshparser.ModernMesh is ModernMesh
+    assert gmshparser.PhysicalGroup is type(mesh.physical_groups["Wall"])
 
 
 def test_explicit_api_parse_returns_modern_mesh_without_changing_top_level_parse(
