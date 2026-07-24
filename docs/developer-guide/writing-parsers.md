@@ -148,7 +148,7 @@ Avoid silently inventing defaults for malformed mandatory fields.
 - run Black, flake8, pytest, and the documentation build
 
 ```bash
-uv run black . --check
+uv run black gmshparser tests examples --check
 uv run flake8 gmshparser tests
 uv run pytest
 uv sync --group docs
