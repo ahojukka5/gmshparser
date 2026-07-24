@@ -1,4 +1,4 @@
-# gmshparser - parse Gmsh .msh file format
+# gmshparser — parse Gmsh `.msh` files
 
 [![Python CI][gh-ci-img]][gh-ci-url]
 [![codecov][codecov-img]][codecov-url]
@@ -10,227 +10,137 @@
 
 ![gmshparser hero image](docs/hero-image.webp)
 
-Package author: Jukka Aho (@ahojukka5)
+gmshparser is a small, dependency-free Python package for reading **ASCII**
+[Gmsh](https://gmsh.info/) MSH files. It provides a consistent object model for
+nodes, elements, and entities across the supported format versions.
 
-Gmshparser is a small Python package which aims to do only one thing: parse Gmsh
-mesh file format. Package does not have any external dependencies to other
-packages and it aims to be a simple stand-alone solution for a common problem:
-how to import mesh to your favourite research FEM code?
+- **Python:** 3.12 or newer
+- **MSH formats:** 1.0, 2.0, 2.1, 2.2, 4.0, and 4.1
+- **Core dependencies:** none
+- **Scope:** reading meshes; writing and binary MSH files are not supported
 
-- Project source in GitHub: [https://github.com/ahojukka5/gmshparser](https://github.com/ahojukka5/gmshparser)
-- Project documentation: [https://ahojukka5.github.io/gmshparser/](https://ahojukka5.github.io/gmshparser/)
-- Project releases in PyPi: [https://pypi.org/project/gmshparser](https://pypi.org/project/gmshparser)
+Project links:
 
-## Supported Gmsh MSH file formats
+- [Documentation](https://ahojukka5.github.io/gmshparser/)
+- [PyPI package](https://pypi.org/project/gmshparser)
+- [Issue tracker](https://github.com/ahojukka5/gmshparser/issues)
 
-gmshparser supports multiple versions of the Gmsh MSH file format:
+## Installation
 
-- **MSH 1.0**: Legacy format using `$NOD/$ENDNOD` and `$ELM/$ENDELM` sections
-- **MSH 2.0, 2.1, 2.2**: Standard format with `$MeshFormat`, `$Nodes`, and `$Elements` sections
-- **MSH 4.0, 4.1**: Modern format with entity-based organization using `$Entities` section
+Install the stable release with uv:
 
-The parser automatically detects the file format version and uses the appropriate
-parser for that version, so you don't need to worry about which version you're
-working with.
+```bash
+uv add gmshparser
+```
 
-## Installing package
-
-To install the most recent package from Python Package Index (PyPi), use git:
+or with pip:
 
 ```bash
 pip install gmshparser
 ```
 
-To install the development version, you can install the package directly from
-the GitHub:
+Install the current development version directly from GitHub:
 
 ```bash
-pip install git+git://github.com/ahojukka5/gmshparser.git
+uv add "gmshparser @ git+https://github.com/ahojukka5/gmshparser.git"
 ```
 
-## Using application programming interface
-
-To read mesh into `Mesh` object, use command `parse`. It takes a filename and
-parses the file with the set of parsers, defined in `DEFAULT_PARSERS` (see
-developing package section for more info..!)
+## Python API
 
 ```python
 import gmshparser
-mesh = gmshparser.parse("data/testmesh.msh")
+
+mesh = gmshparser.parse("mesh.msh")
 print(mesh)
 ```
 
-```text
-Mesh name: data/testmesh.msh
-Mesh version: 4.1
-Number of nodes: 6
-Minimum node tag: 1
-Maximum node tag: 6
-Number of node entities: 1
-Number of elements: 2
-Minimum element tag: 1
-Maximum element tag: 2
-Number of element entities: 1
-```
-
-After reading the model, you can querying your data form `mesh` object. For
-example, to extract all nodes from the model:
+Iterate over nodes:
 
 ```python
 for entity in mesh.get_node_entities():
     for node in entity.get_nodes():
-        nid = node.get_tag()
-        ncoords = node.get_coordinates()
-        print("Node id = %s, node coordinates = %s" % (nid, ncoords))
+        print(node.get_tag(), node.get_coordinates())
 ```
 
-```text
-Node id = 1, node coordinates = (0.0, 0.0, 0.0)
-Node id = 2, node coordinates = (1.0, 0.0, 0.0)
-Node id = 3, node coordinates = (1.0, 1.0, 0.0)
-Node id = 4, node coordinates = (0.0, 1.0, 0.0)
-Node id = 5, node coordinates = (2.0, 0.0, 0.0)
-Node id = 6, node coordinates = (2.0, 1.0, 0.0)
-```
-
-Extract all elements from the model:
+Iterate over elements:
 
 ```python
 for entity in mesh.get_element_entities():
-    eltype = entity.get_element_type()
-    print("Element type: %s" % eltype)
+    element_type = entity.get_element_type()
     for element in entity.get_elements():
-        elid = element.get_tag()
-        elcon = element.get_connectivity()
-        print("Element id = %s, connectivity = %s" % (elid, elcon))
+        print(element.get_tag(), element_type, element.get_connectivity())
 ```
 
-```text
-Element type: 3
-Element id = 1, connectivity = [1, 2, 3, 4]
-Element id = 2, connectivity = [2, 5, 6, 3]
-```
+The parser detects the MSH version automatically. See the
+[Basic Usage guide](https://ahojukka5.github.io/gmshparser/user-guide/basic-usage/)
+for the complete data-access examples.
 
-If you are writing your FEM stuff with Python, then you have access to the all
-relevant properties of the model using `mesh` object. For further information on
-how to access nodes, elements, physical groups, and other things what Gmsh
-provides, take a look of [documentation](https://ahojukka5.github.io/gmshparser/).
+## Command-line interface
 
-### Using command line interface
-
-gmshparser can also be useful even if you don't make FEM code in Python. The
-above loops used to extract nodes and elements are actually so common, that you
-can use them from the command line. This way you can print nodes and elements in
-a simpler format with command-line tools, making it easier to read an element
-mesh with C ++ or Fortran, for example. To extract nodes:
+The installed `gmshparser` command can print a mesh summary, nodes, or elements:
 
 ```bash
-jukka@jukka-XPS-13-9380:~$ gmshparser data/testmesh.msh nodes
+gmshparser mesh.msh info
+gmshparser mesh.msh nodes
+gmshparser mesh.msh elements
+gmshparser --version
 ```
 
-```text
-6
-1 0.000000 0.000000 0.000000
-2 1.000000 0.000000 0.000000
-3 1.000000 1.000000 0.000000
-4 0.000000 1.000000 0.000000
-5 2.000000 0.000000 0.000000
-6 2.000000 1.000000 0.000000
-```
+`nodes` output begins with the node count, followed by
+`node_id x y z`. `elements` output begins with the element count, followed by
+`element_id element_type connectivity...`.
 
-To extract elements, use choice `elements`. The first line is having the total
-number of elements, and the rest of the lines are in format `element_id
-element_type element_connectivity`. The length of the line naturally depends on
-how many nodes the element is having.
+## Visualization helpers
 
-```bash
-jukka@jukka-XPS-13-9380:~$ gmshparser data/testmesh.msh elements
-```
-
-```text
-2
-1 3 1 2 3 4
-2 3 2 5 6 3
-```
-
-### Visualizing meshes using gmshparser and matplotlib
-
-The intention of the package is not to visualize meshes. But as it is a quite
-common task to visualize 2-dimensional triangluar meshes in acedemic papers,
-lecture notes, and things like that, it can be done easily using gmshparser and
-matplotlib. There's a helper function `gmshparser.helpers.get_triangles`, which
-returns a tuple `(X, Y, T)` which can then be passed to matplotlib to get a mesh
-plot:
+Matplotlib is optional. The triangle helper returns zero-based connectivity
+suitable for `matplotlib.triplot`:
 
 ```python
 import gmshparser
-mesh = gmshparser.parse("data/example_mesh.msh")
-X, Y, T = gmshparser.helpers.get_triangles(mesh)
+import matplotlib.pyplot as plt
 
-import matplotlib.pylab as plt
-plt.figure()
-plt.triplot(X, Y, T, color='black')
-plt.axis('equal')
-plt.axis('off')
-plt.tight_layout()
-plt.savefig('docs/example_mesh.svg')
+mesh = gmshparser.parse("mesh.msh")
+X, Y, triangles = gmshparser.helpers.get_triangles(mesh)
+plt.triplot(X, Y, triangles)
+plt.axis("equal")
+plt.show()
 ```
 
-![Example mesh visualization](docs/example_mesh.svg)
+Install the optional dependency separately:
 
-## Developing package
-
-gmshparser is written such a way, that it's easy to define your own parsers
-which are responsible for parsing some section, starting with `$SectionName` and
-ending with `$EndSectionName`. For example, a parser which is responsible to
-parse `MeshFormat` setion is `MainFormatParser` and it is defined with the
-following code:
-
-```python
-class MeshFormatParser(AbstractParser):
-
-    @staticmethod
-    def get_section_name():
-        return "$MeshFormat"
-
-    @staticmethod
-    def parse(mesh: Mesh, io: TextIO) -> None:
-        s = io.readline().strip().split(" ")
-        mesh.set_version(float(s[0]))
-        mesh.set_ascii(int(s[1]) == 0)
-        mesh.set_precision(int(s[2]))
+```bash
+uv add matplotlib
 ```
 
-All the active parsers used in parsing are then appended to the list of parsers
-in [MainParser](gmshparser/main_parser.py), from where they are called when an
-appropriate `get_section_name()` is found from file considered to be parsed. The
-`MainParser` itself is then called in `parse` to get things done:
+## Development
 
-```python
-def parse(filename: str) -> Mesh:
-    """Parse Gmsh .msh file and return `Mesh` object."""
-    mesh = Mesh()
-    mesh.set_name(filename)
-    parser = MainParser()
-    with open(filename, "r") as io:
-        parser.parse(mesh, io)
-    return mesh
+The repository uses uv and intentionally does not commit dependency lock files.
+
+```bash
+git clone https://github.com/ahojukka5/gmshparser.git
+cd gmshparser
+uv sync
+uv run black gmshparser tests examples --check
+uv run flake8 gmshparser tests
+uv run pytest
 ```
 
-If you want to learn how to write your own parser, you can e.g. take of look of
-[NodesParser](gmshparser/nodes_parser.py) which is responsible for parsing nodes
-and [ElementsParser](gmshparser/elements_parser.py) which is responsible for
-parsing elements, to get an idea how things are implemented.
+Build the documentation with:
 
-## Contributing to project
+```bash
+uv sync --group docs
+uv run mkdocs build
+```
 
-Like in all other open source projects, contributions are always welcome to this
-project too! If you have some great ideas how to make this package better,
-feature requests etc., you can open an issue on gmshparser's [issue
-tracker][issues] or contact me (<ahojukka5@gmail.com>) directly.
+See the [Contributing guide](https://ahojukka5.github.io/gmshparser/developer-guide/contributing/)
+for dependency groups and the release workflow.
 
-[gh-ci-img]: https://github.com/ahojukka5/gmshparser/workflows/Python%20CI/badge.svg
-[gh-ci-url]: https://github.com/ahojukka5/gmshparser/actions
+## License
+
+gmshparser is released under the MIT License.
+
+[gh-ci-img]: https://github.com/ahojukka5/gmshparser/actions/workflows/python.yml/badge.svg
+[gh-ci-url]: https://github.com/ahojukka5/gmshparser/actions/workflows/python.yml
 [codecov-img]: https://codecov.io/gh/ahojukka5/gmshparser/branch/master/graph/badge.svg
 [codecov-url]: https://codecov.io/gh/ahojukka5/gmshparser
 [pypi-img]: https://img.shields.io/pypi/v/gmshparser
@@ -242,4 +152,3 @@ tracker][issues] or contact me (<ahojukka5@gmail.com>) directly.
 [python-img]: https://img.shields.io/pypi/pyversions/gmshparser
 [license-img]: https://img.shields.io/github/license/ahojukka5/gmshparser
 [license-url]: https://github.com/ahojukka5/gmshparser/blob/master/LICENSE
-[issues]: https://github.com/ahojukka5/gmshparser/issues

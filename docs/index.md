@@ -1,113 +1,86 @@
 # gmshparser
 
-[![Python CI - Status][gh-ci-img]][gh-ci-url]
+[![Python CI][gh-ci-img]][gh-ci-url]
+[![codecov][codecov-img]][codecov-url]
 [![PyPI - Version][pypi-img]][pypi-url]
 [![PyPI - Downloads][pypi-dl-img]][pypi-dl-url]
-[![Coverage Status][coveralls-img]][coveralls-url]
-[![Documentation Status][documentation-img]][documentation-url]
+[![Documentation][documentation-img]][documentation-url]
 
-**A lightweight Python package for parsing Gmsh .msh mesh files**
+**A lightweight, dependency-free Python package for parsing ASCII Gmsh MSH files.**
 
-Package author: Jukka Aho ([@ahojukka5](https://github.com/ahojukka5))
+gmshparser reads supported [Gmsh](https://gmsh.info/) mesh formats into a
+consistent Python object model. The package focuses on parsing and inspection;
+it does not write meshes or support binary MSH files.
 
-## Overview
+## Key features
 
-gmshparser is a small Python package designed to do one thing well: parse [Gmsh](https://gmsh.info/)
-mesh file formats. With **no external dependencies** and a clean API, it provides a simple
-stand-alone solution for importing meshes into your FEM research code.
+- MSH 1.0, 2.0, 2.1, 2.2, 4.0, and 4.1 support
+- automatic format-version detection
+- no runtime dependencies
+- Python 3.12 or newer
+- Python API and command-line interface
+- optional matplotlib helpers for 2D meshes
 
-## Key Features
-
-- ✅ **Multiple format support**: MSH 1.0, 2.0, 2.1, 2.2, 4.0, and 4.1
-- ✅ **Automatic version detection**: No need to specify format version
-- ✅ **Zero dependencies**: Pure Python implementation
-- ✅ **100% test coverage**: Thoroughly tested and documented
-- ✅ **Command-line interface**: Extract mesh data from terminal
-- ✅ **Easy visualization**: Built-in matplotlib helpers
-
-## Quick Start
+## Quick start
 
 Install the package:
+
+```bash
+uv add gmshparser
+```
+
+or:
 
 ```bash
 pip install gmshparser
 ```
 
-Parse a mesh file:
+Parse a mesh:
 
 ```python
 import gmshparser
 
 mesh = gmshparser.parse("mesh.msh")
-print(f"Loaded mesh with {mesh.get_number_of_nodes()} nodes "
-      f"and {mesh.get_number_of_elements()} elements")
+print(
+    f"Loaded {mesh.get_number_of_nodes()} nodes and "
+    f"{mesh.get_number_of_elements()} elements"
+)
 ```
 
-## Supported Formats
+## Supported formats
 
-gmshparser supports all major versions of the Gmsh MSH file format:
+| Version | File structure | Status |
+| --- | --- | --- |
+| MSH 1.0 | legacy `$NOD` and `$ELM` sections | supported, ASCII |
+| MSH 2.0–2.2 | `$MeshFormat`, `$Nodes`, and `$Elements` | supported, ASCII |
+| MSH 4.0–4.1 | entity-block node and element sections | supported, ASCII |
 
-| Version | Description | Status |
-|---------|-------------|--------|
-| **MSH 1.0** | Legacy format with `$NOD`/`$ELM` sections | ✅ Supported |
-| **MSH 2.0** | Standard format with `$MeshFormat` | ✅ Supported |
-| **MSH 2.1** | Added `$PhysicalNames` support | ✅ Supported |
-| **MSH 2.2** | Compatible with 2.0/2.1 | ✅ Supported |
-| **MSH 4.0** | Modern format with `$Entities` | ✅ Supported |
-| **MSH 4.1** | Latest version | ✅ Supported |
+See [Supported Formats](user-guide/supported-formats.md) for limitations and
+format-specific notes.
 
-## Documentation Sections
+## Documentation
 
-### [User Guide](user-guide/getting-started.md)
+- [Getting Started](user-guide/getting-started.md)
+- [Basic Usage](user-guide/basic-usage.md)
+- [Command-line Interface](user-guide/cli.md)
+- [Visualization](user-guide/visualization.md)
+- [Contributing](developer-guide/contributing.md)
+- [API Reference](api/overview.md)
 
-Learn how to install, use, and visualize meshes with gmshparser.
+## Project links
 
-### [Developer Guide](developer-guide/contributing.md)
+- [Source repository](https://github.com/ahojukka5/gmshparser)
+- [Issue tracker](https://github.com/ahojukka5/gmshparser/issues)
+- [PyPI package](https://pypi.org/project/gmshparser)
+- [MIT License](about/license.md)
 
-Contribute to the project, understand the architecture, and write custom parsers.
-
-### [API Reference](api/overview.md)
-
-Complete API documentation for all classes and functions.
-
-## Project Links
-
-- **Source Code**: [GitHub Repository](https://github.com/ahojukka5/gmshparser)
-- **Issue Tracker**: [GitHub Issues](https://github.com/ahojukka5/gmshparser/issues)
-- **PyPI Package**: [gmshparser on PyPI](https://pypi.org/project/gmshparser)
-- **License**: [MIT License](about/license.md)
-
-## Quick Example
-
-```python
-import gmshparser
-
-# Parse mesh file
-mesh = gmshparser.parse("data/testmesh.msh")
-
-# Access nodes
-for entity in mesh.get_node_entities():
-    for node in entity.get_nodes():
-        print(f"Node {node.get_tag()}: {node.get_coordinates()}")
-
-# Access elements
-for entity in mesh.get_element_entities():
-    for element in entity.get_elements():
-        print(f"Element {element.get_tag()}: {element.get_connectivity()}")
-```
-
-## Contributing
-
-Contributions are always welcome! Please see our [Contributing Guide](developer-guide/contributing.md)
-for details on how to get started.
-
-[gh-ci-img]: https://github.com/ahojukka5/gmshparser/workflows/Python%20CI/badge.svg
-[gh-ci-url]: https://github.com/ahojukka5/gmshparser/actions
-[coveralls-img]: https://coveralls.io/repos/github/ahojukka5/gmshparser/badge.svg?branch=master
-[coveralls-url]: https://coveralls.io/github/ahojukka5/gmshparser?branch=master
+[gh-ci-img]: https://github.com/ahojukka5/gmshparser/actions/workflows/python.yml/badge.svg
+[gh-ci-url]: https://github.com/ahojukka5/gmshparser/actions/workflows/python.yml
+[codecov-img]: https://codecov.io/gh/ahojukka5/gmshparser/branch/master/graph/badge.svg
+[codecov-url]: https://codecov.io/gh/ahojukka5/gmshparser
 [pypi-img]: https://img.shields.io/pypi/v/gmshparser
 [pypi-url]: https://pypi.org/project/gmshparser
 [pypi-dl-img]: https://img.shields.io/pypi/dm/gmshparser
 [pypi-dl-url]: https://pypi.org/project/gmshparser
-[documentation-img]: https://readthedocs.org/projects/gmshparser/badge/?version=latest
-[documentation-url]: https://gmshparser.readthedocs.io/en/latest/?badge=latest
+[documentation-img]: https://img.shields.io/badge/docs-GitHub%20Pages-blue
+[documentation-url]: https://ahojukka5.github.io/gmshparser/

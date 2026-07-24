@@ -23,10 +23,14 @@ jobs:
         run: uv build --no-sources
 
       - name: Smoke test wheel
-        run: uv run --isolated --no-project --with dist/*.whl python -c "import gmshparser"
+        run: |
+          uv run --isolated --no-project --with dist/*.whl python -c "import gmshparser"
+          uv run --isolated --no-project --with dist/*.whl gmshparser --version
 
       - name: Smoke test source distribution
-        run: uv run --isolated --no-project --with dist/*.tar.gz python -c "import gmshparser"
+        run: |
+          uv run --isolated --no-project --with dist/*.tar.gz python -c "import gmshparser"
+          uv run --isolated --no-project --with dist/*.tar.gz gmshparser --version
 
       - name: Publish distributions to PyPI
         env:

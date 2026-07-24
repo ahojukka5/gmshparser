@@ -48,7 +48,7 @@ git checkout -b feature/your-feature-name
 Run the complete local quality checks:
 
 ```bash
-uv run black . --check
+uv run black gmshparser tests examples --check
 uv run flake8 gmshparser tests
 uv run pytest
 ```
@@ -56,7 +56,7 @@ uv run pytest
 Apply formatting when necessary:
 
 ```bash
-uv run black .
+uv run black gmshparser tests examples
 ```
 
 Run an individual test:

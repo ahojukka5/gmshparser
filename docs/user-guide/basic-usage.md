@@ -1,10 +1,6 @@
 # Basic Usage
 
-This guide covers the fundamental usage patterns of gmshparser.
-
-## Parsing a Mesh File
-
-The primary function you'll use is `gmshparser.parse()`:
+## Parse a mesh
 
 ```python
 import gmshparser
@@ -12,247 +8,143 @@ import gmshparser
 mesh = gmshparser.parse("path/to/mesh.msh")
 ```
 
-This automatically detects the file format version and returns a `Mesh` object.
+The parser detects the supported MSH version automatically and returns a
+`Mesh` object.
 
-## Mesh Information
-
-After parsing, you can query basic mesh information:
+## Mesh metadata
 
 ```python
-# Get mesh metadata
-print(f"Mesh name: {mesh.get_name()}")
-print(f"Mesh version: {mesh.get_version()}")
-print(f"Number of nodes: {mesh.get_number_of_nodes()}")
-print(f"Number of elements: {mesh.get_number_of_elements()}")
-
-# Get node tag ranges
-print(f"Min node tag: {mesh.get_min_node_tag()}")
-print(f"Max node tag: {mesh.get_max_node_tag()}")
-
-# Get element tag ranges
-print(f"Min element tag: {mesh.get_min_element_tag()}")
-print(f"Max element tag: {mesh.get_max_element_tag()}")
-
-# Get entity counts
-print(f"Node entities: {mesh.get_number_of_node_entities()}")
-print(f"Element entities: {mesh.get_number_of_element_entities()}")
+print(mesh.get_name())
+print(mesh.get_version())
+print(mesh.get_number_of_nodes())
+print(mesh.get_number_of_elements())
+print(mesh.get_min_node_tag(), mesh.get_max_node_tag())
+print(mesh.get_min_element_tag(), mesh.get_max_element_tag())
+print(mesh.get_number_of_node_entities())
+print(mesh.get_number_of_element_entities())
 ```
 
-## Working with Nodes
+## Nodes
 
-Nodes in gmshparser are organized by entities. Here's how to access them:
-
-### Iterate All Nodes
+Nodes are grouped into node entities:
 
 ```python
 for entity in mesh.get_node_entities():
+    print(
+        "entity",
+        entity.get_dimension(),
+        entity.get_tag(),
+        entity.get_number_of_nodes(),
+    )
+
     for node in entity.get_nodes():
         node_id = node.get_tag()
-        coords = node.get_coordinates()
-        x, y, z = coords
-        print(f"Node {node_id}: ({x}, {y}, {z})")
+        x, y, z = node.get_coordinates()
+        print(node_id, x, y, z)
 ```
 
-### Get Specific Node Data
+## Elements
 
-```python
-# Get all nodes from first entity
-first_entity = mesh.get_node_entities()[0]
-nodes = first_entity.get_nodes()
-
-# Access node properties
-for node in nodes:
-    tag = node.get_tag()          # Node ID
-    coords = node.get_coordinates()  # (x, y, z) tuple
-    x = coords[0]
-    y = coords[1]
-    z = coords[2]
-```
-
-### Entity Information
-
-```python
-for entity in mesh.get_node_entities():
-    dimension = entity.get_dimension()
-    entity_tag = entity.get_tag()
-    num_nodes = entity.get_number_of_nodes()
-    print(f"Entity {entity_tag} (dim={dimension}): {num_nodes} nodes")
-```
-
-## Working with Elements
-
-Elements are also organized by entities:
-
-### Iterate All Elements
+Elements are grouped into element entities. The entity stores the Gmsh element
+type shared by its elements:
 
 ```python
 for entity in mesh.get_element_entities():
     element_type = entity.get_element_type()
-    print(f"Element type: {element_type}")
-    
+    print(
+        "entity",
+        entity.get_dimension(),
+        entity.get_tag(),
+        element_type,
+        entity.get_number_of_elements(),
+    )
+
     for element in entity.get_elements():
-        elem_id = element.get_tag()
-        connectivity = element.get_connectivity()
-        print(f"Element {elem_id}: nodes {connectivity}")
+        print(element.get_tag(), element.get_connectivity())
 ```
 
-### Element Types
+Gmsh element types are numeric. Common values include 1 for a two-node line, 2
+for a three-node triangle, 3 for a four-node quadrangle, and 4 for a
+four-node tetrahedron. Consult the official Gmsh MSH specification for the full
+list.
 
-Gmsh uses numeric codes for element types:
-
-| Code | Element Type | Nodes |
-|------|-------------|--------|
-| 15 | Point | 1 |
-| 1 | Line | 2 |
-| 2 | Triangle | 3 |
-| 3 | Quadrangle | 4 |
-| 4 | Tetrahedron | 4 |
-| 5 | Hexahedron | 8 |
-| 8 | Line (3-node) | 3 |
-| 9 | Triangle (6-node) | 6 |
-| ... | ... | ... |
-
-See the [Gmsh documentation](https://gmsh.info/doc/texinfo/gmsh.html#MSH-file-format) for a complete list.
-
-### Filter Elements by Type
+## Filter by element type
 
 ```python
-# Get all triangular elements
+triangles = []
 for entity in mesh.get_element_entities():
-    if entity.get_element_type() == 2:  # Triangle
-        for element in entity.get_elements():
-            print(f"Triangle {element.get_tag()}: {element.get_connectivity()}")
+    if entity.get_element_type() == 2:
+        triangles.extend(
+            element.get_connectivity() for element in entity.get_elements()
+        )
 ```
 
-## Using Helper Functions
+## Visualization helpers
 
-gmshparser provides helper functions for common tasks:
+### Triangles
 
-### Extract Triangles for Plotting
+`get_triangles()` returns coordinate arrays and zero-based connectivity suitable
+for matplotlib:
 
 ```python
 from gmshparser.helpers import get_triangles
 
-mesh = gmshparser.parse("mesh.msh")
-X, Y, T = get_triangles(mesh)
-
-# X, Y: coordinate arrays
-# T: connectivity array for matplotlib.triplot
+X, Y, triangles = get_triangles(mesh)
 ```
 
-### Extract Quadrilaterals
+### Quadrangles
+
+`get_quads()` uses the same zero-based indexing convention:
 
 ```python
 from gmshparser.helpers import get_quads
 
-mesh = gmshparser.parse("mesh.msh")
-X, Y, Q = get_quads(mesh)
-
-# Q: quadrilateral connectivity array
+X, Y, quads = get_quads(mesh)
 ```
 
-### Extract All 2D Elements
+### Mixed 2D meshes
+
+`get_elements_2d()` returns a dictionary. Its element connectivity retains the
+original Gmsh node tags rather than converting them to zero-based indices:
 
 ```python
 from gmshparser.helpers import get_elements_2d
 
-mesh = gmshparser.parse("mesh.msh")
-X, Y, triangles, quads = get_elements_2d(mesh)
+data = get_elements_2d(mesh)
 
-# Returns both triangles and quads
+nodes = data["nodes"]          # node tag -> (x, y)
+triangles = data["triangles"] # connectivity using node tags
+quads = data["quads"]         # connectivity using node tags
+node_ids = data["node_ids"]
 ```
 
-## Practical Examples
+See [Visualization](visualization.md) for plotting examples.
 
-### Example 1: Export Nodes to CSV
+## Export nodes to CSV
 
 ```python
-import gmshparser
 import csv
 
-mesh = gmshparser.parse("mesh.msh")
+with open("nodes.csv", "w", newline="") as stream:
+    writer = csv.writer(stream)
+    writer.writerow(["id", "x", "y", "z"])
 
-with open("nodes.csv", "w", newline="") as f:
-    writer = csv.writer(f)
-    writer.writerow(["ID", "X", "Y", "Z"])
-    
     for entity in mesh.get_node_entities():
         for node in entity.get_nodes():
-            tag = node.get_tag()
-            x, y, z = node.get_coordinates()
-            writer.writerow([tag, x, y, z])
+            writer.writerow([node.get_tag(), *node.get_coordinates()])
 ```
 
-### Example 2: Count Element Types
+## Error handling
 
 ```python
-import gmshparser
-from collections import Counter
-
-mesh = gmshparser.parse("mesh.msh")
-
-element_types = Counter()
-for entity in mesh.get_element_entities():
-    elem_type = entity.get_element_type()
-    elem_count = entity.get_number_of_elements()
-    element_types[elem_type] += elem_count
-
-for elem_type, count in element_types.items():
-    print(f"Type {elem_type}: {count} elements")
-```
-
-### Example 3: Build a Connectivity Matrix
-
-```python
-import gmshparser
-import numpy as np
-
-mesh = gmshparser.parse("mesh.msh")
-
-# Collect all triangular elements
-triangles = []
-for entity in mesh.get_element_entities():
-    if entity.get_element_type() == 2:  # Triangle
-        for element in entity.get_elements():
-            triangles.append(element.get_connectivity())
-
-# Convert to numpy array
-connectivity = np.array(triangles)
-print(f"Triangle connectivity shape: {connectivity.shape}")
-```
-
-## Working with Different MSH Versions
-
-gmshparser handles version differences automatically:
-
-```python
-# Works with any supported version (1.0, 2.0, 2.1, 2.2, 4.0, 4.1)
-mesh = gmshparser.parse("any_version.msh")
-
-# Check which version was detected
-version = mesh.get_version()
-print(f"Detected MSH version: {version}")
-```
-
-The API remains consistent regardless of the file format version.
-
-## Error Handling
-
-Handle parsing errors gracefully:
-
-```python
-import gmshparser
-
 try:
     mesh = gmshparser.parse("mesh.msh")
 except FileNotFoundError:
     print("Mesh file not found")
-except Exception as e:
-    print(f"Error parsing mesh: {e}")
+except ValueError as error:
+    print(f"Unsupported or invalid MSH file: {error}")
 ```
 
-## Next Steps
-
-- Learn about the [Command Line Interface](cli.md)
-- Explore [Visualization options](visualization.md)
-- Check the [API Reference](../api/overview.md)
+Unexpected or malformed section contents may also raise parsing-related Python
+exceptions. When reporting such a case, include the smallest mesh file that
+reproduces it.
