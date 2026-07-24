@@ -50,12 +50,10 @@ class SourceTextIO:
         return getattr(self._stream, name)
 
 
-
 def get_parsing_context(io: TextIO) -> ParsingContext | None:
     """Return parser context when *io* is a tracked source stream."""
     context = getattr(io, "context", None)
     return context if isinstance(context, ParsingContext) else None
-
 
 
 def read_required_line(io: TextIO, description: str) -> str:
@@ -79,7 +77,6 @@ def read_required_line(io: TextIO, description: str) -> str:
     )
 
 
-
 def expect_end_marker(io: TextIO, marker: str) -> None:
     """Consume and validate a section end marker."""
     line = read_required_line(io, marker)
@@ -88,13 +85,18 @@ def expect_end_marker(io: TextIO, marker: str) -> None:
         raise InvalidSectionError(f"Expected {marker}, got {actual!r}")
 
 
-
 def contextualize_error(
     error: Exception,
     context: ParsingContext,
 ) -> ParseError:
     """Convert a parser failure into the appropriate public error type."""
     if isinstance(error, ParseError):
+        if (
+            error.filename is not None
+            or error.line_number is not None
+            or error.section is not None
+        ):
+            return error
         return error.with_context(context)
 
     if context.section in {"$Nodes", "$NOD"}:
