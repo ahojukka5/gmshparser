@@ -74,6 +74,7 @@ nav:
       - Architecture: developer-guide/architecture.md
       - Writing Parsers: developer-guide/writing-parsers.md
       - Testing: developer-guide/testing.md
+      - Performance Benchmarks: developer-guide/benchmarks.md
       - Test Results: developer-guide/test-results.md
   - API Reference:
       - Overview: api/overview.md
