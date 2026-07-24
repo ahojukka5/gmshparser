@@ -1,17 +1,18 @@
 from typing import TextIO
 
 from .abstract_parser import AbstractParser
+from .errors import (
+    InvalidSectionError,
+    UnsupportedBinaryFormatError,
+    UnsupportedVersionError,
+)
 from .mesh import Mesh
+from .parsing import expect_end_marker, read_required_line
 from .version_manager import VersionManager
 
 
 class MeshFormatParser(AbstractParser):
-    """Parse MeshFormat section.
-
-    This parser detects and validates the MSH format version and stores it
-    in the mesh object. The version information is then used by the MainParser
-    to select appropriate parsers for the rest of the file.
-    """
+    """Parse and validate the ``$MeshFormat`` section."""
 
     @staticmethod
     def get_section_name():
@@ -19,31 +20,38 @@ class MeshFormatParser(AbstractParser):
 
     @staticmethod
     def parse(mesh: Mesh, io: TextIO) -> None:
-        """Parse the MeshFormat section and validate version.
+        line = read_required_line(io, "$MeshFormat header")
+        fields = line.strip().split()
+        if len(fields) != 3:
+            raise InvalidSectionError(
+                "$MeshFormat header must contain version, file type, and data size"
+            )
 
-        Parameters
-        ----------
-        mesh : Mesh
-            Mesh object to store the format information
-        io : TextIO
-            Input stream to read from
+        try:
+            version_enum = VersionManager.validate_version(fields[0])
+        except ValueError as error:
+            raise UnsupportedVersionError(str(error)) from error
 
-        Raises
-        ------
-        ValueError
-            If the version is not supported or cannot be parsed
-        """
-        s = io.readline().strip().split(" ")
+        try:
+            file_type = int(fields[1])
+            data_size = int(fields[2])
+        except ValueError as error:
+            raise InvalidSectionError(
+                "$MeshFormat file type and data size must be integers"
+            ) from error
 
-        # Parse version
-        version_str = s[0]
-        version_enum = VersionManager.validate_version(version_str)
+        if file_type not in {0, 1}:
+            raise InvalidSectionError(
+                f"Unsupported $MeshFormat file type {file_type}; expected 0 or 1"
+            )
+        if file_type == 1:
+            raise UnsupportedBinaryFormatError(
+                "Binary MSH files are not supported; provide an ASCII MSH file"
+            )
+        if data_size <= 0:
+            raise InvalidSectionError("$MeshFormat data size must be positive")
 
-        # Set version in mesh
         mesh.set_version(version_enum.version_number)
-
-        # Parse format type (0 = ASCII, 1 = binary)
-        mesh.set_ascii(int(s[1]) == 0)
-
-        # Parse precision (size of floating point numbers)
-        mesh.set_precision(int(s[2]))
+        mesh.set_ascii(True)
+        mesh.set_precision(data_size)
+        expect_end_marker(io, "$EndMeshFormat")

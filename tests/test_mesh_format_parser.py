@@ -7,7 +7,7 @@ from gmshparser.mesh_format_parser import MeshFormatParser
 def test_mesh_format_parser():
     parser = MeshFormatParser()
     mesh = Mesh()
-    data = io.StringIO("4.1 0 8")
+    data = io.StringIO("4.1 0 8\n$EndMeshFormat\n")
     parser.parse(mesh, data)
     assert mesh.get_version() == 4.1
     assert mesh.get_ascii() is True

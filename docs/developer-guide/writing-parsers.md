@@ -1,7 +1,7 @@
 # Writing Parsers
 
-A section parser reads one MSH section and stores its data in a `Mesh` or a
-related model object.
+A section parser reads one complete MSH section and stores its data in a `Mesh`
+or a related compatibility-model object.
 
 ## Parser contract
 
@@ -24,40 +24,86 @@ class ExampleParser(AbstractParser):
         ...
 ```
 
-`MainParser` has already consumed the section header when `parse()` is called.
-The section parser should read exactly the section payload. The main loop can
-then consume and ignore the `$End...` line.
+`MainParser` normally consumes the opening section marker before `parse()` is
+called. A section parser must then:
 
-## Example: physical names
+1. read and validate the complete payload
+2. verify declared record counts
+3. consume and validate its `$End...` marker
+4. stop immediately after the end marker
 
-gmshparser does not currently retain `$PhysicalNames`. Adding it requires both
-a parser and a place in the data model to store the result.
+Some existing parsers also accept a stream positioned at their opening marker so
+they can be tested directly. Preserve that behavior when modifying such a parser.
+
+## Required reads and end markers
+
+Use the shared parsing helpers instead of calling `readline()` for mandatory
+records:
 
 ```python
-class PhysicalNamesParser(AbstractParser):
+from gmshparser.parsing import expect_end_marker, read_required_line
+
+line = read_required_line(io, "an $Example record")
+...
+expect_end_marker(io, "$EndExample")
+```
+
+`read_required_line()` raises `UnexpectedEndOfFileError` when the stream ends
+inside a declared section. `expect_end_marker()` reports both a missing marker
+and an unexpected line with the current source context.
+
+## Example parser
+
+```python
+from gmshparser.errors import InvalidSectionError
+from gmshparser.parsing import expect_end_marker, read_required_line
+
+
+class ExampleParser(AbstractParser):
     @staticmethod
     def get_section_name() -> str:
-        return "$PhysicalNames"
+        return "$Example"
 
     @staticmethod
     def parse(mesh: Mesh, io: TextIO) -> None:
-        count = int(io.readline().strip())
-        names = {}
+        count_line = read_required_line(io, "$Example count")
+        try:
+            count = int(count_line)
+        except ValueError as error:
+            raise InvalidSectionError(
+                "$Example count must be an integer"
+            ) from error
+
+        if count < 0:
+            raise InvalidSectionError("$Example count cannot be negative")
 
         for _ in range(count):
-            dimension, tag, quoted_name = io.readline().split(maxsplit=2)
-            names[(int(dimension), int(tag))] = quoted_name.strip().strip('"')
+            record = read_required_line(io, "an $Example record")
+            ...
 
-        mesh.set_physical_names(names)
+        expect_end_marker(io, "$EndExample")
 ```
 
-This example assumes that `Mesh` has matching `set_physical_names()` and
-`get_physical_names()` methods. Add and test those methods as part of the same
-change.
+Do not print parser failures. `MainParser` attaches the filename, current line
+number, section, and source line to `ParseError` subclasses. Applications decide
+how exceptions are logged or displayed.
+
+## Choose a specific error type
+
+Use the most specific public exception that describes the malformed input:
+
+- `InvalidSectionError` for headers, counts, generic records, and end markers
+- `InvalidNodeError` for node blocks and node records
+- `InvalidElementError` for element blocks and element records
+- `InvalidElementConnectivityError` for connectivity width mismatches
+- `UnknownElementTypeError` when topology metadata is required but unavailable
+- `UnsupportedVersionError` and `UnsupportedBinaryFormatError` for format limits
+
+All parser errors inherit from both `ParseError` and `ValueError`.
 
 ## Register the parser
 
-The current parser registries are version-specific:
+The parser registries are version-specific:
 
 ```python
 DEFAULT_PARSERS_V1
@@ -65,8 +111,8 @@ DEFAULT_PARSERS_V2
 DEFAULT_PARSERS_V4
 ```
 
-Register the new parser only for formats where the section layout applies. For
-example, a parser shared by MSH 2.x and 4.x would be added to both lists:
+Register a parser only for formats where its section layout applies. A parser
+shared by MSH 2.x and 4.x is added to both lists:
 
 ```python
 DEFAULT_PARSERS_V2 = [
@@ -79,6 +125,7 @@ DEFAULT_PARSERS_V2 = [
 DEFAULT_PARSERS_V4 = [
     MeshFormatParser,
     PhysicalNamesParser,
+    EntitiesParser,
     NodesParser,
     ElementsParser,
 ]
@@ -118,32 +165,14 @@ class ExampleParserV4(AbstractParser):
 Register each class in the matching parser list. This follows the existing
 `NodesParserV2`/`NodesParser` and `ElementsParserV2`/`ElementsParser` split.
 
-## Error handling
-
-Validate section counts and record structure close to where they are read:
-
-```python
-line = io.readline()
-if not line:
-    raise ValueError("Unexpected end of file in $Example")
-
-try:
-    count = int(line)
-except ValueError as error:
-    raise ValueError(f"Invalid $Example count: {line.strip()}") from error
-
-if count < 0:
-    raise ValueError("$Example count cannot be negative")
-```
-
-Avoid silently inventing defaults for malformed mandatory fields.
-
 ## Testing checklist
 
-- add the smallest valid section fixture
+- add the smallest complete valid section fixture, including its end marker
 - verify the values exposed through the public data model
 - cover each applicable MSH version family
-- add malformed-input tests when the parser performs validation
+- test malformed headers and numeric fields
+- test truncated payloads and missing end markers
+- verify the specific exception class and source-context attributes
 - ensure an unrelated optional section remains harmless
 - run Ruff, pytest, and the documentation build
 
@@ -160,6 +189,7 @@ uv run mkdocs build
 Update:
 
 - [Supported Formats](../user-guide/supported-formats.md) when support changes
+- [Error Handling](../user-guide/error-handling.md) for new public failures
 - [Architecture](architecture.md) when routing or data-model structure changes
-- the API reference for new public model methods or parser classes
+- the API reference for new public model methods, parsers, or exceptions
 - the changelog for user-visible releases

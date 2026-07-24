@@ -3,6 +3,12 @@ from __future__ import annotations
 from dataclasses import dataclass
 from enum import IntEnum, StrEnum
 
+from .errors import (
+    InvalidElementConnectivityError,
+    InvalidElementError,
+    UnknownElementTypeError,
+)
+
 __all__ = [
     "ElementFamily",
     "ElementType",
@@ -13,14 +19,6 @@ __all__ = [
     "validate_element_connectivity",
     "validate_element_dimension",
 ]
-
-
-class UnknownElementTypeError(ValueError):
-    """Raised when parsing requires metadata for an unknown Gmsh element type."""
-
-
-class InvalidElementConnectivityError(ValueError):
-    """Raised when an element has the wrong number of connectivity nodes."""
 
 
 class ElementFamily(StrEnum):
@@ -241,7 +239,7 @@ def validate_element_dimension(
     """Validate that a block dimension matches its registered element type."""
     known_type = require_element_type(element_type)
     if known_type.dimension != dimension:
-        raise ValueError(
+        raise InvalidElementError(
             f"Element type {known_type.name} ({int(known_type)}) has dimension "
             f"{known_type.dimension}, but the element block declares {dimension}"
         )
