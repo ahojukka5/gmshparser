@@ -1,7 +1,11 @@
 from typing import TextIO
 
 from .abstract_parser import AbstractParser
-from .errors import InvalidSectionError, UnsupportedBinaryFormatError
+from .errors import (
+    InvalidSectionError,
+    UnsupportedBinaryFormatError,
+    UnsupportedVersionError,
+)
 from .mesh import Mesh
 from .parsing import expect_end_marker, read_required_line
 from .version_manager import VersionManager
@@ -23,7 +27,10 @@ class MeshFormatParser(AbstractParser):
                 "$MeshFormat header must contain version, file type, and data size"
             )
 
-        version_enum = VersionManager.validate_version(fields[0])
+        try:
+            version_enum = VersionManager.validate_version(fields[0])
+        except ValueError as error:
+            raise UnsupportedVersionError(str(error)) from error
 
         try:
             file_type = int(fields[1])
