@@ -1,27 +1,17 @@
-"""Parser for MSH 1.0 format nodes ($NOD section).
-
-MSH 1.0 uses the $NOD/$ENDNOD section instead of $Nodes/$EndNodes.
-The format is simpler with no entity-based organization.
-"""
+"""Parser for MSH 1.0 format nodes (``$NOD`` section)."""
 
 from typing import TextIO
 
 from .abstract_parser import AbstractParser
+from .errors import InvalidNodeError
 from .mesh import Mesh
 from .node import Node
 from .node_entity import NodeEntity
+from .parsing import expect_end_marker, read_required_line
 
 
 class NodesParserV1(AbstractParser):
-    """Parser for MSH 1.0 $NOD section.
-
-    Format:
-    $NOD
-    number-of-nodes
-    node-number x-coord y-coord z-coord
-    ...
-    $ENDNOD
-    """
+    """Parse the legacy MSH 1.0 ``$NOD`` section."""
 
     @staticmethod
     def get_section_name():
@@ -29,50 +19,50 @@ class NodesParserV1(AbstractParser):
 
     @staticmethod
     def parse(mesh: Mesh, io: TextIO) -> None:
-        """Parse MSH 1.0 nodes section.
+        count_line = read_required_line(io, "$NOD node count")
+        try:
+            number_of_nodes = int(count_line.strip())
+        except ValueError as error:
+            raise InvalidNodeError("$NOD node count must be an integer") from error
+        if number_of_nodes < 0:
+            raise InvalidNodeError("$NOD node count cannot be negative")
 
-        Parameters
-        ----------
-        mesh : Mesh
-            Mesh object to populate with nodes
-        io : TextIO
-            Input stream to read from
-        """
-        # Read number of nodes
-        num_nodes = int(io.readline().strip())
-        mesh.set_number_of_nodes(num_nodes)
+        mesh.set_number_of_nodes(number_of_nodes)
 
-        # Create a single node entity (MSH 1.0 doesn't have entities)
-        # Use dimension 2 (surface) and tag 1 as default
-        node_entity = NodeEntity()
-        node_entity.set_dimension(2)
-        node_entity.set_tag(1)
-        node_entity.set_number_of_parametric_coordinates(0)
-        node_entity.set_number_of_nodes(num_nodes)
+        entity = NodeEntity()
+        entity.set_dimension(2)
+        entity.set_tag(1)
+        entity.set_number_of_parametric_coordinates(0)
+        entity.set_number_of_nodes(number_of_nodes)
 
-        # Read all nodes
-        min_tag = float("inf")
-        max_tag = 0
+        min_tag: int | None = None
+        max_tag: int | None = None
+        for _ in range(number_of_nodes):
+            line = read_required_line(io, "an MSH 1 node record")
+            fields = line.strip().split()
+            if len(fields) != 4:
+                raise InvalidNodeError(
+                    "An MSH 1 node record must contain tag, x, y, and z"
+                )
+            try:
+                node_tag = int(fields[0])
+                coordinates = tuple(float(value) for value in fields[1:])
+            except ValueError as error:
+                raise InvalidNodeError(
+                    "MSH 1 node tags and coordinates must be numeric"
+                ) from error
 
-        for _ in range(num_nodes):
-            line = io.readline().strip().split()
-            node_tag = int(line[0])
-            x = float(line[1])
-            y = float(line[2])
-            z = float(line[3])
+            min_tag = node_tag if min_tag is None else min(min_tag, node_tag)
+            max_tag = node_tag if max_tag is None else max(max_tag, node_tag)
 
-            # Track min/max tags
-            min_tag = min(min_tag, node_tag)
-            max_tag = max(max_tag, node_tag)
-
-            # Create node
             node = Node()
             node.set_tag(node_tag)
-            node.set_coordinates((x, y, z))
-            node_entity.add_node(node)
+            node.set_coordinates(coordinates)
+            entity.add_node(node)
 
-        # Update mesh with actual min/max tags
-        mesh.set_min_node_tag(int(min_tag))
-        mesh.set_max_node_tag(int(max_tag))
+        if min_tag is not None and max_tag is not None:
+            mesh.set_min_node_tag(min_tag)
+            mesh.set_max_node_tag(max_tag)
         mesh.set_number_of_node_entities(1)
-        mesh.add_node_entity(node_entity)
+        mesh.add_node_entity(entity)
+        expect_end_marker(io, "$ENDNOD")
