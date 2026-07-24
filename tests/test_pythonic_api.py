@@ -1,9 +1,11 @@
 from dataclasses import FrozenInstanceError
 from io import StringIO
 
-import gmshparser
 import pytest
-from gmshparser.api import ElementType, Mesh as ModernMesh, Version
+
+import gmshparser
+from gmshparser.api import ElementType, Version
+from gmshparser.api import Mesh as ModernMesh
 
 MESH = """$MeshFormat
 4.1 0 8
