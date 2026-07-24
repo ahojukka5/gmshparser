@@ -2,7 +2,7 @@
 
 gmshparser separates parsing from the recommended public data model. Section
 parsers continue to populate the original mutable compatibility model, and the
-modern API converts that result into immutable Python value objects.
+modern API converts that result into immutable application-facing value objects.
 
 ## Parsing flow
 
@@ -64,32 +64,43 @@ section parsers populate.
 
 ```text
 api.Mesh
+  ├─ version: Version
   ├─ nodes: NodeCollection
   ├─ elements: ElementCollection
-  ├─ node_entities: EntityCollection[NodeEntity]
-  └─ element_entities: EntityCollection[ElementEntity]
+  └─ entities: EntityCollection
+         └─ Entity(nodes, elements)
 ```
 
-The conversion in `api.Mesh.from_legacy()` produces immutable dataclass value
-objects. Flat node and element collections are the default access path, while
-each value retains its entity dimension and entity tag.
+The conversion in `api.Mesh.from_legacy()` deliberately removes parser-oriented
+structure:
+
+- node and element blocks with the same `(dimension, tag)` become one `Entity`
+- each `Element` stores direct references to its immutable `Node` objects
+- numeric element IDs become `ElementType` integer-enum values
+- Cartesian and parametric node coordinates are separated
+- MSH versions become a `Version(major, minor)` value
+- counts are derived from collections instead of duplicated metadata
+
+Flat node and element collections are the default access path. Entity context is
+retained on each value and through `mesh.entities` when the original grouping
+matters.
 
 Collection conventions are intentional:
 
 - iteration yields value objects
-- integer indexing uses a globally unique Gmsh tag
+- integer indexing uses globally unique Gmsh tags
 - entity indexing uses `(dimension, tag)`
 - filtering returns a new immutable collection
-- counts come from `len(collection)` rather than duplicated metadata
+- elements iterate over their `Node` objects
 
 The compatibility and modern models are separate so parser mutation cannot leak
 into application-facing values.
 
 ## Version management
 
-`MshFormatVersion` enumerates MSH 1.0, 2.0, 2.1, 2.2, 4.0, and 4.1.
-`VersionManager` parses version strings, validates support, and provides helpers
-for the 1.x, 2.x, and 4.x families.
+The parser layer uses `MshFormatVersion` and `VersionManager` to validate input.
+The public model exposes the smaller immutable `api.Version` value with `major`
+and `minor` attributes.
 
 ## Parser interface
 
@@ -129,7 +140,7 @@ accept both public mesh models.
 ## Constraints
 
 - the complete mesh is loaded into memory
-- the modern API currently performs an eager conversion after parsing
+- the modern API performs an eager conversion after parsing
 - lazy loading and streaming iteration are not implemented
 - the library reads but does not write meshes
 - binary data and many optional MSH sections are not represented
