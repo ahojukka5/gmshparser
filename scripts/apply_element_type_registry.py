@@ -118,3 +118,22 @@ replace_once(
 )
 
 path.write_text(text)
+
+test_path = Path("tests/test_pythonic_api.py")
+test_text = test_path.read_text()
+old_test = '''def test_element_type_accepts_unnamed_gmsh_values():
+    element_type = ElementType(92)
+
+    assert int(element_type) == 92
+    assert element_type.name == "TYPE_92"
+'''
+new_test = '''def test_element_type_accepts_unnamed_gmsh_values():
+    element_type = ElementType(999)
+
+    assert int(element_type) == 999
+    assert element_type.name == "TYPE_999"
+    assert element_type.info is None
+'''
+if test_text.count(old_test) != 1:
+    raise RuntimeError("Expected the unnamed element type regression test once")
+test_path.write_text(test_text.replace(old_test, new_test, 1))
