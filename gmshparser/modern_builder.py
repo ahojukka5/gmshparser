@@ -163,8 +163,7 @@ class ModernMeshBuilder:
     ) -> None:
         """Store one parsed element block without compatibility objects."""
         records = tuple(
-            (element_tag, tuple(connectivity))
-            for element_tag, connectivity in elements
+            (element_tag, tuple(connectivity)) for element_tag, connectivity in elements
         )
         self._raw_element_blocks.append(
             (dimension, entity_tag, int(element_type), records)
