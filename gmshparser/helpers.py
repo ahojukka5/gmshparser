@@ -1,217 +1,61 @@
-from typing import TextIO
+from collections.abc import Iterator
+from typing import Any, TextIO
 
 
 def parse_ints(io: TextIO) -> list[int]:
-    """Parse first line of io to list of integers.
-
-    Parameters
-    ----------
-    io :: TextIO
-        Object supporting `readline()`
-
-    Returns
-    -------
-    integers :: List[int]
-        A list of integers
-
-    Examples
-    --------
-    >>> data = StringIO("1 2 3 4")
-    >>> parse_ints(data)
-    [1, 2, 3, 4]
-    """
-    line = io.readline()
-    line = line.strip()
-    parts = line.split(" ")
-    ints = map(int, parts)
-    return list(ints)
+    """Parse one line from *io* as integers."""
+    return [int(value) for value in io.readline().strip().split()]
 
 
 def parse_floats(io: TextIO) -> list[float]:
-    """Parse first line of io to list of floats.
+    """Parse one line from *io* as floating-point values."""
+    return [float(value) for value in io.readline().strip().split()]
 
-    Parameters
-    ----------
-    io :: TextIO
-        Object supporting `readline()`
 
-    Returns
-    -------
-    floats :: List[float]
-        A list of floats
+def get_triangles(mesh: Any) -> tuple[list[float], list[float], list[list[int]]]:
+    """Return ``(X, Y, triangles)`` for three-node surface triangles.
 
-    Examples
-    --------
-    >>> data = StringIO("1.1 2.2 3.3 4.4")
-    >>> parse_floats(data)
-    [1.1, 2.2, 3.3, 4.4]
+    Both :func:`gmshparser.read` meshes and compatibility
+    :func:`gmshparser.parse` meshes are accepted. Connectivity is converted to
+    zero-based indices into ``X`` and ``Y``.
     """
-    line = io.readline()
-    line = line.strip()
-    parts = line.split(" ")
-    ints = map(float, parts)
-    return list(ints)
+    return _indexed_cells(mesh, element_type=2)
 
 
-def get_triangles(mesh):
-    """Return tuple (X, Y, T) of triangular data.
+def get_quads(mesh: Any) -> tuple[list[float], list[float], list[list[int]]]:
+    """Return ``(X, Y, quads)`` for four-node surface quadrilaterals.
 
-    Data can be used effectively in matplotlib's `triplot`:
-
-    >>> X, Y, T = get_triangles(mesh)
-    >>> plt.triplot(X, Y, T)
+    Both modern and compatibility mesh objects are accepted. Connectivity is
+    converted to zero-based indices into ``X`` and ``Y``.
     """
-    elements = {}
-    nodes = {}
-    node_ids = set()
-
-    for entity in mesh.get_element_entities():
-        eltype = entity.get_element_type()
-        if entity.get_dimension() == 2 and eltype == 2:
-            for element in entity.get_elements():
-                elid = element.get_tag()
-                elcon = element.get_connectivity()
-                elements[elid] = elcon
-                for c in elcon:
-                    node_ids.add(c)
-
-    for entity in mesh.get_node_entities():
-        for node in entity.get_nodes():
-            nid = node.get_tag()
-            if nid not in node_ids:
-                continue
-            ncoords = node.get_coordinates()
-            nodes[nid] = ncoords
-
-    invP = {}
-    X = []
-    Y = []
-
-    for i, nid in enumerate(node_ids):
-        invP[nid] = i
-        X.append(nodes[nid][0])
-        Y.append(nodes[nid][1])
-
-    T = []
-    for element in elements.values():
-        T.append([invP[c] for c in element])
-
-    return X, Y, T
+    return _indexed_cells(mesh, element_type=3)
 
 
-def get_quads(mesh):
-    """Return tuple (X, Y, Q) of quadrilateral data.
+def get_elements_2d(mesh: Any) -> dict[str, Any]:
+    """Return node coordinates, triangles, and quadrilaterals for plotting.
 
-    Extracts 4-node quadrilateral elements (element type 3) from mesh.
-    Data can be used with matplotlib's patches:
-
-    >>> X, Y, Q = get_quads(mesh)
-    >>> import matplotlib.pyplot as plt
-    >>> import matplotlib.patches as patches
-    >>> fig, ax = plt.subplots()
-    >>> for quad in Q:
-    >>>     coords = [[X[i], Y[i]] for i in quad]
-    >>>     polygon = patches.Polygon(coords, fill=False, edgecolor='black')
-    >>>     ax.add_patch(polygon)
-
-    Parameters
-    ----------
-    mesh : Mesh
-        Mesh object containing quadrilateral elements
-
-    Returns
-    -------
-    X : list
-        List of x-coordinates of nodes
-    Y : list
-        List of y-coordinates of nodes
-    Q : list
-        List of quadrilateral connectivity, each entry is [n0, n1, n2, n3]
+    Connectivity in ``triangles`` and ``quads`` retains the original Gmsh node
+    tags. The function accepts both the modern and compatibility APIs.
     """
-    elements = {}
-    nodes = {}
-    node_ids = set()
+    triangles: list[list[int]] = []
+    quads: list[list[int]] = []
+    node_ids: set[int] = set()
 
-    for entity in mesh.get_element_entities():
-        eltype = entity.get_element_type()
-        if entity.get_dimension() == 2 and eltype == 3:
-            for element in entity.get_elements():
-                elid = element.get_tag()
-                elcon = element.get_connectivity()
-                elements[elid] = elcon
-                for c in elcon:
-                    node_ids.add(c)
+    for dimension, element_type, _, connectivity in _elements(mesh):
+        if dimension != 2:
+            continue
 
-    for entity in mesh.get_node_entities():
-        for node in entity.get_nodes():
-            nid = node.get_tag()
-            if nid not in node_ids:
-                continue
-            ncoords = node.get_coordinates()
-            nodes[nid] = ncoords
+        node_ids.update(connectivity)
+        if element_type == 2:
+            triangles.append(connectivity)
+        elif element_type == 3:
+            quads.append(connectivity)
 
-    invP = {}
-    X = []
-    Y = []
-
-    for i, nid in enumerate(sorted(node_ids)):
-        invP[nid] = i
-        X.append(nodes[nid][0])
-        Y.append(nodes[nid][1])
-
-    Q = []
-    for element in elements.values():
-        Q.append([invP[c] for c in element])
-
-    return X, Y, Q
-
-
-def get_elements_2d(mesh):
-    """Return 2D mesh elements (triangles and quads) for visualization.
-
-    Extracts all 2D elements from the mesh, supporting both triangular
-    (type 2) and quadrilateral (type 3) elements.
-
-    Parameters
-    ----------
-    mesh : Mesh
-        Mesh object containing 2D elements
-
-    Returns
-    -------
-    dict
-        Dictionary with keys:
-        - 'nodes': dict mapping node_id to (x, y) coordinates
-        - 'triangles': list of triangle connectivity [n0, n1, n2]
-        - 'quads': list of quad connectivity [n0, n1, n2, n3]
-        - 'node_ids': list of all node IDs used
-    """
-    triangles = []
-    quads = []
-    nodes = {}
-    node_ids = set()
-
-    # Extract elements
-    for entity in mesh.get_element_entities():
-        eltype = entity.get_element_type()
-        if entity.get_dimension() == 2:
-            for element in entity.get_elements():
-                elcon = element.get_connectivity()
-                for c in elcon:
-                    node_ids.add(c)
-
-                if eltype == 2:  # Triangle
-                    triangles.append(elcon)
-                elif eltype == 3:  # Quad
-                    quads.append(elcon)
-
-    # Extract node coordinates
-    for entity in mesh.get_node_entities():
-        for node in entity.get_nodes():
-            nid = node.get_tag()
-            if nid in node_ids:
-                ncoords = node.get_coordinates()
-                nodes[nid] = (ncoords[0], ncoords[1])
+    coordinates = dict(_nodes(mesh))
+    nodes = {
+        tag: (coordinates[tag][0], coordinates[tag][1])
+        for tag in sorted(node_ids)
+    }
 
     return {
         "nodes": nodes,
@@ -219,3 +63,65 @@ def get_elements_2d(mesh):
         "quads": quads,
         "node_ids": sorted(node_ids),
     }
+
+
+def _indexed_cells(
+    mesh: Any,
+    *,
+    element_type: int,
+) -> tuple[list[float], list[float], list[list[int]]]:
+    cells: list[list[int]] = []
+    node_ids: set[int] = set()
+
+    for dimension, current_type, _, connectivity in _elements(mesh):
+        if dimension == 2 and current_type == element_type:
+            cells.append(connectivity)
+            node_ids.update(connectivity)
+
+    coordinates = dict(_nodes(mesh))
+    ordered_tags = sorted(node_ids)
+    positions = {tag: index for index, tag in enumerate(ordered_tags)}
+    x_coordinates = [coordinates[tag][0] for tag in ordered_tags]
+    y_coordinates = [coordinates[tag][1] for tag in ordered_tags]
+    indexed_cells = [
+        [positions[tag] for tag in connectivity] for connectivity in cells
+    ]
+    return x_coordinates, y_coordinates, indexed_cells
+
+
+def _nodes(
+    mesh: Any,
+) -> Iterator[tuple[int, tuple[float, float, float]]]:
+    if hasattr(mesh, "nodes"):
+        for node in mesh.nodes:
+            yield node.tag, node.coordinates
+        return
+
+    for entity in mesh.get_node_entities():
+        for node in entity.get_nodes():
+            yield node.get_tag(), tuple(node.get_coordinates())
+
+
+def _elements(
+    mesh: Any,
+) -> Iterator[tuple[int, int, int, list[int]]]:
+    if hasattr(mesh, "elements"):
+        for element in mesh.elements:
+            yield (
+                element.dimension,
+                element.element_type,
+                element.tag,
+                list(element.node_tags),
+            )
+        return
+
+    for entity in mesh.get_element_entities():
+        dimension = entity.get_dimension()
+        element_type = entity.get_element_type()
+        for element in entity.get_elements():
+            yield (
+                dimension,
+                element_type,
+                element.get_tag(),
+                list(element.get_connectivity()),
+            )
