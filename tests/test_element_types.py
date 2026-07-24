@@ -170,7 +170,7 @@ def test_msh4_parser_preserves_unknown_types_using_declared_block_dimension():
 
     ElementsParser.parse(
         mesh,
-        StringIO("1 1 1 1\n3 7 999 1\n1 10 20 30\n"),
+        StringIO("1 1 1 1\n3 7 999 1\n1 10 20 30\n$EndElements\n"),
     )
 
     entity = mesh.get_element_entity(3, 7)
