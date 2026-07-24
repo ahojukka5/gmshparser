@@ -44,6 +44,23 @@ uv run python -c "import gmshparser; print(gmshparser.__version__)"
 uv run gmshparser --version
 ```
 
+## NumPy dependency
+
+The core package does not depend on NumPy. Install the optional extra for array
+interoperability:
+
+```bash
+uv add "gmshparser[numpy]"
+```
+
+or with pip:
+
+```bash
+pip install "gmshparser[numpy]"
+```
+
+The optional API is then available as `gmshparser.numpy`.
+
 ## Visualization dependency
 
 The core package does not depend on matplotlib. Add it only for visualization:
