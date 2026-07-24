@@ -1,10 +1,11 @@
 """Parser for Elements section in MSH format version 2.x."""
 
 from typing import TextIO
+
 from .abstract_parser import AbstractParser
-from .mesh import Mesh
 from .element import Element
 from .element_entity import ElementEntity
+from .mesh import Mesh
 
 
 class ElementsParserV2(AbstractParser):
@@ -49,7 +50,7 @@ class ElementsParserV2(AbstractParser):
         min_tag = float("inf")
         max_tag = 0
 
-        for i in range(num_elements):
+        for _i in range(num_elements):
             parts = list(map(int, io.readline().strip().split()))
 
             elm_number = parts[0]

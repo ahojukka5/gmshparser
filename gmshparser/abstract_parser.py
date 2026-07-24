@@ -1,8 +1,9 @@
 from typing import TextIO
+
 from .mesh import Mesh
 
 
-class AbstractParser(object):
+class AbstractParser:
     """AbstractParser is a superclass of all other parsers.
 
     All other parsers must inheric ``AbstractParser`` and implement their own

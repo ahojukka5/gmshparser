@@ -1,7 +1,4 @@
-from typing import List
-
-
-class Element(object):
+class Element:
     """Element."""
 
     def __init__(self):
@@ -16,10 +13,10 @@ class Element(object):
         """Get element tag."""
         return self.tag_
 
-    def set_connectivity(self, connectivity: List[int]):
+    def set_connectivity(self, connectivity: list[int]):
         """Set element connectivity."""
         self.connectivity_ = connectivity
 
-    def get_connectivity(self) -> List[int]:
+    def get_connectivity(self) -> list[int]:
         """Get element connectivity."""
         return self.connectivity_

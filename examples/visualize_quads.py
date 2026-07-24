@@ -20,12 +20,14 @@ def visualize_quads_simple() -> None:
     for quad in quads:
         coordinates = [(x_coordinates[index], y_coordinates[index]) for index in quad]
         coordinates.append(coordinates[0])
-        x_values, y_values = zip(*coordinates)
+        x_values, y_values = zip(*coordinates, strict=False)
         axes.plot(x_values, y_values, "k-", linewidth=1.5)
 
     axes.plot(x_coordinates, y_coordinates, "ro", markersize=8)
 
-    for index, (x_value, y_value) in enumerate(zip(x_coordinates, y_coordinates)):
+    for index, (x_value, y_value) in enumerate(
+        zip(x_coordinates, y_coordinates, strict=False)
+    ):
         axes.text(
             x_value,
             y_value,
@@ -57,7 +59,7 @@ def visualize_mixed_mesh() -> None:
     for triangle in data["triangles"]:
         coordinates = [nodes[node_tag] for node_tag in triangle]
         coordinates.append(coordinates[0])
-        x_values, y_values = zip(*coordinates)
+        x_values, y_values = zip(*coordinates, strict=False)
         axes.plot(
             x_values,
             y_values,
@@ -69,7 +71,7 @@ def visualize_mixed_mesh() -> None:
     for quad in data["quads"]:
         coordinates = [nodes[node_tag] for node_tag in quad]
         coordinates.append(coordinates[0])
-        x_values, y_values = zip(*coordinates)
+        x_values, y_values = zip(*coordinates, strict=False)
         axes.plot(
             x_values,
             y_values,

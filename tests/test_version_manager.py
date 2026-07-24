@@ -1,9 +1,10 @@
 """Tests for version_manager module."""
 
 import pytest
+
 from gmshparser.version_manager import (
-    VersionManager,
     MshFormatVersion,
+    VersionManager,
 )
 
 

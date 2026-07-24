@@ -1,7 +1,7 @@
 from gmshparser.element_entity import ElementEntity
 
 
-class ElementMock(object):
+class ElementMock:
     def __init__(self):
         pass
 

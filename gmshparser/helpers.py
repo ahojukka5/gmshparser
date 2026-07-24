@@ -1,7 +1,7 @@
-from typing import List, TextIO
+from typing import TextIO
 
 
-def parse_ints(io: TextIO) -> List[int]:
+def parse_ints(io: TextIO) -> list[int]:
     """Parse first line of io to list of integers.
 
     Parameters
@@ -27,7 +27,7 @@ def parse_ints(io: TextIO) -> List[int]:
     return list(ints)
 
 
-def parse_floats(io: TextIO) -> List[float]:
+def parse_floats(io: TextIO) -> list[float]:
     """Parse first line of io to list of floats.
 
     Parameters

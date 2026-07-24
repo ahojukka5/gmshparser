@@ -4,11 +4,12 @@ MSH 1.0 uses the $ELM/$ENDELM section instead of $Elements/$EndElements.
 The element format includes region tags (physical and elementary) directly.
 """
 
-from typing import TextIO, Dict, Tuple
+from typing import TextIO
+
 from .abstract_parser import AbstractParser
-from .mesh import Mesh
-from .element_entity import ElementEntity
 from .element import Element
+from .element_entity import ElementEntity
+from .mesh import Mesh
 
 
 class ElementsParserV1(AbstractParser):
@@ -43,7 +44,7 @@ class ElementsParserV1(AbstractParser):
 
         # Group elements by (dimension, entity_tag, element_type)
         # In MSH 1.0, reg-elem serves as the entity tag
-        element_groups: Dict[Tuple[int, int, int], list] = {}
+        element_groups: dict[tuple[int, int, int], list] = {}
         min_tag = float("inf")
         max_tag = 0
 

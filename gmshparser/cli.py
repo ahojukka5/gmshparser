@@ -30,7 +30,7 @@ def elements(mesh, file) -> None:
         for element in entity.get_elements():
             elid = element.get_tag()
             elcon = " ".join(map(str, element.get_connectivity()))
-            print("%s %s %s" % (elid, eltype, elcon), file=file)
+            print(f"{elid} {eltype} {elcon}", file=file)
 
 
 def main(argv=None, file=sys.stdout) -> None:

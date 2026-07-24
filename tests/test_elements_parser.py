@@ -1,6 +1,7 @@
+from io import StringIO
+
 from gmshparser.elements_parser import ElementsParser
 from gmshparser.mesh import Mesh
-from io import StringIO
 
 __content__ = """
 $Elements

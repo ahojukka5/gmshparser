@@ -1,7 +1,7 @@
-from .mesh import Mesh
-from .main_parser import MainParser
-from .version_manager import VersionManager, MshFormatVersion
 from . import helpers
+from .main_parser import MainParser
+from .mesh import Mesh
+from .version_manager import MshFormatVersion, VersionManager
 
 __all__ = [
     "MainParser",
@@ -42,6 +42,6 @@ def parse(filename: str) -> Mesh:
     mesh = Mesh()
     mesh.set_name(filename)
     parser = MainParser()
-    with open(filename, "r") as io:
+    with open(filename) as io:
         parser.parse(mesh, io)
     return mesh

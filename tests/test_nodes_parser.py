@@ -1,6 +1,7 @@
-from gmshparser.nodes_parser import NodesParser
-from gmshparser.mesh import Mesh
 from io import StringIO
+
+from gmshparser.mesh import Mesh
+from gmshparser.nodes_parser import NodesParser
 
 __content__ = """
 $Nodes

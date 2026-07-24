@@ -1,9 +1,9 @@
-from typing import List
 from io import StringIO
+
 from .element import Element
 
 
-class ElementEntity(object):
+class ElementEntity:
     """ElementEntity class holds elements for one block."""
 
     def __init__(self):
@@ -53,14 +53,14 @@ class ElementEntity(object):
         """Get an element from the entity."""
         return self.elements_[tag]
 
-    def get_elements(self) -> List[Element]:
+    def get_elements(self) -> list[Element]:
         """Return all the elements of this entity."""
         return self.elements_.values()
 
     def __str__(self):
         io = StringIO()
-        io.write("---- Element entity # %s ----\n" % self.get_tag())
-        io.write("Dimension: %s\n" % self.get_dimension())
-        io.write("Element type: %s\n" % self.get_element_type())
-        io.write("Number of elements: %s\n" % self.get_number_of_elements())
+        io.write(f"---- Element entity # {self.get_tag()} ----\n")
+        io.write(f"Dimension: {self.get_dimension()}\n")
+        io.write(f"Element type: {self.get_element_type()}\n")
+        io.write(f"Number of elements: {self.get_number_of_elements()}\n")
         return io.getvalue()

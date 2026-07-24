@@ -1,10 +1,10 @@
-from typing import List, Optional
-from gmshparser.node_entity import NodeEntity
-from gmshparser.element_entity import ElementEntity
 from io import StringIO
 
+from gmshparser.element_entity import ElementEntity
+from gmshparser.node_entity import NodeEntity
 
-class Mesh(object):
+
+class Mesh:
     """Mesh is the main class of the package."""
 
     def __init__(self):
@@ -42,15 +42,15 @@ class Mesh(object):
         self.version_major_ = major
         self.version_minor_ = minor
 
-    def get_version(self) -> Optional[float]:
+    def get_version(self) -> float | None:
         """Get the version of the Mesh object"""
         return self.version_
 
-    def get_version_major(self) -> Optional[int]:
+    def get_version_major(self) -> int | None:
         """Get the major version number."""
         return self.version_major_
 
-    def get_version_minor(self) -> Optional[int]:
+    def get_version_minor(self) -> int | None:
         """Get the minor version number."""
         return self.version_minor_
 
@@ -116,7 +116,7 @@ class Mesh(object):
         """Get node entity based on dimension and tag."""
         return self.node_entities_[(dim, tag)]
 
-    def get_node_entities(self) -> List[NodeEntity]:
+    def get_node_entities(self) -> list[NodeEntity]:
         """Get all node entities of mesh."""
         return self.node_entities_.values()
 
@@ -166,22 +166,22 @@ class Mesh(object):
         """Get element entity based on dimension `dim` and tag `tag`."""
         return self.element_entities_[(dim, tag)]
 
-    def get_element_entities(self) -> List[ElementEntity]:
+    def get_element_entities(self) -> list[ElementEntity]:
         """Get all element entities as dictionary."""
         return self.element_entities_.values()
 
     def __str__(self):
         io = StringIO()
-        io.write("Mesh name: %s\n" % self.get_name())
-        io.write("Mesh version: %s\n" % self.get_version())
-        io.write("Number of nodes: %s\n" % self.get_number_of_nodes())
-        io.write("Minimum node tag: %s\n" % self.get_min_node_tag())
-        io.write("Maximum node tag: %s\n" % self.get_max_node_tag())
+        io.write(f"Mesh name: {self.get_name()}\n")
+        io.write(f"Mesh version: {self.get_version()}\n")
+        io.write(f"Number of nodes: {self.get_number_of_nodes()}\n")
+        io.write(f"Minimum node tag: {self.get_min_node_tag()}\n")
+        io.write(f"Maximum node tag: {self.get_max_node_tag()}\n")
         nnent = self.get_number_of_node_entities()
-        io.write("Number of node entities: %s\n" % nnent)
-        io.write("Number of elements: %s\n" % self.get_number_of_elements())
-        io.write("Minimum element tag: %s\n" % self.get_min_element_tag())
-        io.write("Maximum element tag: %s\n" % self.get_max_element_tag())
+        io.write(f"Number of node entities: {nnent}\n")
+        io.write(f"Number of elements: {self.get_number_of_elements()}\n")
+        io.write(f"Minimum element tag: {self.get_min_element_tag()}\n")
+        io.write(f"Maximum element tag: {self.get_max_element_tag()}\n")
         neent = self.get_number_of_element_entities()
-        io.write("Number of element entities: %s" % neent)
+        io.write(f"Number of element entities: {neent}")
         return io.getvalue()

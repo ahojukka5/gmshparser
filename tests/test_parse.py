@@ -1,5 +1,6 @@
-from gmshparser import parse
 import os
+
+from gmshparser import parse
 
 __content__ = """
 $MeshFormat
