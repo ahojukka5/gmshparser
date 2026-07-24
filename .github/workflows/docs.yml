@@ -19,32 +19,20 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      - name: Set up Python
-        uses: actions/setup-python@v7
+      - name: Install uv and Python
+        uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
         with:
-          python-version: '3.12'
+          version: "0.11.32"
+          python-version: "3.12"
+          enable-cache: true
+          cache-dependency-glob: pyproject.toml
+          cache-suffix: docs
 
-      - name: Install Poetry
-        run: |
-          python -m pip install --upgrade pip
-          python -m pip install "poetry==2.4.1"
-
-      - name: Configure Poetry
-        run: |
-          poetry config virtualenvs.create true
-          poetry config virtualenvs.in-project true
-
-      - name: Load cached virtual environment
-        uses: actions/cache@v6
-        with:
-          path: .venv
-          key: docs-venv-${{ runner.os }}-${{ hashFiles('**/poetry.lock') }}
-
-      - name: Install project and dependencies
-        run: poetry install --no-interaction
+      - name: Install documentation dependencies
+        run: uv sync --no-default-groups --group docs
 
       - name: Build documentation
-        run: poetry run mkdocs build
+        run: uv run --no-sync mkdocs build
 
       - name: Deploy to GitHub Pages
         if: github.event_name == 'push' && github.ref == 'refs/heads/master'
