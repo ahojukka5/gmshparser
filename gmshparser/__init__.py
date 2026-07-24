@@ -5,13 +5,15 @@ from .api import (
     ElementType,
     Entity,
     EntityCollection,
-    Mesh as ModernMesh,
     Node,
     NodeCollection,
     PhysicalGroup,
     PhysicalGroupCollection,
     Version,
     read,
+)
+from .api import (
+    Mesh as ModernMesh,
 )
 from .main_parser import MainParser
 from .mesh import Mesh
