@@ -193,10 +193,11 @@ def test_parametric_coordinates_are_separated_from_cartesian_coordinates():
 
 
 def test_element_type_accepts_unnamed_gmsh_values():
-    element_type = ElementType(92)
+    element_type = ElementType(999)
 
-    assert int(element_type) == 92
-    assert element_type.name == "TYPE_92"
+    assert int(element_type) == 999
+    assert element_type.name == "TYPE_999"
+    assert element_type.info is None
 
 
 def test_mesh_bounds_are_computed_from_nodes():
