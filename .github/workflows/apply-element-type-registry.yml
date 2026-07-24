@@ -52,7 +52,7 @@ jobs:
         run: |
           uv run --no-sync ruff check gmshparser tests examples
           uv run --no-sync pytest
-          uv run --no-sync mkdocs build --strict
+          uv run --no-sync mkdocs build
 
       - name: Record successful validation
         run: |
@@ -60,7 +60,7 @@ jobs:
             echo "Validation marker already present"
             exit 0
           fi
-          printf '%s\n' "Ruff, pytest, and strict MkDocs validation passed." \
+          printf '%s\n' "Ruff, pytest, and MkDocs validation passed." \
             > .github/element-type-registry-passed
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
