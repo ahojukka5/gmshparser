@@ -34,6 +34,22 @@ $Elements
 $EndElements
 """
 
+MSH_1 = """$NOD
+6
+1 0.0 0.0 0.0
+2 1.0 0.0 0.0
+3 1.0 1.0 0.0
+4 0.0 1.0 0.0
+5 2.0 0.0 0.0
+6 2.0 1.0 0.0
+$ENDNOD
+$ELM
+2
+1 3 1 1 4 1 2 3 4
+2 3 1 1 4 2 5 6 3
+$ENDELM
+"""
+
 PARAMETRIC_MESH = """$MeshFormat
 4.1 0 8
 $EndMeshFormat
@@ -45,6 +61,27 @@ $Nodes
 $EndNodes
 $Elements
 0 0 0 0
+$EndElements
+"""
+
+
+def _msh_2(version: str) -> str:
+    return f"""$MeshFormat
+{version} 0 8
+$EndMeshFormat
+$Nodes
+6
+1 0.0 0.0 0.0
+2 1.0 0.0 0.0
+3 1.0 1.0 0.0
+4 0.0 1.0 0.0
+5 2.0 0.0 0.0
+6 2.0 1.0 0.0
+$EndNodes
+$Elements
+2
+1 3 2 99 2 1 2 3 4
+2 3 2 99 2 2 5 6 3
 $EndElements
 """
 
@@ -86,6 +123,29 @@ def test_read_stream_exposes_flat_pythonic_collections():
     assert element.nodes[0] is mesh.nodes[1]
     assert element.entity_key == (2, 1)
     assert len(element) == 4
+
+
+@pytest.mark.parametrize(
+    ("version", "content"),
+    [
+        (Version(1, 0), MSH_1),
+        (Version(2, 0), _msh_2("2.0")),
+        (Version(2, 1), _msh_2("2.1")),
+        (Version(2, 2), _msh_2("2.2")),
+        (Version(4, 0), MESH.replace("4.1 0 8", "4.0 0 8", 1)),
+        (Version(4, 1), MESH),
+    ],
+)
+def test_read_supports_every_documented_msh_version(version, content):
+    mesh = gmshparser.read(StringIO(content))
+
+    assert mesh.version == version
+    assert mesh.is_ascii is True
+    assert mesh.data_size == 8
+    assert len(mesh.nodes) == 6
+    assert len(mesh.elements) == 2
+    assert mesh.elements.types == frozenset({ElementType.QUADRANGLE})
+    assert mesh.elements[1].nodes[0] is mesh.nodes[1]
 
 
 def test_filtering_and_unified_entity_access_share_value_objects():
