@@ -28,6 +28,28 @@ The compatibility API is retained for existing applications and for low-level
 parser development. It remains mutable and mirrors the internal MSH entity-block
 structure.
 
+Element blocks are identified by dimension, elementary entity tag, and element
+type. Existing two-argument lookup remains available when an entity contains one
+element type:
+
+```python
+entity = mesh.get_element_entity(2, 1)
+```
+
+For a mixed entity, provide the numeric type or `ElementType` explicitly:
+
+```python
+from gmshparser import ElementType
+
+triangles = mesh.get_element_entity(2, 1, ElementType.TRIANGLE)
+quadrangles = mesh.get_element_entity(2, 1, ElementType.QUADRANGLE)
+```
+
+Calling the two-argument form for a mixed entity raises `KeyError` rather than
+returning an arbitrary block. `has_element_entity()` accepts the same optional
+third argument; without it, the method checks whether any block exists for the
+entity.
+
 Equivalent modern access is considerably flatter:
 
 ```python
