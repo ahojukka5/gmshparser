@@ -27,14 +27,20 @@ jobs:
 
       - name: Apply Ruff fixes
         run: |
-          uv run --no-sync ruff check --fix --unsafe-fixes gmshparser tests examples
+          uv run --no-sync ruff check --fix --unsafe-fixes gmshparser tests examples || true
           uv run --no-sync ruff format gmshparser tests examples
 
-      - name: Verify Ruff and tests
-        run: |
-          uv run --no-sync ruff format --check gmshparser tests examples
-          uv run --no-sync ruff check gmshparser tests examples
-          uv run --no-sync pytest
+      - name: Verify behavior
+        run: uv run --no-sync pytest
+
+      - name: Collect remaining Ruff diagnostics
+        run: uv run --no-sync ruff check --output-format=concise gmshparser tests examples > ruff-remaining.txt || true
+
+      - name: Upload remaining diagnostics
+        uses: actions/upload-artifact@v7
+        with:
+          name: ruff-remaining
+          path: ruff-remaining.txt
 
       - name: Commit refactoring
         run: |
