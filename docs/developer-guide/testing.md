@@ -40,7 +40,7 @@ Open `htmlcov/index.html` in a browser.
 Run the same checks as CI:
 
 ```bash
-uv run black . --check
+uv run black gmshparser tests examples --check
 uv run flake8 gmshparser tests
 uv run pytest --cov=gmshparser --cov-report=xml --cov-report=term
 ```
@@ -48,7 +48,7 @@ uv run pytest --cov=gmshparser --cov-report=xml --cov-report=term
 Apply Black formatting with:
 
 ```bash
-uv run black .
+uv run black gmshparser tests examples
 ```
 
 ## Test data
