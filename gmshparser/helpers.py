@@ -1,15 +1,19 @@
 from collections.abc import Iterator
 from typing import Any, TextIO
 
+from .parsing import read_required_line
+
 
 def parse_ints(io: TextIO) -> list[int]:
-    """Parse one line from *io* as integers."""
-    return [int(value) for value in io.readline().strip().split()]
+    """Parse one required line from *io* as integers."""
+    line = read_required_line(io, "an integer record")
+    return [int(value) for value in line.strip().split()]
 
 
 def parse_floats(io: TextIO) -> list[float]:
-    """Parse one line from *io* as floating-point values."""
-    return [float(value) for value in io.readline().strip().split()]
+    """Parse one required line from *io* as floating-point values."""
+    line = read_required_line(io, "a floating-point record")
+    return [float(value) for value in line.strip().split()]
 
 
 def get_triangles(mesh: Any) -> tuple[list[float], list[float], list[list[int]]]:
