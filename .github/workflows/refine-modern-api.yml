@@ -33,8 +33,10 @@ jobs:
       - name: Install development dependencies
         run: uv sync --no-default-groups --group lint --group test
 
-      - name: Format sources
-        run: uv run --no-sync ruff format gmshparser tests examples
+      - name: Format and fix safe lint findings
+        run: |
+          uv run --no-sync ruff format gmshparser tests examples
+          uv run --no-sync ruff check --fix gmshparser tests examples
 
       - name: Commit refined API
         run: |
@@ -45,7 +47,7 @@ jobs:
             echo "No API changes"
             exit 0
           fi
-          git commit -m "Refine modern API around physical groups"
+          git commit -m "Polish physical group API"
           git push origin HEAD:${{ github.head_ref }}
 
       - name: Validate lint and tests
