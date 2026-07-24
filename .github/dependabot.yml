@@ -1,0 +1,24 @@
+version: 2
+
+updates:
+  - package-ecosystem: pip
+    directory: /
+    schedule:
+      interval: monthly
+      time: "06:00"
+      timezone: Europe/Helsinki
+    groups:
+      python-dependencies:
+        patterns:
+          - "*"
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+      time: "06:00"
+      timezone: Europe/Helsinki
+    groups:
+      github-actions:
+        patterns:
+          - "*"
