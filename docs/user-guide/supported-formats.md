@@ -1,23 +1,24 @@
 # Supported Formats
 
-gmshparser reads the node and element data from selected **ASCII** Gmsh MSH
-formats. The version is detected automatically from `$MeshFormat`, or from the
-legacy `$NOD` header for MSH 1.0.
+gmshparser reads mesh topology and physical group metadata from selected
+**ASCII** Gmsh MSH formats. The version is detected automatically from
+`$MeshFormat`, or from the legacy `$NOD` header for MSH 1.0.
 
 ## Supported versions
 
-| Version | Node and element layout | Status |
-| --- | --- | --- |
-| MSH 1.0 | legacy `$NOD` and `$ELM` sections | supported |
-| MSH 2.0 | flat `$Nodes` and `$Elements` sections | supported |
-| MSH 2.1 | flat `$Nodes` and `$Elements` sections | supported |
-| MSH 2.2 | flat `$Nodes` and `$Elements` sections | supported |
-| MSH 4.0 | entity-block `$Nodes` and `$Elements` sections | supported |
-| MSH 4.1 | entity-block `$Nodes` and `$Elements` sections | supported |
+| Version | Node and element layout | Physical groups | Status |
+| --- | --- | --- | --- |
+| MSH 1.0 | legacy `$NOD` and `$ELM` sections | element region fields | supported |
+| MSH 2.0 | flat `$Nodes` and `$Elements` sections | element tags and `$PhysicalNames` | supported |
+| MSH 2.1 | flat `$Nodes` and `$Elements` sections | element tags and `$PhysicalNames` | supported |
+| MSH 2.2 | flat `$Nodes` and `$Elements` sections | element tags and `$PhysicalNames` | supported |
+| MSH 4.0 | entity-block `$Nodes` and `$Elements` sections | `$Entities` and `$PhysicalNames` | supported |
+| MSH 4.1 | entity-block `$Nodes` and `$Elements` sections | `$Entities` and `$PhysicalNames` | supported |
 
-“Supported” here means that the core mesh topology—node coordinates, element
-connectivity, entity grouping, counts, and tag ranges—can be read through the
-common Python API. It does not mean that every optional MSH section is retained.
+“Supported” means that core topology—node coordinates, element connectivity,
+entity grouping, counts, tag ranges, and physical group assignments—can be read.
+It does not mean that every optional MSH section or every geometry relationship
+is retained.
 
 ## ASCII only
 
@@ -44,32 +45,54 @@ $ELM
 $ENDELM
 ```
 
-The parser converts the legacy flat data into the same `Mesh`, `NodeEntity`, and
-`ElementEntity` model used for later versions.
+The `reg-phys` and `reg-elem` fields in element records are retained as physical
+and elementary entity assignments. MSH 1.0 does not carry the later named
+`$PhysicalNames` section, so these groups may be anonymous.
 
 ## MSH 2.x
 
 For MSH 2.0, 2.1, and 2.2, gmshparser parses:
 
 - `$MeshFormat`
+- `$PhysicalNames`, when present
 - `$Nodes`
 - `$Elements`
 
-Element records may contain physical, elementary, and partition tags. The
-current parser uses the elementary entity tag for grouping but does not expose
-the complete tag list on each element.
-
-`$PhysicalNames` and other optional sections are not stored by the current data
-model.
+The first element tag is retained as the physical group tag and the second as
+the elementary entity tag. Additional optional element tags, such as partition
+metadata, are not yet exposed individually.
 
 ## MSH 4.x
 
-For MSH 4.0 and 4.1, gmshparser parses the entity-block forms of `$Nodes` and
-`$Elements` and stores each block as a node or element entity.
+For MSH 4.0 and 4.1, gmshparser parses:
 
-The standalone `$Entities` section and its geometry, bounding boxes, topology,
-and physical tags are not retained. Entity dimension and tag values available
-in the node and element block headers are preserved.
+- `$MeshFormat`
+- `$PhysicalNames`, when present
+- physical tag assignments from `$Entities`
+- entity-block `$Nodes`
+- entity-block `$Elements`
+
+The physical assignments are retained, but other `$Entities` information such as
+bounding boxes, boundary topology, and geometry parametrization is not yet part
+of the public model.
+
+## Physical group access
+
+The modern API resolves physical groups into their entities, elements, and
+participating nodes:
+
+```python
+import gmshparser
+
+mesh = gmshparser.read("mesh.msh")
+walls = mesh.physical_groups["Walls"]
+
+print(walls.entities)
+print(walls.elements)
+print(walls.nodes)
+```
+
+Anonymous groups remain available by `(dimension, tag)`.
 
 ## Common limitations
 
@@ -82,15 +105,16 @@ The current reader does not provide:
 - post-processing datasets such as `$NodeData`, `$ElementData`, or
   `$ElementNodeData`
 - periodic-entity metadata
-- complete physical-name and physical-tag metadata
+- MSH 4 entity bounding boxes and boundary topology
+- the complete list of auxiliary MSH 2.x element tags
 
 Unknown sections are skipped by the main parsing loop unless a parser for that
 section is registered in the relevant version-specific parser list.
 
 ## Element types
 
-Element type codes are stored as the numeric values defined by Gmsh. Common
-codes include:
+The modern API represents element type codes as `ElementType` integer-enum
+values. Common codes include:
 
 | Code | Element | Dimension |
 | --- | --- | --- |
@@ -109,12 +133,20 @@ code table.
 
 ## Check the detected format
 
-```python
-import gmshparser
+Modern API:
 
+```python
+mesh = gmshparser.read("mesh.msh")
+print(mesh.version)
+print(mesh.is_ascii)
+```
+
+Compatibility API:
+
+```python
 mesh = gmshparser.parse("mesh.msh")
 print(mesh.get_version())
-print(mesh.is_ascii())
+print(mesh.get_ascii())
 ```
 
 ## Test coverage

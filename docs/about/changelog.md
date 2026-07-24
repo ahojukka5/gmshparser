@@ -9,12 +9,19 @@ semantic versioning.
 ### Added
 
 - Pythonic `gmshparser.read()` entry point for paths and open text streams
-- immutable modern mesh, node, element, entity, collection, and version value
-  objects in `gmshparser.api`
+- explicit modern `gmshparser.api.parse()` alias while preserving top-level
+  `gmshparser.parse()` as the unchanged compatibility entry point
+- immutable modern mesh, node, element, entity, physical-group, collection, and
+  version value objects in `gmshparser.api`
+- physical group names and assignments from MSH 1.x, 2.x, and 4.x
+- physical group lookup by name or `(dimension, tag)`, resolving its entities,
+  elements, and participating nodes
 - flat tag-addressable node and element collections with filtering by element
-  type, dimension, entity, and parametric status
+  type, dimension, entity, physical tag, and parametric status
 - direct element-to-node object relationships
 - unified `mesh.entities` view combining legacy node and element blocks
+- `mesh.entity()`, `mesh.physical_group()`, and dimension views for points,
+  curves, surfaces, and volumes
 - descriptive `ElementType` integer enum with support for unnamed numeric types
 - separate Cartesian and parametric node coordinates
 - PEP 621 console-script metadata for the installed `gmshparser` command
@@ -24,6 +31,10 @@ semantic versioning.
 
 ### Changed
 
+- made `Element.element_type` the canonical modern attribute while retaining
+  `Element.type` as an alias
+- exported modern value and collection types at package level while retaining
+  `gmshparser.Mesh` as the original compatibility class
 - made visualization helpers accept both the modern `read()` model and the
   compatibility `parse()` model
 - corrected README, user-guide, API, architecture, testing, and test-data
@@ -44,8 +55,7 @@ semantic versioning.
 
 - synchronized `gmshparser.__version__` with package version 0.3.1
 - restored the packaged CLI entry point in `pyproject.toml`
-- removed incorrect claims that binary MSH files, complete physical-group
-  metadata, or Git LFS are currently supported
+- removed incorrect claims that binary MSH files or Git LFS are supported
 
 ## [0.3.1]
 
@@ -79,21 +89,4 @@ semantic versioning.
 
 ### Fixed
 
-- MSH 1.0 parsing compatibility
-- version detection for legacy formats
-
-## [0.1.0]
-
-### Added
-
-- initial mesh parser
-- MSH 4.1 parsing
-- Python API
-- command-line helpers
-- triangle visualization helper
-
-## Links
-
-- [PyPI releases](https://pypi.org/project/gmshparser/#history)
-- [GitHub releases](https://github.com/ahojukka5/gmshparser/releases)
-- [GitHub commits](https://github.com/ahojukka5/gmshparser/commits)
+- corrected packaging metadata and release files

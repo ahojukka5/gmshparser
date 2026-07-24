@@ -24,6 +24,9 @@ class Mesh:
         self.min_element_tag_ = 0
         self.max_element_tag_ = 0
         self.element_entities_ = {}
+        self.physical_names_ = {}
+        self.entity_physical_tags_ = {}
+        self.element_physical_tags_ = {}
 
     def set_name(self, name: str):
         """Set the name of the mesh."""
@@ -36,7 +39,6 @@ class Mesh:
     def set_version(self, version: float):
         """Set the version of the Mesh object"""
         self.version_ = version
-        # Parse major and minor version numbers
         major = int(version)
         minor = int(round((version - major) * 10))
         self.version_major_ = major
@@ -169,6 +171,52 @@ class Mesh:
     def get_element_entities(self) -> list[ElementEntity]:
         """Get all element entities as dictionary."""
         return self.element_entities_.values()
+
+    def set_physical_name(self, dimension: int, tag: int, name: str):
+        """Store a physical group name without changing the legacy object model."""
+        self.physical_names_[(dimension, tag)] = name
+
+    def get_physical_name(self, dimension: int, tag: int) -> str | None:
+        """Return a physical group name when one was declared."""
+        return self.physical_names_.get((dimension, tag))
+
+    def get_physical_names(self) -> dict[tuple[int, int], str]:
+        """Return declared physical group names keyed by ``(dimension, tag)``."""
+        return dict(self.physical_names_)
+
+    def set_entity_physical_tags(self, dimension: int, tag: int, physical_tags):
+        """Replace physical tags assigned to one elementary entity."""
+        self.entity_physical_tags_[(dimension, tag)] = self._normalize_tags(
+            physical_tags
+        )
+
+    def add_entity_physical_tags(self, dimension: int, tag: int, physical_tags):
+        """Add physical tags assigned to one elementary entity."""
+        existing = self.entity_physical_tags_.get((dimension, tag), ())
+        self.entity_physical_tags_[(dimension, tag)] = self._normalize_tags(
+            (*existing, *physical_tags)
+        )
+
+    def get_entity_physical_tags(self, dimension: int, tag: int) -> tuple[int, ...]:
+        """Return physical tags assigned to one elementary entity."""
+        return self.entity_physical_tags_.get((dimension, tag), ())
+
+    def set_element_physical_tags(self, element_tag: int, physical_tags):
+        """Store physical tags carried directly by one legacy element record."""
+        self.element_physical_tags_[element_tag] = self._normalize_tags(physical_tags)
+
+    def get_element_physical_tags(self, element_tag: int) -> tuple[int, ...]:
+        """Return physical tags carried directly by one element."""
+        return self.element_physical_tags_.get(element_tag, ())
+
+    @staticmethod
+    def _normalize_tags(tags) -> tuple[int, ...]:
+        normalized = []
+        for tag in tags:
+            value = int(tag)
+            if value > 0 and value not in normalized:
+                normalized.append(value)
+        return tuple(normalized)
 
     def __str__(self):
         io = StringIO()
