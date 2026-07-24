@@ -1,378 +1,165 @@
-# Writing Custom Parsers
+# Writing Parsers
 
-gmshparser's modular architecture makes it easy to add custom parsers for new mesh file sections.
+A section parser reads one MSH section and stores its data in a `Mesh` or a
+related model object.
 
-## Parser Basics
+## Parser contract
 
-Every parser must:
-
-1. Inherit from `AbstractParser`
-2. Implement `get_section_name()` - returns the section identifier (e.g., `"$PhysicalNames"`)
-3. Implement `parse(mesh, io)` - reads from file and populates mesh
-
-## Simple Example
-
-Here's a parser for the `$PhysicalNames` section:
+A parser implements `AbstractParser` and provides two static methods:
 
 ```python
-from gmshparser.abstract_parser import AbstractParser
-from gmshparser.mesh import Mesh
 from typing import TextIO
 
+from gmshparser.abstract_parser import AbstractParser
+from gmshparser.mesh import Mesh
+
+
+class ExampleParser(AbstractParser):
+    @staticmethod
+    def get_section_name() -> str:
+        return "$Example"
+
+    @staticmethod
+    def parse(mesh: Mesh, io: TextIO) -> None:
+        ...
+```
+
+`MainParser` has already consumed the section header when `parse()` is called.
+The section parser should read exactly the section payload. The main loop can
+then consume and ignore the `$End...` line.
+
+## Example: physical names
+
+gmshparser does not currently retain `$PhysicalNames`. Adding it requires both
+a parser and a place in the data model to store the result.
+
+```python
 class PhysicalNamesParser(AbstractParser):
-    """Parser for $PhysicalNames section."""
-    
     @staticmethod
     def get_section_name() -> str:
         return "$PhysicalNames"
-    
+
     @staticmethod
     def parse(mesh: Mesh, io: TextIO) -> None:
-        """Parse physical names from mesh file.
-        
-        Format:
-            $PhysicalNames
-            <num_names>
-            <dimension> <physical_tag> "<name>"
-            ...
-            $EndPhysicalNames
-        """
-        # Read number of physical names
-        num_names = int(io.readline().strip())
-        
-        # Parse each physical name
-        physical_names = {}
-        for _ in range(num_names):
-            line = io.readline().strip().split(maxsplit=2)
-            dimension = int(line[0])
-            tag = int(line[1])
-            name = line[2].strip('"')
-            physical_names[(dimension, tag)] = name
-        
-        # Store in mesh (you'd need to add this method to Mesh)
-        mesh.set_physical_names(physical_names)
+        count = int(io.readline().strip())
+        names = {}
+
+        for _ in range(count):
+            dimension, tag, quoted_name = io.readline().split(maxsplit=2)
+            names[(int(dimension), int(tag))] = quoted_name.strip().strip('"')
+
+        mesh.set_physical_names(names)
 ```
 
-## Registering Your Parser
+This example assumes that `Mesh` has matching `set_physical_names()` and
+`get_physical_names()` methods. Add and test those methods as part of the same
+change.
 
-Add your parser to the parser registry:
+## Register the parser
+
+The current parser registries are version-specific:
 
 ```python
-# In main_parser.py
-from gmshparser.physical_names_parser import PhysicalNamesParser
+DEFAULT_PARSERS_V1
+DEFAULT_PARSERS_V2
+DEFAULT_PARSERS_V4
+```
 
-DEFAULT_PARSERS = [
+Register the new parser only for formats where the section layout applies. For
+example, a parser shared by MSH 2.x and 4.x would be added to both lists:
+
+```python
+DEFAULT_PARSERS_V2 = [
     MeshFormatParser,
-    PhysicalNamesParser,  # Your custom parser
+    PhysicalNamesParser,
+    NodesParserV2,
+    ElementsParserV2,
+]
+
+DEFAULT_PARSERS_V4 = [
+    MeshFormatParser,
+    PhysicalNamesParser,
     NodesParser,
     ElementsParser,
 ]
 ```
 
-## Testing Your Parser
+Do not add a single `DEFAULT_PARSERS` list: the implementation does not use one.
 
-Create comprehensive tests:
+For specialized callers, `MainParser(parsers=[...])` accepts an explicit parser
+list. That list replaces automatic version-specific selection, so it must
+contain every section parser needed by the input.
 
-```python
-# tests/test_physical_names_parser.py
-import gmshparser
+## Version-specific layouts
 
-def test_physical_names_parser():
-    """Test PhysicalNames parser."""
-    mesh = gmshparser.parse("testdata/physical_names.msh")
-    
-    names = mesh.get_physical_names()
-    assert (2, 1) in names
-    assert names[(2, 1)] == "Surface1"
-```
-
-## Advanced Example: Periodic Entities
-
-For more complex sections:
+When the same section has different layouts, prefer separate parser classes:
 
 ```python
-class PeriodicParser(AbstractParser):
-    """Parser for $Periodic section (MSH 4.x)."""
-    
+class ExampleParserV2(AbstractParser):
     @staticmethod
     def get_section_name() -> str:
-        return "$Periodic"
-    
+        return "$Example"
+
     @staticmethod
     def parse(mesh: Mesh, io: TextIO) -> None:
-        """Parse periodic entity information."""
-        num_periodic = int(io.readline().strip())
-        
-        periodic_entities = []
-        for _ in range(num_periodic):
-            line = io.readline().strip().split()
-            dimension = int(line[0])
-            slave_tag = int(line[1])
-            master_tag = int(line[2])
-            
-            # Read transformation matrix (if present)
-            if len(line) > 3:
-                num_values = int(line[3])
-                transform = [float(io.readline().strip()) for _ in range(num_values)]
-            else:
-                transform = None
-            
-            periodic_entities.append({
-                'dimension': dimension,
-                'slave': slave_tag,
-                'master': master_tag,
-                'transform': transform
-            })
-        
-        mesh.set_periodic_entities(periodic_entities)
-```
+        ...
 
-## Best Practices
 
-### 1. Error Handling
-
-```python
-def parse(mesh: Mesh, io: TextIO) -> None:
-    try:
-        num_items = int(io.readline().strip())
-    except ValueError as e:
-        raise ValueError(f"Invalid format in $Section: {e}")
-    
-    if num_items < 0:
-        raise ValueError(f"Invalid count: {num_items}")
-```
-
-### 2. Type Hints
-
-```python
-from typing import TextIO, List, Dict
-
-def parse(mesh: Mesh, io: TextIO) -> None:
-    data: Dict[int, List[float]] = {}
-    # ...
-```
-
-### 3. Documentation
-
-```python
-def parse(mesh: Mesh, io: TextIO) -> None:
-    """Parse section from mesh file.
-    
-    Args:
-        mesh: Mesh object to populate
-        io: File handle positioned after section header
-    
-    Raises:
-        ValueError: If section format is invalid
-    
-    Example:
-        Format in file:
-            $SectionName
-            <data>
-            $EndSectionName
-    """
-```
-
-### 4. Don't Read the End Marker
-
-The `MainParser` handles `$End*` markers. Your parser should stop before it:
-
-```python
-# ✅ Correct
-def parse(mesh: Mesh, io: TextIO) -> None:
-    count = int(io.readline())
-    for _ in range(count):
-        line = io.readline()
-        # Process line
-    # Stop here - don't read $EndSection
-
-# ❌ Incorrect
-def parse(mesh: Mesh, io: TextIO) -> None:
-    count = int(io.readline())
-    for _ in range(count):
-        line = io.readline()
-    end_marker = io.readline()  # Don't do this!
-```
-
-## Version-Specific Parsers
-
-For sections that differ between versions, use version checks:
-
-```python
-def parse(mesh: Mesh, io: TextIO) -> None:
-    version = mesh.get_version()
-    
-    if version < 2.0:
-        parse_v1_format(mesh, io)
-    elif version < 4.0:
-        parse_v2_format(mesh, io)
-    else:
-        parse_v4_format(mesh, io)
-```
-
-Or create separate parser classes:
-
-```python
-class NodeDataParserV2(AbstractParser):
+class ExampleParserV4(AbstractParser):
     @staticmethod
     def get_section_name() -> str:
-        return "$NodeData"
-    
+        return "$Example"
+
     @staticmethod
     def parse(mesh: Mesh, io: TextIO) -> None:
-        # V2 format parsing
-        pass
-
-class NodeDataParserV4(AbstractParser):
-    @staticmethod
-    def get_section_name() -> str:
-        return "$NodeData"
-    
-    @staticmethod
-    def parse(mesh: Mesh, io: TextIO) -> None:
-        # V4 format parsing
-        pass
+        ...
 ```
 
-## Modifying the Mesh Class
+Register each class in the matching parser list. This follows the existing
+`NodesParserV2`/`NodesParser` and `ElementsParserV2`/`ElementsParser` split.
 
-If your parser needs to store new data:
+## Error handling
+
+Validate section counts and record structure close to where they are read:
 
 ```python
-# In mesh.py
-class Mesh:
-    def __init__(self):
-        # ... existing fields
-        self._physical_names = {}
-    
-    def set_physical_names(self, names: Dict[Tuple[int, int], str]) -> None:
-        """Set physical group names."""
-        self._physical_names = names
-    
-    def get_physical_names(self) -> Dict[Tuple[int, int], str]:
-        """Get physical group names."""
-        return self._physical_names
-    
-    def get_physical_name(self, dimension: int, tag: int) -> str:
-        """Get physical name by dimension and tag."""
-        return self._physical_names.get((dimension, tag), "")
+line = io.readline()
+if not line:
+    raise ValueError("Unexpected end of file in $Example")
+
+try:
+    count = int(line)
+except ValueError as error:
+    raise ValueError(f"Invalid $Example count: {line.strip()}") from error
+
+if count < 0:
+    raise ValueError("$Example count cannot be negative")
 ```
 
-## Complete Example: NodeData Parser
+Avoid silently inventing defaults for malformed mandatory fields.
 
-```python
-from gmshparser.abstract_parser import AbstractParser
-from gmshparser.mesh import Mesh
-from typing import TextIO, List, Dict
+## Testing checklist
 
-class NodeDataParser(AbstractParser):
-    """Parser for $NodeData section (post-processing data)."""
-    
-    @staticmethod
-    def get_section_name() -> str:
-        return "$NodeData"
-    
-    @staticmethod
-    def parse(mesh: Mesh, io: TextIO) -> None:
-        """Parse node data for visualization.
-        
-        Format (MSH 2.x):
-            $NodeData
-            <num_string_tags>
-            "<view_name>"
-            <num_real_tags>
-            <time_value>
-            <num_integer_tags>
-            <time_step>
-            <num_components>
-            <num_nodes>
-            <node_tag> <value1> [<value2> ...]
-            ...
-            $EndNodeData
-        """
-        # String tags
-        num_string_tags = int(io.readline().strip())
-        string_tags = [io.readline().strip().strip('"') for _ in range(num_string_tags)]
-        view_name = string_tags[0] if string_tags else "Unnamed"
-        
-        # Real tags
-        num_real_tags = int(io.readline().strip())
-        real_tags = [float(io.readline().strip()) for _ in range(num_real_tags)]
-        time_value = real_tags[0] if real_tags else 0.0
-        
-        # Integer tags
-        num_integer_tags = int(io.readline().strip())
-        integer_tags = [int(io.readline().strip()) for _ in range(num_integer_tags)]
-        time_step = integer_tags[0] if len(integer_tags) > 0 else 0
-        num_components = integer_tags[1] if len(integer_tags) > 1 else 1
-        num_nodes = integer_tags[2] if len(integer_tags) > 2 else 0
-        
-        # Node data
-        node_data: Dict[int, List[float]] = {}
-        for _ in range(num_nodes):
-            parts = io.readline().strip().split()
-            node_tag = int(parts[0])
-            values = [float(v) for v in parts[1:]]
-            node_data[node_tag] = values
-        
-        # Store in mesh
-        mesh.add_node_data(view_name, {
-            'time': time_value,
-            'time_step': time_step,
-            'components': num_components,
-            'data': node_data
-        })
+- add the smallest valid section fixture
+- verify the values exposed through the public data model
+- cover each applicable MSH version family
+- add malformed-input tests when the parser performs validation
+- ensure an unrelated optional section remains harmless
+- run Black, flake8, pytest, and the documentation build
+
+```bash
+uv run black . --check
+uv run flake8 gmshparser tests
+uv run pytest
+uv sync --group docs
+uv run mkdocs build
 ```
 
-## Debugging Tips
+## Documentation checklist
 
-### 1. Print Debug Info
+Update:
 
-```python
-def parse(mesh: Mesh, io: TextIO) -> None:
-    position = io.tell()
-    print(f"Parsing at position {position}")
-    line = io.readline()
-    print(f"Read line: {line}")
-```
-
-### 2. Validate Input
-
-```python
-def parse(mesh: Mesh, io: TextIO) -> None:
-    line = io.readline().strip()
-    parts = line.split()
-    
-    if len(parts) < 3:
-        raise ValueError(f"Expected at least 3 values, got {len(parts)}: {line}")
-```
-
-### 3. Test with Simple Files
-
-Create minimal test files:
-
-```text
-$MeshFormat
-4.1 0 8
-$EndMeshFormat
-$YourSection
-1
-test data
-$EndYourSection
-```
-
-## Contributing Your Parser
-
-If you've written a useful parser:
-
-1. Add tests
-2. Update documentation
-3. Submit a pull request
-
-See [Contributing Guide](contributing.md) for details.
-
-## Next Steps
-
-- Review [Architecture](architecture.md) for system overview
-- Check [Testing Guide](testing.md) for test practices
-- See [API Reference](../api/parsers.md) for existing parsers
+- [Supported Formats](../user-guide/supported-formats.md) when support changes
+- [Architecture](architecture.md) when routing or data-model structure changes
+- the API reference for new public model methods or parser classes
+- the changelog for user-visible releases
