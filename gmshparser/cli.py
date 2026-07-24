@@ -35,9 +35,7 @@ def elements(mesh, file) -> None:
 
 def main(argv=None, file=sys.stdout) -> None:
     """Run the gmshparser command-line interface."""
-    parser = argparse.ArgumentParser(
-        description="Inspect an ASCII Gmsh MSH file."
-    )
+    parser = argparse.ArgumentParser(description="Inspect an ASCII Gmsh MSH file.")
     parser.add_argument(
         "--version", action="version", version=f"%(prog)s {__version__}"
     )
