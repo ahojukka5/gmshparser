@@ -9,7 +9,7 @@ readme = "README.md"
 python = "^3.12"
 
 [tool.poetry.group.dev.dependencies]
-pytest = "^8.0.0"
+pytest = ">=8,<10"
 black = "^24.0.0"
 flake8 = "^7.0.0"
 pytest-cov = "^4.0.0"
