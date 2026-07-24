@@ -35,6 +35,10 @@ semantic versioning.
   number, section, and offending line attributes
 - explicit errors for unsupported versions, binary input, unexpected EOF,
   malformed sections, nodes, elements, connectivity, and unknown element types
+- reproducible MSH 2.2 and 4.1 parser benchmarks with elapsed-time, Python
+  allocation, and process RSS reporting for legacy, modern, and NumPy paths
+- a GitHub Actions benchmark workflow that uploads JSON and Markdown reports
+  without enforcing noisy fixed performance thresholds
 - separate Cartesian and parametric node coordinates
 - PEP 621 console-script metadata for the installed `gmshparser` command
 - `gmshparser --version` support
@@ -66,6 +70,7 @@ semantic versioning.
 - replaced Black and flake8 with Ruff for formatting and linting
 - enabled Ruff bugbear, import-sorting, and pyupgrade checks and modernized
   imports, type annotations, string formatting, and loop variables accordingly
+- extended Ruff checks to benchmark sources
 - separated CI into quality, test-matrix, and package jobs
 - replaced the third-party Pages branch publisher with GitHub's official Pages
   artifact and deployment actions

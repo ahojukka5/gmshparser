@@ -31,6 +31,7 @@ Install additional groups only when needed:
 
 ```bash
 uv sync --group docs
+uv sync --group benchmark
 uv sync --group visualization
 uv sync --all-groups
 ```
@@ -48,16 +49,16 @@ git checkout -b feature/your-feature-name
 Run the complete local quality checks:
 
 ```bash
-uv run ruff format --check gmshparser tests examples
-uv run ruff check gmshparser tests examples
+uv run ruff format --check gmshparser tests examples benchmarks
+uv run ruff check gmshparser tests examples benchmarks
 uv run pytest
 ```
 
 Apply formatting and safe automatic lint fixes when necessary:
 
 ```bash
-uv run ruff check --fix gmshparser tests examples
-uv run ruff format gmshparser tests examples
+uv run ruff check --fix gmshparser tests examples benchmarks
+uv run ruff format gmshparser tests examples benchmarks
 ```
 
 Run an individual test:
@@ -72,12 +73,23 @@ Generate an HTML coverage report:
 uv run pytest --cov=gmshparser --cov-report=html
 ```
 
+Run the parser performance baseline:
+
+```bash
+uv sync --no-default-groups --group benchmark
+uv run --no-sync python -m benchmarks.run
+```
+
+See [Performance Benchmarks](benchmarks.md) for the measured phases and valid
+comparison rules.
+
 ## Dependency groups
 
 The groups in `pyproject.toml` have distinct purposes:
 
 | Group | Purpose |
 | --- | --- |
+| `benchmark` | NumPy dependency used by the reproducible benchmark matrix |
 | `test` | pytest and coverage tooling |
 | `lint` | Ruff formatting and linting |
 | `docs` | MkDocs documentation toolchain |
@@ -87,6 +99,7 @@ The groups in `pyproject.toml` have distinct purposes:
 Add dependencies to the narrowest suitable group:
 
 ```bash
+uv add --group benchmark PACKAGE
 uv add --group test PACKAGE
 uv add --group lint PACKAGE
 uv add --group docs PACKAGE
@@ -121,12 +134,14 @@ uv run mkdocs serve
 
 ## Continuous integration
 
-GitHub Actions separates validation into three jobs:
+GitHub Actions separates validation into these workflows and jobs:
 
 - `quality` runs Ruff once on Python 3.12
 - `test` runs pytest on Python 3.12, 3.13, and 3.14
 - `package` builds and smoke-tests the wheel and source distribution after the
   quality and test jobs succeed
+- **Parser benchmarks** records elapsed-time and memory artifacts for
+  benchmark-related pull requests without fixed performance thresholds
 
 Documentation is built on pull requests. Pushes to `master` additionally upload
 and deploy the generated site with GitHub's official Pages actions.

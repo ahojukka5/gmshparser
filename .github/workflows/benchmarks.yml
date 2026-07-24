@@ -1,0 +1,79 @@
+name: Parser benchmarks
+
+on:
+  workflow_dispatch:
+    inputs:
+      sizes:
+        description: Comma-separated grid widths
+        required: false
+        default: "32,100,224"
+      repeats:
+        description: Measured subprocess runs per case
+        required: false
+        default: "3"
+      warmups:
+        description: Warm-up subprocess runs per case
+        required: false
+        default: "1"
+  pull_request:
+    branches: [master]
+    paths:
+      - "benchmarks/**"
+      - "gmshparser/**"
+      - "pyproject.toml"
+      - ".github/workflows/benchmarks.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  benchmark:
+    name: Reproducible parser baseline
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Install uv and Python
+        uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
+        with:
+          version: "0.11.32"
+          python-version: "3.12"
+          enable-cache: true
+          cache-dependency-glob: pyproject.toml
+          cache-suffix: benchmarks
+
+      - name: Install benchmark dependencies
+        run: uv sync --no-default-groups --group benchmark
+
+      - name: Run benchmarks
+        shell: bash
+        run: |
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            sizes="${{ inputs.sizes }}"
+            repeats="${{ inputs.repeats }}"
+            warmups="${{ inputs.warmups }}"
+          else
+            sizes="32,100,224"
+            repeats="2"
+            warmups="1"
+          fi
+
+          uv run --no-sync python -m benchmarks.run \
+            --sizes "$sizes" \
+            --repeats "$repeats" \
+            --warmups "$warmups" \
+            --output benchmark-results.json \
+            --markdown benchmark-summary.md
+
+      - name: Add benchmark job summary
+        run: cat benchmark-summary.md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload benchmark results
+        uses: actions/upload-artifact@v4
+        with:
+          name: parser-benchmark-results
+          path: |
+            benchmark-results.json
+            benchmark-summary.md
+          if-no-files-found: error

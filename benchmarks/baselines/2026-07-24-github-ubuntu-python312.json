@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "source": "GitHub Actions Parser benchmarks run 30133127529",
+  "generated_at": "2026-07-24T23:13:08.047145+00:00",
+  "environment": {
+    "commit": "0d9d2e487d5539d4c6b00a4ed301d295b6388e22",
+    "python": "3.12.3",
+    "platform": "Linux-6.17.0-1020-azure-x86_64-with-glibc2.39",
+    "gmshparser": "0.3.1",
+    "numpy": "2.5.1"
+  },
+  "settings": {
+    "formats": ["2.2", "4.1"],
+    "sizes": [32, 100, 224],
+    "phases": ["legacy_parse", "legacy_to_modern", "read", "numpy"],
+    "repeats": 2,
+    "warmups": 1
+  },
+  "results": [
+    {"msh_format": "2.2", "cells_per_axis": 32, "number_of_nodes": 1089, "number_of_elements": 1024, "file_size_bytes": 47547, "phase": "legacy_parse", "median_seconds": 0.0618005555, "median_python_peak_bytes": 796490.0, "median_rss_bytes": 36806656.0},
+    {"msh_format": "2.2", "cells_per_axis": 32, "number_of_nodes": 1089, "number_of_elements": 1024, "file_size_bytes": 47547, "phase": "legacy_to_modern", "median_seconds": 0.0329304595, "median_python_peak_bytes": 608416.0, "median_rss_bytes": 36806656.0},
+    {"msh_format": "2.2", "cells_per_axis": 32, "number_of_nodes": 1089, "number_of_elements": 1024, "file_size_bytes": 47547, "phase": "read", "median_seconds": 0.0957696185, "median_python_peak_bytes": 1380361.0, "median_rss_bytes": 36806656.0},
+    {"msh_format": "2.2", "cells_per_axis": 32, "number_of_nodes": 1089, "number_of_elements": 1024, "file_size_bytes": 47547, "phase": "numpy", "median_seconds": 0.023843564, "median_python_peak_bytes": 291836.0, "median_rss_bytes": 36806656.0},
+    {"msh_format": "2.2", "cells_per_axis": 100, "number_of_nodes": 10201, "number_of_elements": 10000, "file_size_bytes": 516705, "phase": "legacy_parse", "median_seconds": 0.5890862815, "median_python_peak_bytes": 7559675.0, "median_rss_bytes": 44322816.0},
+    {"msh_format": "2.2", "cells_per_axis": 100, "number_of_nodes": 10201, "number_of_elements": 10000, "file_size_bytes": 516705, "phase": "legacy_to_modern", "median_seconds": 0.315972912, "median_python_peak_bytes": 5609912.0, "median_rss_bytes": 36806656.0},
+    {"msh_format": "2.2", "cells_per_axis": 100, "number_of_nodes": 10201, "number_of_elements": 10000, "file_size_bytes": 516705, "phase": "read", "median_seconds": 0.9344808515, "median_python_peak_bytes": 12632555.0, "median_rss_bytes": 52176896.0},
+    {"msh_format": "2.2", "cells_per_axis": 100, "number_of_nodes": 10201, "number_of_elements": 10000, "file_size_bytes": 516705, "phase": "numpy", "median_seconds": 0.146127954, "median_python_peak_bytes": 2756884.0, "median_rss_bytes": 47702016.0},
+    {"msh_format": "2.2", "cells_per_axis": 224, "number_of_nodes": 50625, "number_of_elements": 50176, "file_size_bytes": 2905699, "phase": "legacy_parse", "median_seconds": 2.9750446265, "median_python_peak_bytes": 42122932.0, "median_rss_bytes": 151689216.0},
+    {"msh_format": "2.2", "cells_per_axis": 224, "number_of_nodes": 50625, "number_of_elements": 50176, "file_size_bytes": 2905699, "phase": "legacy_to_modern", "median_seconds": 1.606452368, "median_python_peak_bytes": 35017120.0, "median_rss_bytes": 114751488.0},
+    {"msh_format": "2.2", "cells_per_axis": 224, "number_of_nodes": 50625, "number_of_elements": 50176, "file_size_bytes": 2905699, "phase": "read", "median_seconds": 4.704810505, "median_python_peak_bytes": 73080755.0, "median_rss_bytes": 196771840.0},
+    {"msh_format": "2.2", "cells_per_axis": 224, "number_of_nodes": 50625, "number_of_elements": 50176, "file_size_bytes": 2905699, "phase": "numpy", "median_seconds": 0.7407756335, "median_python_peak_bytes": 14982780.0, "median_rss_bytes": 121843712.0},
+    {"msh_format": "4.1", "cells_per_axis": 32, "number_of_nodes": 1089, "number_of_elements": 1024, "file_size_bytes": 39395, "phase": "legacy_parse", "median_seconds": 0.0359851195, "median_python_peak_bytes": 645376.0, "median_rss_bytes": 36806656.0},
+    {"msh_format": "4.1", "cells_per_axis": 32, "number_of_nodes": 1089, "number_of_elements": 1024, "file_size_bytes": 39395, "phase": "legacy_to_modern", "median_seconds": 0.0306986075, "median_python_peak_bytes": 481200.0, "median_rss_bytes": 36806656.0},
+    {"msh_format": "4.1", "cells_per_axis": 32, "number_of_nodes": 1089, "number_of_elements": 1024, "file_size_bytes": 39395, "phase": "read", "median_seconds": 0.0684118425, "median_python_peak_bytes": 1110253.0, "median_rss_bytes": 36806656.0},
+    {"msh_format": "4.1", "cells_per_axis": 32, "number_of_nodes": 1089, "number_of_elements": 1024, "file_size_bytes": 39395, "phase": "numpy", "median_seconds": 0.0239123935, "median_python_peak_bytes": 291836.0, "median_rss_bytes": 36806656.0},
+    {"msh_format": "4.1", "cells_per_axis": 100, "number_of_nodes": 10201, "number_of_elements": 10000, "file_size_bytes": 436749, "phase": "legacy_parse", "median_seconds": 0.345178771, "median_python_peak_bytes": 6148558.5, "median_rss_bytes": 41390080.0},
+    {"msh_format": "4.1", "cells_per_axis": 100, "number_of_nodes": 10201, "number_of_elements": 10000, "file_size_bytes": 436749, "phase": "legacy_to_modern", "median_seconds": 0.2917212195, "median_python_peak_bytes": 4330392.0, "median_rss_bytes": 36806656.0},
+    {"msh_format": "4.1", "cells_per_axis": 100, "number_of_nodes": 10201, "number_of_elements": 10000, "file_size_bytes": 436749, "phase": "read", "median_seconds": 0.659880821, "median_python_peak_bytes": 10466711.0, "median_rss_bytes": 48439296.0},
+    {"msh_format": "4.1", "cells_per_axis": 100, "number_of_nodes": 10201, "number_of_elements": 10000, "file_size_bytes": 436749, "phase": "numpy", "median_seconds": 0.145923715, "median_python_peak_bytes": 2756884.0, "median_rss_bytes": 45924352.0},
+    {"msh_format": "4.1", "cells_per_axis": 224, "number_of_nodes": 50625, "number_of_elements": 50176, "file_size_bytes": 2504335, "phase": "legacy_parse", "median_seconds": 1.7281375585, "median_python_peak_bytes": 33048942.0, "median_rss_bytes": 134891520.0},
+    {"msh_format": "4.1", "cells_per_axis": 224, "number_of_nodes": 50625, "number_of_elements": 50176, "file_size_bytes": 2504335, "phase": "legacy_to_modern", "median_seconds": 1.474976966, "median_python_peak_bytes": 26866864.0, "median_rss_bytes": 98486272.0},
+    {"msh_format": "4.1", "cells_per_axis": 224, "number_of_nodes": 50625, "number_of_elements": 50176, "file_size_bytes": 2504335, "phase": "read", "median_seconds": 3.289229436, "median_python_peak_bytes": 59900407.0, "median_rss_bytes": 175970304.0},
+    {"msh_format": "4.1", "cells_per_axis": 224, "number_of_nodes": 50625, "number_of_elements": 50176, "file_size_bytes": 2504335, "phase": "numpy", "median_seconds": 0.74176408, "median_python_peak_bytes": 14982780.0, "median_rss_bytes": 112148480.0}
+  ]
+}
