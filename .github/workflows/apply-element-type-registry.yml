@@ -1,20 +1,17 @@
 name: Apply element type registry
 
 on:
-  pull_request:
-    branches: [master]
+  push:
+    branches: [agent/element-type-registry]
 
 permissions:
   contents: write
 
 jobs:
   migrate:
-    if: github.head_ref == 'agent/element-type-registry'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-        with:
-          ref: ${{ github.head_ref }}
 
       - name: Apply guarded source and documentation migrations
         run: |
@@ -49,7 +46,7 @@ jobs:
             exit 0
           fi
           git commit -m "Centralize Gmsh element type metadata"
-          git push origin HEAD:${{ github.head_ref }}
+          git push origin HEAD:${{ github.ref_name }}
 
       - name: Validate registry implementation
         run: |
