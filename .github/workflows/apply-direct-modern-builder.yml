@@ -1,0 +1,53 @@
+name: Apply direct modern builder
+
+on:
+  push:
+    branches: [direct-modern-builder]
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: direct-modern-builder
+      - name: Update modern read path
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path("gmshparser/api.py")
+          text = path.read_text()
+          old = '''def _read_stream(stream: TextIO, name: str) -> Mesh:
+              legacy_mesh = LegacyMesh()
+              legacy_mesh.set_name(name)
+              MainParser().parse(legacy_mesh, stream)
+              return Mesh.from_legacy(legacy_mesh)
+          '''
+          new = '''def _read_stream(stream: TextIO, name: str) -> Mesh:
+              from .modern_builder import ModernMeshBuilder
+
+              builder = ModernMeshBuilder(name)
+              MainParser().parse(builder, stream)
+              return builder.build()
+          '''
+          if new in text:
+              raise SystemExit(0)
+          if old not in text:
+              raise SystemExit("Expected _read_stream implementation not found")
+          path.write_text(text.replace(old, new))
+          PY
+      - name: Commit update
+        run: |
+          if git diff --quiet; then
+            exit 0
+          fi
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add gmshparser/api.py
+          git commit -m "Use direct modern builder for read"
+          git push origin HEAD:direct-modern-builder
