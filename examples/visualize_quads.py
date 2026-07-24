@@ -6,7 +6,6 @@ import matplotlib.pyplot as plt
 
 import gmshparser
 
-
 REPOSITORY_ROOT = Path(__file__).resolve().parents[1]
 TESTDATA = REPOSITORY_ROOT / "testdata"
 
