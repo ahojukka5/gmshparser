@@ -53,8 +53,7 @@ def get_elements_2d(mesh: Any) -> dict[str, Any]:
 
     coordinates = dict(_nodes(mesh))
     nodes = {
-        tag: (coordinates[tag][0], coordinates[tag][1])
-        for tag in sorted(node_ids)
+        tag: (coordinates[tag][0], coordinates[tag][1]) for tag in sorted(node_ids)
     }
 
     return {
@@ -83,9 +82,7 @@ def _indexed_cells(
     positions = {tag: index for index, tag in enumerate(ordered_tags)}
     x_coordinates = [coordinates[tag][0] for tag in ordered_tags]
     y_coordinates = [coordinates[tag][1] for tag in ordered_tags]
-    indexed_cells = [
-        [positions[tag] for tag in connectivity] for connectivity in cells
-    ]
+    indexed_cells = [[positions[tag] for tag in connectivity] for connectivity in cells]
     return x_coordinates, y_coordinates, indexed_cells
 
 

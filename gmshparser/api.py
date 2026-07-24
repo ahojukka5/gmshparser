@@ -229,9 +229,7 @@ class EntityCollection(Generic[E]):
 
     def __init__(self, items: Iterable[E]):
         self._items = tuple(items)
-        self._by_key = {
-            (item.dimension, item.tag): item for item in self._items
-        }
+        self._by_key = {(item.dimension, item.tag): item for item in self._items}
         if len(self._by_key) != len(self._items):
             raise ValueError("Entity keys must be unique")
 
@@ -374,12 +372,8 @@ class Mesh:
             return None
 
         coordinates = self.nodes.coordinates
-        minimum = tuple(
-            min(axis) for axis in zip(*coordinates, strict=True)
-        )
-        maximum = tuple(
-            max(axis) for axis in zip(*coordinates, strict=True)
-        )
+        minimum = tuple(min(axis) for axis in zip(*coordinates, strict=True))
+        maximum = tuple(max(axis) for axis in zip(*coordinates, strict=True))
         return minimum, maximum
 
     def __repr__(self) -> str:
