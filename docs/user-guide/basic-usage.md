@@ -16,11 +16,12 @@ immutable `gmshparser.api.Mesh` model.
 ```python
 print(mesh.name)
 print(mesh.version)
-print(mesh.version_info)
+print(mesh.version.major, mesh.version.minor)
 print(mesh.is_ascii)
-print(mesh.precision)
+print(mesh.data_size)
+print(mesh.dimension)
 print(mesh.bounds)
-print(len(mesh.nodes), len(mesh.elements))
+print(len(mesh.nodes), len(mesh.elements), len(mesh.entities))
 ```
 
 ## Nodes
@@ -44,50 +45,60 @@ Filter by entity metadata:
 
 ```python
 surface_nodes = mesh.nodes.where(dimension=2)
-selected_entity = mesh.nodes.where(dimension=2, entity_tag=7)
+selected_entity = mesh.nodes.where(entity=(2, 7))
+parametric_nodes = mesh.nodes.where(parametric=True)
 ```
 
 ## Elements
 
+Elements carry direct references to their nodes:
+
 ```python
 for element in mesh.elements:
-    print(
-        element.tag,
-        element.element_type,
-        element.node_tags,
-        element.dimension,
-        element.entity_tag,
-    )
+    print(element.tag, element.type, element.node_tags)
+    for node in element:
+        print(node.coordinates)
 ```
 
 Index and filter using collection operations:
 
 ```python
+from gmshparser.api import ElementType
+
 element = mesh.elements[17]
-triangles = mesh.elements.by_type(2)
-quads = mesh.elements.where(element_type=3, dimension=2)
+triangles = mesh.elements.by_type(ElementType.TRIANGLE)
+quads = mesh.elements.where(
+    element_type=ElementType.QUADRANGLE,
+    dimension=2,
+)
 ```
 
-Gmsh element types are numeric. Common values include 1 for a two-node line, 2
-for a three-node triangle, 3 for a four-node quadrangle, and 4 for a four-node
-tetrahedron.
+`ElementType` is an integer enum. It gives common Gmsh IDs readable names while
+remaining comparable with the corresponding integer values.
 
-## Entity blocks
+## Entities
 
-Most code can use the flat collections. Entity blocks remain available when the
-original Gmsh grouping matters:
+Most code can use the flat collections. Unified entities retain the original
+Gmsh grouping when it matters:
 
 ```python
-for entity in mesh.element_entities:
-    print(entity.dimension, entity.tag, entity.element_type)
-    for element in entity:
-        print(element.tag)
+for entity in mesh.entities:
+    print(entity.dimension, entity.tag, entity.element_types)
+    print(len(entity.nodes), len(entity.elements))
 ```
 
 Look up an entity using `(dimension, tag)`:
 
 ```python
-surface = mesh.element_entities[(2, 7)]
+surface = mesh.entities[(2, 7)]
+```
+
+Filter entities by dimension, content, or element type:
+
+```python
+surfaces = mesh.entities.where(dimension=2)
+triangle_entities = mesh.entities.where(element_type=ElementType.TRIANGLE)
+entities_with_elements = mesh.entities.where(has_elements=True)
 ```
 
 ## Visualization helpers
