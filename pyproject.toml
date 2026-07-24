@@ -1,13 +1,21 @@
 [project]
 name = "gmshparser"
 version = "0.3.1"
-description = "gmshparser is a lightweight, 100 % tested and well documented package that parses Gmsh ascii file format (.msh)"
+description = "A lightweight, dependency-free Python package for parsing ASCII Gmsh MSH files"
 authors = [
     { name = "Jukka Aho", email = "ahojukka5@gmail.com" },
 ]
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = []
+
+[project.scripts]
+gmshparser = "gmshparser.cli:main"
+
+[project.urls]
+Documentation = "https://ahojukka5.github.io/gmshparser/"
+Issues = "https://github.com/ahojukka5/gmshparser/issues"
+Repository = "https://github.com/ahojukka5/gmshparser"
 
 [dependency-groups]
 test = [
