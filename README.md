@@ -120,7 +120,7 @@ The repository uses uv and intentionally does not commit dependency lock files.
 git clone https://github.com/ahojukka5/gmshparser.git
 cd gmshparser
 uv sync
-uv run black . --check
+uv run black gmshparser tests examples --check
 uv run flake8 gmshparser tests
 uv run pytest
 ```
