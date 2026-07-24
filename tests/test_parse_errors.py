@@ -42,13 +42,7 @@ def test_mesh_format_errors_have_source_context(header, error_type, message):
 
 def test_truncated_nodes_raise_unexpected_eof_with_next_line_number():
     source = StringIO(
-        "$MeshFormat\n"
-        "4.1 0 8\n"
-        "$EndMeshFormat\n"
-        "$Nodes\n"
-        "1 1 1 1\n"
-        "0 1 0 1\n"
-        "1\n"
+        "$MeshFormat\n4.1 0 8\n$EndMeshFormat\n$Nodes\n1 1 1 1\n0 1 0 1\n1\n"
     )
 
     with pytest.raises(gmshparser.UnexpectedEndOfFileError) as caught:
@@ -64,15 +58,12 @@ def test_truncated_nodes_raise_unexpected_eof_with_next_line_number():
 
 def test_missing_section_end_marker_reports_actual_line():
     source = StringIO(
-        "$MeshFormat\n"
-        "4.1 0 8\n"
-        "$EndMeshFormat\n"
-        "$Nodes\n"
-        "0 0 0 0\n"
-        "$Elements\n"
+        "$MeshFormat\n4.1 0 8\n$EndMeshFormat\n$Nodes\n0 0 0 0\n$Elements\n"
     )
 
-    with pytest.raises(gmshparser.InvalidSectionError, match="Expected \\$EndNodes") as caught:
+    with pytest.raises(
+        gmshparser.InvalidSectionError, match="Expected \\$EndNodes"
+    ) as caught:
         gmshparser.read(source, name="missing-end.msh")
 
     error = caught.value

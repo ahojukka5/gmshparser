@@ -61,9 +61,7 @@ class NodesParser(AbstractParser):
             entity = NodeEntity()
             entity.set_dimension(dimension)
             entity.set_tag(entity_tag)
-            entity.set_number_of_parametric_coordinates(
-                dimension if parametric else 0
-            )
+            entity.set_number_of_parametric_coordinates(dimension if parametric else 0)
             entity.set_number_of_nodes(entity_node_count)
 
             node_tags: list[int] = []
@@ -71,7 +69,9 @@ class NodesParser(AbstractParser):
                 tag_line = read_required_line(io, "a node tag")
                 fields = tag_line.strip().split()
                 if len(fields) != 1:
-                    raise InvalidNodeError("Each MSH 4 node tag must be on its own line")
+                    raise InvalidNodeError(
+                        "Each MSH 4 node tag must be on its own line"
+                    )
                 try:
                     tag = int(fields[0])
                 except ValueError as error:

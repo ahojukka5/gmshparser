@@ -22,9 +22,13 @@ class EntitiesParser(AbstractParser):
         try:
             counts = [int(value) for value in line.split()]
         except ValueError as error:
-            raise InvalidSectionError("$Entities header must contain integers") from error
+            raise InvalidSectionError(
+                "$Entities header must contain integers"
+            ) from error
         if len(counts) != 4:
-            raise InvalidSectionError("$Entities header must contain four entity counts")
+            raise InvalidSectionError(
+                "$Entities header must contain four entity counts"
+            )
         if any(count < 0 for count in counts):
             raise InvalidSectionError("$Entities counts cannot be negative")
 

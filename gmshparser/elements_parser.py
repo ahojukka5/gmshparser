@@ -30,7 +30,9 @@ class ElementsParser(AbstractParser):
         try:
             metadata = [int(value) for value in line.strip().split()]
         except ValueError as error:
-            raise InvalidElementError("$Elements header must contain integers") from error
+            raise InvalidElementError(
+                "$Elements header must contain integers"
+            ) from error
         if len(metadata) != 4:
             raise InvalidElementError("$Elements header must contain four integers")
 

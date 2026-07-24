@@ -27,7 +27,9 @@ class ElementsParserV1(AbstractParser):
         try:
             number_of_elements = int(count_line.strip())
         except ValueError as error:
-            raise InvalidElementError("$ELM element count must be an integer") from error
+            raise InvalidElementError(
+                "$ELM element count must be an integer"
+            ) from error
         if number_of_elements < 0:
             raise InvalidElementError("$ELM element count cannot be negative")
 
