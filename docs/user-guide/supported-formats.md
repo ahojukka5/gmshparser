@@ -23,11 +23,8 @@ common Python API. It does not mean that every optional MSH section is retained.
 
 The `$MeshFormat` file-type field is recorded in the `Mesh` object, but the
 parser reads the file as text. Binary MSH files are therefore not supported.
-Convert them to ASCII with Gmsh before parsing.
-
-```bash
-gmsh input.msh -format msh41 -bin 0 -o output.msh
-```
+Export them from Gmsh with `Mesh.Binary = 0` and select a supported MSH version
+before parsing.
 
 ## MSH 1.0
 
