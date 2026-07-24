@@ -14,12 +14,20 @@ from .api import (
 from .api import (
     Mesh as ModernMesh,
 )
-from .element_types import (
-    ElementFamily,
-    ElementType,
-    ElementTypeInfo,
+from .element_types import ElementFamily, ElementType, ElementTypeInfo
+from .errors import (
+    GmshError,
     InvalidElementConnectivityError,
+    InvalidElementError,
+    InvalidMeshError,
+    InvalidNodeError,
+    InvalidSectionError,
+    ParseError,
+    ParsingContext,
+    UnexpectedEndOfFileError,
     UnknownElementTypeError,
+    UnsupportedBinaryFormatError,
+    UnsupportedVersionError,
 )
 from .main_parser import MainParser
 from .mesh import Mesh
@@ -33,16 +41,26 @@ __all__ = [
     "ElementTypeInfo",
     "Entity",
     "EntityCollection",
+    "GmshError",
     "InvalidElementConnectivityError",
+    "InvalidElementError",
+    "InvalidMeshError",
+    "InvalidNodeError",
+    "InvalidSectionError",
     "MainParser",
     "Mesh",
     "ModernMesh",
     "MshFormatVersion",
     "Node",
     "NodeCollection",
+    "ParseError",
+    "ParsingContext",
     "PhysicalGroup",
     "PhysicalGroupCollection",
+    "UnexpectedEndOfFileError",
     "UnknownElementTypeError",
+    "UnsupportedBinaryFormatError",
+    "UnsupportedVersionError",
     "Version",
     "VersionManager",
     "api",
@@ -61,27 +79,10 @@ def parse(filename: str) -> Mesh:
     The compatibility model preserves the original ``get_*`` and ``set_*`` API.
     New code should normally use :func:`read`, which returns the modern,
     immutable model from :mod:`gmshparser.api`.
-
-    Parameters
-    ----------
-    filename : str
-        Path to an ASCII Gmsh MSH file.
-
-    Returns
-    -------
-    Mesh
-        Compatibility mesh containing parser-oriented entities.
-
-    Raises
-    ------
-    FileNotFoundError
-        If the file does not exist.
-    ValueError
-        If the MSH version is unsupported or the input is invalid.
     """
     mesh = Mesh()
     mesh.set_name(filename)
     parser = MainParser()
-    with open(filename) as io:
+    with open(filename, encoding="utf-8") as io:
         parser.parse(mesh, io)
     return mesh
