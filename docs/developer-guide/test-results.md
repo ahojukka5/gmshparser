@@ -9,14 +9,14 @@ GitHub Actions runs Python 3.12, 3.13, and 3.14. Every matrix job performs:
 
 ```bash
 uv sync --no-default-groups --group test --group lint
-uv run --no-sync black . --check
+uv run --no-sync black gmshparser tests examples --check
 uv run --no-sync flake8 gmshparser tests
 uv run --no-sync pytest --cov=gmshparser --cov-report=xml --cov-report=term
 ```
 
 Python 3.12 also builds the wheel and source distribution and smoke-tests the
-installed package. The release workflow repeats the distribution build and
-smoke tests before publishing.
+installed package and CLI. The release workflow repeats the distribution build
+and smoke tests before publishing.
 
 The documentation workflow installs only the `docs` dependency group and runs:
 
