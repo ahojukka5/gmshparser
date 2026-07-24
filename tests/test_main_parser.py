@@ -14,7 +14,6 @@ my custom data
 $EndUnknown
 """
 
-
 __bad_content__ = """
 $MeshFormat
 4.1 0 8          MSH4.1, ASCII
@@ -36,5 +35,5 @@ def test_mainparser():
 def test_parse_io_bad_content():
     parser = MainParser()
     mesh = Mesh()
-    with raises(Exception):
+    with raises(ValueError):
         parser.parse(mesh, StringIO(__bad_content__))
