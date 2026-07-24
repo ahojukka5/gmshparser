@@ -11,6 +11,7 @@ semantic versioning.
 - PEP 621 console-script metadata for the installed `gmshparser` command
 - `gmshparser --version` support
 - wheel and source-distribution smoke tests for the installed CLI
+- PyPI trusted publishing through GitHub OIDC
 
 ### Changed
 
@@ -21,6 +22,10 @@ semantic versioning.
 - pointed MkDocs site metadata and badges to GitHub Pages
 - replaced stale exact test-count and coverage claims with links to CI and
   Codecov as the authoritative status
+- replaced Black and flake8 with Ruff for formatting and linting
+- separated CI into quality, test-matrix, and package jobs
+- replaced the third-party Pages branch publisher with GitHub's official Pages
+  artifact and deployment actions
 
 ### Fixed
 
