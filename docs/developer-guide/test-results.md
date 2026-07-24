@@ -5,18 +5,27 @@ version families and several element types.
 
 ## Current automated checks
 
-GitHub Actions runs Python 3.12, 3.13, and 3.14. Every matrix job performs:
+GitHub Actions separates validation into dedicated jobs.
+
+The quality job runs once on Python 3.12:
 
 ```bash
-uv sync --no-default-groups --group test --group lint
-uv run --no-sync black gmshparser tests examples --check
-uv run --no-sync flake8 gmshparser tests
+uv sync --no-default-groups --group lint
+uv run --no-sync ruff format --check gmshparser tests examples
+uv run --no-sync ruff check gmshparser tests examples
+```
+
+The test matrix runs on Python 3.12, 3.13, and 3.14:
+
+```bash
+uv sync --no-default-groups --group test
 uv run --no-sync pytest --cov=gmshparser --cov-report=xml --cov-report=term
 ```
 
-Python 3.12 also builds the wheel and source distribution and smoke-tests the
-installed package and CLI. The release workflow repeats the distribution build
-and smoke tests before publishing.
+After quality and tests succeed, a separate package job builds the wheel and
+source distribution and smoke-tests the installed package and CLI. The release
+workflow repeats those package checks before publishing through PyPI trusted
+publishing.
 
 The documentation workflow installs only the `docs` dependency group and runs:
 
@@ -24,6 +33,9 @@ The documentation workflow installs only the `docs` dependency group and runs:
 uv sync --no-default-groups --group docs
 uv run --no-sync mkdocs build
 ```
+
+Pull requests validate the documentation build. Pushes to `master` additionally
+upload and deploy the site using GitHub's official Pages actions.
 
 ## Format coverage
 
