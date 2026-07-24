@@ -43,13 +43,27 @@ jobs:
           git add gmshparser tests docs
           if git diff --cached --quiet; then
             echo "No registry changes"
-            exit 0
+          else
+            git commit -m "Centralize Gmsh element type metadata"
+            git push origin HEAD:${{ github.ref_name }}
           fi
-          git commit -m "Centralize Gmsh element type metadata"
-          git push origin HEAD:${{ github.ref_name }}
 
       - name: Validate registry implementation
         run: |
           uv run --no-sync ruff check gmshparser tests examples
           uv run --no-sync pytest
           uv run --no-sync mkdocs build --strict
+
+      - name: Record successful validation
+        run: |
+          if test -f .github/element-type-registry-passed; then
+            echo "Validation marker already present"
+            exit 0
+          fi
+          printf '%s\n' "Ruff, pytest, and strict MkDocs validation passed." \
+            > .github/element-type-registry-passed
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .github/element-type-registry-passed
+          git commit -m "Record element registry validation"
+          git push origin HEAD:${{ github.ref_name }}
