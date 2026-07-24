@@ -46,15 +46,36 @@ Install the current development version directly from GitHub:
 uv add "gmshparser @ git+https://github.com/ahojukka5/gmshparser.git"
 ```
 
+## Entry points
+
+The original top-level entry point is intentionally unchanged:
+
+| Call | Result |
+| --- | --- |
+| `gmshparser.parse(path)` | original mutable compatibility `Mesh` |
+| `gmshparser.read(path)` | modern immutable `ModernMesh` |
+| `gmshparser.api.parse(path)` | modern immutable `Mesh` in the explicit modern namespace |
+
+This means existing applications using `gmshparser.parse()` continue to behave
+exactly as before.
+
 ## Pythonic API
 
-Use `read()` for new code:
+Use `read()` for ordinary new code:
 
 ```python
 import gmshparser
 
 mesh = gmshparser.read("mesh.msh")
 print(mesh.version, len(mesh.nodes), len(mesh.elements))
+```
+
+Applications that prefer the verb `parse` can opt into the modern namespace:
+
+```python
+from gmshparser.api import parse
+
+mesh = parse("mesh.msh")
 ```
 
 Collections iterate over value objects and use original Gmsh tags for lookup:
@@ -70,12 +91,12 @@ element = mesh.elements[17]
 Elements link directly to their nodes and expose a typed element kind:
 
 ```python
-from gmshparser.api import ElementType
+from gmshparser import ElementType
 
 triangles = mesh.elements.by_type(ElementType.TRIANGLE)
 
 for triangle in triangles:
-    print(triangle.tag, triangle.node_tags)
+    print(triangle.tag, triangle.element_type, triangle.node_tags)
     for node in triangle:
         print(node.coordinates)
 ```
@@ -83,11 +104,38 @@ for triangle in triangles:
 Entity context is available without separate node and element block APIs:
 
 ```python
-entity = mesh.entities[(2, 7)]
-print(len(entity.nodes), len(entity.elements), entity.element_types)
+surface = mesh.entity(dimension=2, tag=7)
+print(len(surface.nodes), len(surface.elements), surface.element_types)
+
+print(mesh.surfaces)
+print(mesh.volumes)
 ```
 
-`read()` also accepts open text streams. See the
+### Physical groups
+
+Named and anonymous physical groups are available directly from the modern
+model. Names from `$PhysicalNames` and assignments from MSH 1.x, 2.x, and 4.x
+are retained:
+
+```python
+walls = mesh.physical_groups["Walls"]
+domain = mesh.physical_groups[(3, 2)]
+
+for element in walls.elements:
+    print(element.tag, element.physical_tags)
+
+print(walls.entities)
+print(walls.nodes)
+```
+
+A convenience method also accepts a name or a numeric tag:
+
+```python
+walls = mesh.physical_group("Walls")
+domain = mesh.physical_group(2, dimension=3)
+```
+
+`read()` accepts filesystem paths, `Path` objects, and open text streams. See the
 [Pythonic API guide](https://ahojukka5.github.io/gmshparser/user-guide/pythonic-api/)
 for the complete model.
 
