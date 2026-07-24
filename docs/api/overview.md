@@ -1,12 +1,8 @@
 # API Reference
 
-gmshparser provides a simple, clean API for parsing Gmsh mesh files.
+## Package entry points
 
-## Main Functions
-
-### parse()
-
-Parse a Gmsh mesh file and return a Mesh object.
+### `gmshparser.parse()`
 
 ```python
 import gmshparser
@@ -14,82 +10,69 @@ import gmshparser
 mesh = gmshparser.parse("mesh.msh")
 ```
 
-**Parameters:**
+`parse()` accepts a filename and returns a populated `Mesh`. Supported ASCII MSH
+versions are detected automatically.
 
-- `filename` (str): Path to the `.msh` file
+Typical exceptions include `FileNotFoundError` for a missing file and
+`ValueError` for unsupported version metadata. Malformed section contents may
+raise conversion or parsing exceptions from the relevant parser.
 
-**Returns:**
-
-- `Mesh`: Parsed mesh object
-
-**Raises:**
-
-- `FileNotFoundError`: If file doesn't exist
-- `ValueError`: If file format is unsupported or invalid
-
-## Core Classes
-
-### Mesh
-
-The main mesh container class.
-
-For detailed API, see [Mesh API](mesh.md).
-
-### Node & NodeEntity
-
-Classes for node data organization.
-
-### Element & ElementEntity
-
-Classes for element data organization.
-
-### Parsers
-
-Parser classes for different mesh sections.
-
-See [Parsers API](parsers.md) for details.
-
-## Helper Functions
-
-Utility functions for common mesh operations.
-
-See [Helpers API](helpers.md) for details.
-
-## Quick Reference
+### Package metadata
 
 ```python
 import gmshparser
 
-# Parse mesh
-mesh = gmshparser.parse("mesh.msh")
+print(gmshparser.__version__)
+```
 
-# Get mesh info
+## Data model
+
+- [`Mesh`](mesh.md) stores format metadata, counts, tag ranges, and entity lists.
+- `NodeEntity` groups `Node` objects.
+- `ElementEntity` groups `Element` objects with a shared Gmsh element type.
+- [`MainParser` and section parsers](parsers.md) populate the model.
+
+## Common operations
+
+```python
 mesh.get_version()
+mesh.is_ascii()
 mesh.get_number_of_nodes()
 mesh.get_number_of_elements()
-
-# Access nodes
-for entity in mesh.get_node_entities():
-    for node in entity.get_nodes():
-        node.get_tag()
-        node.get_coordinates()
-
-# Access elements
-for entity in mesh.get_element_entities():
-    for element in entity.get_elements():
-        element.get_tag()
-        element.get_connectivity()
-
-# Helper functions
-from gmshparser.helpers import get_triangles, get_quads, get_elements_2d
-
-X, Y, T = get_triangles(mesh)
-X, Y, Q = get_quads(mesh)
-X, Y, triangles, quads = get_elements_2d(mesh)
 ```
 
-## Next Steps
+Iterate over nodes:
 
-- [Mesh API](mesh.md) - Complete Mesh class reference
-- [Parsers API](parsers.md) - Parser classes
-- [Helpers API](helpers.md) - Utility functions
+```python
+for entity in mesh.get_node_entities():
+    for node in entity.get_nodes():
+        node_id = node.get_tag()
+        coordinates = node.get_coordinates()
+```
+
+Iterate over elements:
+
+```python
+for entity in mesh.get_element_entities():
+    element_type = entity.get_element_type()
+    for element in entity.get_elements():
+        element_id = element.get_tag()
+        connectivity = element.get_connectivity()
+```
+
+## Helpers
+
+```python
+from gmshparser.helpers import get_elements_2d, get_quads, get_triangles
+
+X, Y, triangles = get_triangles(mesh)
+X, Y, quads = get_quads(mesh)
+mixed = get_elements_2d(mesh)
+```
+
+`get_triangles()` and `get_quads()` return zero-based connectivity into their
+coordinate arrays. `get_elements_2d()` returns a dictionary with `nodes`,
+`triangles`, `quads`, and `node_ids`, preserving original node tags in the
+connectivity lists.
+
+See [Helpers API](helpers.md) for examples.
