@@ -63,6 +63,7 @@ nav:
       - Getting Started: user-guide/getting-started.md
       - Installation: user-guide/installation.md
       - Pythonic API: user-guide/pythonic-api.md
+      - Error Handling: user-guide/error-handling.md
       - NumPy Interoperability: user-guide/numpy.md
       - Basic Usage: user-guide/basic-usage.md
       - Command Line Interface: user-guide/cli.md
@@ -78,6 +79,7 @@ nav:
       - Overview: api/overview.md
       - Modern API: api/modern.md
       - NumPy API: api/numpy.md
+      - Errors: api/errors.md
       - Compatibility Mesh: api/mesh.md
       - Parsers: api/parsers.md
       - Helpers: api/helpers.md
