@@ -6,13 +6,13 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="A lightweight Python package for parsing Gmsh .msh mesh files">
+        <meta name="description" content="A lightweight Python package for parsing ASCII Gmsh MSH files">
       
       
         <meta name="author" content="Jukka Aho">
       
       
-        <link rel="canonical" href="https://gmshparser.readthedocs.io/developer-guide/contributing/">
+        <link rel="canonical" href="https://ahojukka5.github.io/gmshparser/developer-guide/contributing/">
       
       
         <link rel="prev" href="../../user-guide/supported-formats/">
@@ -1434,12 +1434,12 @@
 <div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>git<span class="w"> </span>checkout<span class="w"> </span>-b<span class="w"> </span>feature/your-feature-name
 </code></pre></div>
 <p>Run the complete local quality checks:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>uv<span class="w"> </span>run<span class="w"> </span>black<span class="w"> </span>.<span class="w"> </span>--check
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>uv<span class="w"> </span>run<span class="w"> </span>black<span class="w"> </span>gmshparser<span class="w"> </span>tests<span class="w"> </span>examples<span class="w"> </span>--check
 <a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>uv<span class="w"> </span>run<span class="w"> </span>flake8<span class="w"> </span>gmshparser<span class="w"> </span>tests
 <a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>uv<span class="w"> </span>run<span class="w"> </span>pytest
 </code></pre></div>
 <p>Apply formatting when necessary:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>uv<span class="w"> </span>run<span class="w"> </span>black<span class="w"> </span>.
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>uv<span class="w"> </span>run<span class="w"> </span>black<span class="w"> </span>gmshparser<span class="w"> </span>tests<span class="w"> </span>examples
 </code></pre></div>
 <p>Run an individual test:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>uv<span class="w"> </span>run<span class="w"> </span>pytest<span class="w"> </span>tests/test_helpers.py::test_get_triangles

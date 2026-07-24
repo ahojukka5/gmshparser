@@ -6,13 +6,13 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="A lightweight Python package for parsing Gmsh .msh mesh files">
+        <meta name="description" content="A lightweight Python package for parsing ASCII Gmsh MSH files">
       
       
         <meta name="author" content="Jukka Aho">
       
       
-        <link rel="canonical" href="https://gmshparser.readthedocs.io/developer-guide/test-results/">
+        <link rel="canonical" href="https://ahojukka5.github.io/gmshparser/developer-guide/test-results/">
       
       
         <link rel="prev" href="../testing/">
@@ -881,10 +881,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#element-coverage" class="md-nav__link">
+  <a href="#element-and-helper-coverage" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Element coverage
+        Element and helper coverage
       
     </span>
   </a>
@@ -903,10 +903,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#test-data-organization" class="md-nav__link">
+  <a href="#authoritative-status" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Test data organization
+        Authoritative status
       
     </span>
   </a>
@@ -1264,10 +1264,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#element-coverage" class="md-nav__link">
+  <a href="#element-and-helper-coverage" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Element coverage
+        Element and helper coverage
       
     </span>
   </a>
@@ -1286,10 +1286,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#test-data-organization" class="md-nav__link">
+  <a href="#authoritative-status" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Test data organization
+        Authoritative status
       
     </span>
   </a>
@@ -1317,52 +1317,54 @@
 
 
 <h1 id="test-results">Test Results<a class="headerlink" href="#test-results" title="Permanent link">&para;</a></h1>
-<p>gmshparser is tested against mesh files covering the supported MSH format families and multiple element types.</p>
+<p>gmshparser is tested against committed mesh fixtures covering the supported MSH
+version families and several element types.</p>
 <h2 id="current-automated-checks">Current automated checks<a class="headerlink" href="#current-automated-checks" title="Permanent link">&para;</a></h2>
-<p>GitHub Actions runs the project on Python 3.12, 3.13, and 3.14. Every matrix job performs:</p>
+<p>GitHub Actions runs Python 3.12, 3.13, and 3.14. Every matrix job performs:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>uv<span class="w"> </span>sync<span class="w"> </span>--no-default-groups<span class="w"> </span>--group<span class="w"> </span><span class="nb">test</span><span class="w"> </span>--group<span class="w"> </span>lint
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>uv<span class="w"> </span>run<span class="w"> </span>--no-sync<span class="w"> </span>black<span class="w"> </span>.<span class="w"> </span>--check
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>uv<span class="w"> </span>run<span class="w"> </span>--no-sync<span class="w"> </span>black<span class="w"> </span>gmshparser<span class="w"> </span>tests<span class="w"> </span>examples<span class="w"> </span>--check
 <a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>uv<span class="w"> </span>run<span class="w"> </span>--no-sync<span class="w"> </span>flake8<span class="w"> </span>gmshparser<span class="w"> </span>tests
 <a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>uv<span class="w"> </span>run<span class="w"> </span>--no-sync<span class="w"> </span>pytest<span class="w"> </span>--cov<span class="o">=</span>gmshparser<span class="w"> </span>--cov-report<span class="o">=</span>xml<span class="w"> </span>--cov-report<span class="o">=</span>term
 </code></pre></div>
-<p>The documentation workflow separately installs only the <code>docs</code> dependency group and runs:</p>
+<p>Python 3.12 also builds the wheel and source distribution and smoke-tests the
+installed package and CLI. The release workflow repeats the distribution build
+and smoke tests before publishing.</p>
+<p>The documentation workflow installs only the <code>docs</code> dependency group and runs:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>uv<span class="w"> </span>sync<span class="w"> </span>--no-default-groups<span class="w"> </span>--group<span class="w"> </span>docs
 <a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>uv<span class="w"> </span>run<span class="w"> </span>--no-sync<span class="w"> </span>mkdocs<span class="w"> </span>build
 </code></pre></div>
-<p>This separation keeps test environments free of matplotlib and documentation tooling.</p>
 <h2 id="format-coverage">Format coverage<a class="headerlink" href="#format-coverage" title="Permanent link">&para;</a></h2>
-<p>The test data includes examples for:</p>
+<p>Fixtures and parser tests cover:</p>
 <ul>
 <li>MSH 1.0 legacy <code>$NOD</code> and <code>$ELM</code> sections</li>
-<li>MSH 2.0, 2.1, and 2.2 node and element sections</li>
-<li>physical groups in MSH 2.x files</li>
-<li>MSH 4.0 and 4.1 entity-based node and element organization</li>
+<li>MSH 2.0, 2.1, and 2.2 node and element layouts</li>
+<li>MSH 2.x element records containing tags</li>
+<li>MSH 4.0 and 4.1 entity-block node and element layouts</li>
+<li>unsupported-version and version-management behavior</li>
 </ul>
-<h2 id="element-coverage">Element coverage<a class="headerlink" href="#element-coverage" title="Permanent link">&para;</a></h2>
-<p>The suite exercises elements from zero to three dimensions, including:</p>
-<ul>
-<li>points</li>
-<li>lines</li>
-<li>triangles</li>
-<li>quadrangles</li>
-<li>tetrahedra</li>
-</ul>
+<p>The current data model does not expose complete physical-name or physical-tag
+metadata, so the presence of such tags in a fixture should not be described as
+full physical-group support.</p>
+<h2 id="element-and-helper-coverage">Element and helper coverage<a class="headerlink" href="#element-and-helper-coverage" title="Permanent link">&para;</a></h2>
+<p>The suite exercises multiple element dimensions and types, including points,
+lines, triangles, quadrangles, and tetrahedra. It also tests the CLI and the
+visualization helper return values.</p>
 <h2 id="running-tests-locally">Running tests locally<a class="headerlink" href="#running-tests-locally" title="Permanent link">&para;</a></h2>
-<p>Install the default development environment:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>uv<span class="w"> </span>sync
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>uv<span class="w"> </span>run<span class="w"> </span>pytest
 </code></pre></div>
-<p>Run the full suite:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>uv<span class="w"> </span>run<span class="w"> </span>pytest
-</code></pre></div>
-<p>Run one test module:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>uv<span class="w"> </span>run<span class="w"> </span>pytest<span class="w"> </span>tests/test_helpers.py
+<p>Run one module:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>uv<span class="w"> </span>run<span class="w"> </span>pytest<span class="w"> </span>tests/test_helpers.py
 </code></pre></div>
 <p>Generate an HTML coverage report:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>uv<span class="w"> </span>run<span class="w"> </span>pytest<span class="w"> </span>--cov<span class="o">=</span>gmshparser<span class="w"> </span>--cov-report<span class="o">=</span>html
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>uv<span class="w"> </span>run<span class="w"> </span>pytest<span class="w"> </span>--cov<span class="o">=</span>gmshparser<span class="w"> </span>--cov-report<span class="o">=</span>html
 </code></pre></div>
-<h2 id="test-data-organization">Test data organization<a class="headerlink" href="#test-data-organization" title="Permanent link">&para;</a></h2>
-<p>Mesh files are stored under <code>testdata/</code> and grouped by complexity and purpose. See <a href="../../testdata/README.md"><code>testdata/README.md</code></a> for details and contribution guidance.</p>
-<p>Exact test and coverage totals change as the project evolves. The GitHub Actions result for the current commit is the authoritative status.</p>
+<h2 id="authoritative-status">Authoritative status<a class="headerlink" href="#authoritative-status" title="Permanent link">&para;</a></h2>
+<p>Mesh files are stored under <code>testdata/</code>; see
+<a href="../../testdata/README.md"><code>testdata/README.md</code></a>.</p>
+<p>Exact test counts and coverage percentages change as the project evolves. The
+GitHub Actions result and Codecov report for the current commit are the
+authoritative status rather than numbers copied into documentation.</p>
 
 
 

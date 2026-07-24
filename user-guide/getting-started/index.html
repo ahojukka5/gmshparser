@@ -6,13 +6,13 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="A lightweight Python package for parsing Gmsh .msh mesh files">
+        <meta name="description" content="A lightweight Python package for parsing ASCII Gmsh MSH files">
       
       
         <meta name="author" content="Jukka Aho">
       
       
-        <link rel="canonical" href="https://gmshparser.readthedocs.io/user-guide/getting-started/">
+        <link rel="canonical" href="https://ahojukka5.github.io/gmshparser/user-guide/getting-started/">
       
       
         <link rel="prev" href="../..">
@@ -520,10 +520,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#what-is-gmshparser" class="md-nav__link">
+  <a href="#requirements" class="md-nav__link">
     <span class="md-ellipsis">
       
-        What is gmshparser?
+        Requirements
       
     </span>
   </a>
@@ -531,10 +531,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#why-gmshparser" class="md-nav__link">
+  <a href="#supported-files" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Why gmshparser?
+        Supported files
       
     </span>
   </a>
@@ -542,10 +542,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#what-can-you-do-with-gmshparser" class="md-nav__link">
+  <a href="#install" class="md-nav__link">
     <span class="md-ellipsis">
       
-        What can you do with gmshparser?
+        Install
       
     </span>
   </a>
@@ -553,10 +553,32 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#system-requirements" class="md-nav__link">
+  <a href="#parse-a-mesh" class="md-nav__link">
     <span class="md-ellipsis">
       
-        System Requirements
+        Parse a mesh
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#inspect-nodes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Inspect nodes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#inspect-elements" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Inspect elements
       
     </span>
   </a>
@@ -567,29 +589,7 @@
   <a href="#next-steps" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Next Steps
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#quick-example" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Quick Example
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#getting-help" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Getting Help
+        Next steps
       
     </span>
   </a>
@@ -1264,10 +1264,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#what-is-gmshparser" class="md-nav__link">
+  <a href="#requirements" class="md-nav__link">
     <span class="md-ellipsis">
       
-        What is gmshparser?
+        Requirements
       
     </span>
   </a>
@@ -1275,10 +1275,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#why-gmshparser" class="md-nav__link">
+  <a href="#supported-files" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Why gmshparser?
+        Supported files
       
     </span>
   </a>
@@ -1286,10 +1286,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#what-can-you-do-with-gmshparser" class="md-nav__link">
+  <a href="#install" class="md-nav__link">
     <span class="md-ellipsis">
       
-        What can you do with gmshparser?
+        Install
       
     </span>
   </a>
@@ -1297,10 +1297,32 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#system-requirements" class="md-nav__link">
+  <a href="#parse-a-mesh" class="md-nav__link">
     <span class="md-ellipsis">
       
-        System Requirements
+        Parse a mesh
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#inspect-nodes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Inspect nodes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#inspect-elements" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Inspect elements
       
     </span>
   </a>
@@ -1311,29 +1333,7 @@
   <a href="#next-steps" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Next Steps
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#quick-example" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Quick Example
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#getting-help" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Getting Help
+        Next steps
       
     </span>
   </a>
@@ -1361,66 +1361,59 @@
 
 
 <h1 id="getting-started">Getting Started<a class="headerlink" href="#getting-started" title="Permanent link">&para;</a></h1>
-<p>Welcome to gmshparser! This guide will help you get started with parsing Gmsh mesh files in Python.</p>
-<h2 id="what-is-gmshparser">What is gmshparser?<a class="headerlink" href="#what-is-gmshparser" title="Permanent link">&para;</a></h2>
-<p>gmshparser is a lightweight Python library for reading Gmsh <code>.msh</code> files. It focuses on doing one thing well: parsing mesh files with a clean, simple API.</p>
-<h2 id="why-gmshparser">Why gmshparser?<a class="headerlink" href="#why-gmshparser" title="Permanent link">&para;</a></h2>
+<p>gmshparser is a lightweight Python library for reading ASCII Gmsh <code>.msh</code>
+files. It parses the mesh into objects representing nodes, elements, and their
+entities.</p>
+<h2 id="requirements">Requirements<a class="headerlink" href="#requirements" title="Permanent link">&para;</a></h2>
 <ul>
-<li><strong>No external dependencies</strong>: Pure Python implementation</li>
-<li><strong>Universal format support</strong>: Works with MSH 1.0 through 4.1</li>
-<li><strong>Automatic detection</strong>: Detects file format version automatically</li>
-<li><strong>Well tested</strong>: 100% test coverage with 34+ test cases</li>
-<li><strong>Easy to use</strong>: Simple, intuitive API</li>
+<li>Python 3.12 or newer</li>
+<li>no runtime dependencies for parsing</li>
+<li>matplotlib only for the optional visualization examples</li>
 </ul>
-<h2 id="what-can-you-do-with-gmshparser">What can you do with gmshparser?<a class="headerlink" href="#what-can-you-do-with-gmshparser" title="Permanent link">&para;</a></h2>
+<h2 id="supported-files">Supported files<a class="headerlink" href="#supported-files" title="Permanent link">&para;</a></h2>
+<p>The parser detects these MSH versions automatically:</p>
 <ul>
-<li>Parse Gmsh mesh files of any supported version</li>
-<li>Extract nodes and their coordinates</li>
-<li>Extract elements and their connectivity</li>
-<li>Access physical groups and entities</li>
-<li>Export mesh data for other FEM codes</li>
-<li>Visualize 2D meshes using matplotlib</li>
+<li>1.0</li>
+<li>2.0, 2.1, and 2.2</li>
+<li>4.0 and 4.1</li>
 </ul>
-<h2 id="system-requirements">System Requirements<a class="headerlink" href="#system-requirements" title="Permanent link">&para;</a></h2>
-<ul>
-<li>Python 3.8.1 or later</li>
-<li>No external dependencies required for core functionality</li>
-<li>matplotlib (optional, for visualization)</li>
-</ul>
-<h2 id="next-steps">Next Steps<a class="headerlink" href="#next-steps" title="Permanent link">&para;</a></h2>
-<ol>
-<li><a href="../installation/">Install gmshparser</a></li>
-<li><a href="../basic-usage/">Learn basic usage</a></li>
-<li><a href="../cli/">Try the command-line interface</a></li>
-<li><a href="../visualization/">Visualize your meshes</a></li>
-</ol>
-<h2 id="quick-example">Quick Example<a class="headerlink" href="#quick-example" title="Permanent link">&para;</a></h2>
-<p>Here's a simple example to get you started:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">gmshparser</span>
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="c1"># Parse a mesh file</span>
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="n">mesh</span> <span class="o">=</span> <span class="n">gmshparser</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">&quot;my_mesh.msh&quot;</span><span class="p">)</span>
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="c1"># Print mesh information</span>
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Mesh version: </span><span class="si">{</span><span class="n">mesh</span><span class="o">.</span><span class="n">get_version</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Number of nodes: </span><span class="si">{</span><span class="n">mesh</span><span class="o">.</span><span class="n">get_number_of_nodes</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Number of elements: </span><span class="si">{</span><span class="n">mesh</span><span class="o">.</span><span class="n">get_number_of_elements</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>
-<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="c1"># Access first node</span>
-<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="k">for</span> <span class="n">entity</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">get_node_entities</span><span class="p">():</span>
-<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>    <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">entity</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">():</span>
-<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;First node: </span><span class="si">{</span><span class="n">node</span><span class="o">.</span><span class="n">get_tag</span><span class="p">()</span><span class="si">}</span><span class="s2"> at </span><span class="si">{</span><span class="n">node</span><span class="o">.</span><span class="n">get_coordinates</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>        <span class="k">break</span>
-<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>    <span class="k">break</span>
+<p>Only ASCII MSH files are supported. See <a href="../supported-formats/">Supported Formats</a>
+for details and limitations.</p>
+<h2 id="install">Install<a class="headerlink" href="#install" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>uv<span class="w"> </span>add<span class="w"> </span>gmshparser
 </code></pre></div>
-<h2 id="getting-help">Getting Help<a class="headerlink" href="#getting-help" title="Permanent link">&para;</a></h2>
-<p>If you encounter issues or have questions:</p>
-<ul>
-<li>Check the <a href="../../api/overview/">API Reference</a></li>
-<li>Review <a href="https://github.com/ahojukka5/gmshparser/tree/master/examples">examples in the repository</a></li>
-<li><a href="https://github.com/ahojukka5/gmshparser/issues">Open an issue on GitHub</a></li>
-<li>Contact the author: <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#97;&#104;&#111;&#106;&#117;&#107;&#107;&#97;&#53;&#64;&#103;&#109;&#97;&#105;&#108;&#46;&#99;&#111;&#109;">&#97;&#104;&#111;&#106;&#117;&#107;&#107;&#97;&#53;&#64;&#103;&#109;&#97;&#105;&#108;&#46;&#99;&#111;&#109;</a></li>
-</ul>
+<p>or:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>pip<span class="w"> </span>install<span class="w"> </span>gmshparser
+</code></pre></div>
+<h2 id="parse-a-mesh">Parse a mesh<a class="headerlink" href="#parse-a-mesh" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">gmshparser</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="n">mesh</span> <span class="o">=</span> <span class="n">gmshparser</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">&quot;mesh.msh&quot;</span><span class="p">)</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;MSH version: </span><span class="si">{</span><span class="n">mesh</span><span class="o">.</span><span class="n">get_version</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Nodes: </span><span class="si">{</span><span class="n">mesh</span><span class="o">.</span><span class="n">get_number_of_nodes</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Elements: </span><span class="si">{</span><span class="n">mesh</span><span class="o">.</span><span class="n">get_number_of_elements</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</code></pre></div>
+<h2 id="inspect-nodes">Inspect nodes<a class="headerlink" href="#inspect-nodes" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="k">for</span> <span class="n">entity</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">get_node_entities</span><span class="p">():</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>    <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">entity</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">():</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>        <span class="nb">print</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">get_tag</span><span class="p">(),</span> <span class="n">node</span><span class="o">.</span><span class="n">get_coordinates</span><span class="p">())</span>
+</code></pre></div>
+<h2 id="inspect-elements">Inspect elements<a class="headerlink" href="#inspect-elements" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="k">for</span> <span class="n">entity</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">get_element_entities</span><span class="p">():</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>    <span class="n">element_type</span> <span class="o">=</span> <span class="n">entity</span><span class="o">.</span><span class="n">get_element_type</span><span class="p">()</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>    <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="n">entity</span><span class="o">.</span><span class="n">get_elements</span><span class="p">():</span>
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>        <span class="nb">print</span><span class="p">(</span><span class="n">element</span><span class="o">.</span><span class="n">get_tag</span><span class="p">(),</span> <span class="n">element_type</span><span class="p">,</span> <span class="n">element</span><span class="o">.</span><span class="n">get_connectivity</span><span class="p">())</span>
+</code></pre></div>
+<h2 id="next-steps">Next steps<a class="headerlink" href="#next-steps" title="Permanent link">&para;</a></h2>
+<ol>
+<li><a href="../installation/">Installation and development setup</a></li>
+<li><a href="../basic-usage/">Basic API usage</a></li>
+<li><a href="../cli/">Command-line interface</a></li>
+<li><a href="../visualization/">Visualization helpers</a></li>
+<li><a href="https://github.com/ahojukka5/gmshparser/tree/master/testdata">Repository test meshes</a></li>
+</ol>
+<p>For bugs or unsupported files, open an issue and attach the smallest mesh that
+reproduces the problem.</p>
 
 
 

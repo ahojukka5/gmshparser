@@ -6,13 +6,13 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="A lightweight Python package for parsing Gmsh .msh mesh files">
+        <meta name="description" content="A lightweight Python package for parsing ASCII Gmsh MSH files">
       
       
         <meta name="author" content="Jukka Aho">
       
       
-        <link rel="canonical" href="https://gmshparser.readthedocs.io/user-guide/supported-formats/">
+        <link rel="canonical" href="https://ahojukka5.github.io/gmshparser/user-guide/supported-formats/">
       
       
         <link rel="prev" href="../visualization/">
@@ -660,10 +660,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#format-overview" class="md-nav__link">
+  <a href="#supported-versions" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Format Overview
+        Supported versions
       
     </span>
   </a>
@@ -671,163 +671,57 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#msh-10-legacy-format" class="md-nav__link">
+  <a href="#ascii-only" class="md-nav__link">
     <span class="md-ellipsis">
       
-        MSH 1.0 (Legacy Format)
+        ASCII only
       
     </span>
   </a>
-  
-    <nav class="md-nav" aria-label="MSH 1.0 (Legacy Format)">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#structure" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Structure
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#features" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Features
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#example" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Example
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#msh-202122-standard-format" class="md-nav__link">
+  <a href="#msh-10" class="md-nav__link">
     <span class="md-ellipsis">
       
-        MSH 2.0/2.1/2.2 (Standard Format)
+        MSH 1.0
       
     </span>
   </a>
-  
-    <nav class="md-nav" aria-label="MSH 2.0/2.1/2.2 (Standard Format)">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#structure_1" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Structure
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#msh-21-addition" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        MSH 2.1 Addition
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#features_1" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Features
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#example-msh-22" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Example (MSH 2.2)
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#msh-4041-modern-format" class="md-nav__link">
+  <a href="#msh-2x" class="md-nav__link">
     <span class="md-ellipsis">
       
-        MSH 4.0/4.1 (Modern Format)
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="MSH 4.0/4.1 (Modern Format)">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#structure_2" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Structure
+        MSH 2.x
       
     </span>
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
-  <a href="#features_2" class="md-nav__link">
+      
+        <li class="md-nav__item">
+  <a href="#msh-4x" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Features
+        MSH 4.x
       
     </span>
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
-  <a href="#example-msh-41" class="md-nav__link">
+      
+        <li class="md-nav__item">
+  <a href="#common-limitations" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Example (MSH 4.1)
+        Common limitations
       
     </span>
   </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -835,7 +729,7 @@
   <a href="#element-types" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Element Types
+        Element types
       
     </span>
   </a>
@@ -843,88 +737,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#version-detection" class="md-nav__link">
+  <a href="#check-the-detected-format" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Version Detection
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Version Detection">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#detection-algorithm" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Detection Algorithm
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#format-compatibility" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Format Compatibility
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Format Compatibility">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#gmshparser-gmshparser" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        gmshparser → gmshparser
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#gmsh-gmshparser" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Gmsh → gmshparser
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#limitations" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Limitations
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#converting-between-versions" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Converting Between Versions
+        Check the detected format
       
     </span>
   </a>
@@ -932,43 +748,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#testing" class="md-nav__link">
+  <a href="#test-coverage" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Testing
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#future-support" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Future Support
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#references" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        References
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#next-steps" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Next Steps
+        Test coverage
       
     </span>
   </a>
@@ -1503,10 +1286,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#format-overview" class="md-nav__link">
+  <a href="#supported-versions" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Format Overview
+        Supported versions
       
     </span>
   </a>
@@ -1514,163 +1297,57 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#msh-10-legacy-format" class="md-nav__link">
+  <a href="#ascii-only" class="md-nav__link">
     <span class="md-ellipsis">
       
-        MSH 1.0 (Legacy Format)
+        ASCII only
       
     </span>
   </a>
-  
-    <nav class="md-nav" aria-label="MSH 1.0 (Legacy Format)">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#structure" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Structure
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#features" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Features
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#example" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Example
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#msh-202122-standard-format" class="md-nav__link">
+  <a href="#msh-10" class="md-nav__link">
     <span class="md-ellipsis">
       
-        MSH 2.0/2.1/2.2 (Standard Format)
+        MSH 1.0
       
     </span>
   </a>
-  
-    <nav class="md-nav" aria-label="MSH 2.0/2.1/2.2 (Standard Format)">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#structure_1" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Structure
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#msh-21-addition" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        MSH 2.1 Addition
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#features_1" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Features
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#example-msh-22" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Example (MSH 2.2)
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#msh-4041-modern-format" class="md-nav__link">
+  <a href="#msh-2x" class="md-nav__link">
     <span class="md-ellipsis">
       
-        MSH 4.0/4.1 (Modern Format)
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="MSH 4.0/4.1 (Modern Format)">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#structure_2" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Structure
+        MSH 2.x
       
     </span>
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
-  <a href="#features_2" class="md-nav__link">
+      
+        <li class="md-nav__item">
+  <a href="#msh-4x" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Features
+        MSH 4.x
       
     </span>
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
-  <a href="#example-msh-41" class="md-nav__link">
+      
+        <li class="md-nav__item">
+  <a href="#common-limitations" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Example (MSH 4.1)
+        Common limitations
       
     </span>
   </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -1678,7 +1355,7 @@
   <a href="#element-types" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Element Types
+        Element types
       
     </span>
   </a>
@@ -1686,88 +1363,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#version-detection" class="md-nav__link">
+  <a href="#check-the-detected-format" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Version Detection
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Version Detection">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#detection-algorithm" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Detection Algorithm
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#format-compatibility" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Format Compatibility
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Format Compatibility">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#gmshparser-gmshparser" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        gmshparser → gmshparser
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#gmsh-gmshparser" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Gmsh → gmshparser
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#limitations" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Limitations
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#converting-between-versions" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Converting Between Versions
+        Check the detected format
       
     </span>
   </a>
@@ -1775,43 +1374,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#testing" class="md-nav__link">
+  <a href="#test-coverage" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Testing
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#future-support" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Future Support
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#references" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        References
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#next-steps" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Next Steps
+        Test coverage
       
     </span>
   </a>
@@ -1839,52 +1405,62 @@
 
 
 <h1 id="supported-formats">Supported Formats<a class="headerlink" href="#supported-formats" title="Permanent link">&para;</a></h1>
-<p>gmshparser supports multiple versions of the Gmsh MSH file format, automatically detecting the version and using the appropriate parser.</p>
-<h2 id="format-overview">Format Overview<a class="headerlink" href="#format-overview" title="Permanent link">&para;</a></h2>
+<p>gmshparser reads the node and element data from selected <strong>ASCII</strong> Gmsh MSH
+formats. The version is detected automatically from <code>$MeshFormat</code>, or from the
+legacy <code>$NOD</code> header for MSH 1.0.</p>
+<h2 id="supported-versions">Supported versions<a class="headerlink" href="#supported-versions" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
 <th>Version</th>
+<th>Node and element layout</th>
 <th>Status</th>
-<th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td>MSH 1.0</td>
-<td>✅ Fully Supported</td>
-<td>Legacy format</td>
+<td>legacy <code>$NOD</code> and <code>$ELM</code> sections</td>
+<td>supported</td>
 </tr>
 <tr>
 <td>MSH 2.0</td>
-<td>✅ Fully Supported</td>
-<td>Standard format</td>
+<td>flat <code>$Nodes</code> and <code>$Elements</code> sections</td>
+<td>supported</td>
 </tr>
 <tr>
 <td>MSH 2.1</td>
-<td>✅ Fully Supported</td>
-<td>With physical names</td>
+<td>flat <code>$Nodes</code> and <code>$Elements</code> sections</td>
+<td>supported</td>
 </tr>
 <tr>
 <td>MSH 2.2</td>
-<td>✅ Fully Supported</td>
-<td>Compatible with 2.0/2.1</td>
+<td>flat <code>$Nodes</code> and <code>$Elements</code> sections</td>
+<td>supported</td>
 </tr>
 <tr>
 <td>MSH 4.0</td>
-<td>✅ Fully Supported</td>
-<td>Modern entity-based format</td>
+<td>entity-block <code>$Nodes</code> and <code>$Elements</code> sections</td>
+<td>supported</td>
 </tr>
 <tr>
 <td>MSH 4.1</td>
-<td>✅ Fully Supported</td>
-<td>Latest version</td>
+<td>entity-block <code>$Nodes</code> and <code>$Elements</code> sections</td>
+<td>supported</td>
 </tr>
 </tbody>
 </table>
-<h2 id="msh-10-legacy-format">MSH 1.0 (Legacy Format)<a class="headerlink" href="#msh-10-legacy-format" title="Permanent link">&para;</a></h2>
-<p>The original Gmsh format using simple section markers.</p>
-<h3 id="structure">Structure<a class="headerlink" href="#structure" title="Permanent link">&para;</a></h3>
+<p>“Supported” here means that the core mesh topology—node coordinates, element
+connectivity, entity grouping, counts, and tag ranges—can be read through the
+common Python API. It does not mean that every optional MSH section is retained.</p>
+<h2 id="ascii-only">ASCII only<a class="headerlink" href="#ascii-only" title="Permanent link">&para;</a></h2>
+<p>The <code>$MeshFormat</code> file-type field is recorded in the <code>Mesh</code> object, but the
+parser reads the file as text. Binary MSH files are therefore not supported.
+Export them from Gmsh with <code>Mesh.Binary = 0</code> and select a supported MSH version
+before parsing.</p>
+<h2 id="msh-10">MSH 1.0<a class="headerlink" href="#msh-10" title="Permanent link">&para;</a></h2>
+<p>MSH 1.0 files have no <code>$MeshFormat</code> section. gmshparser recognizes the legacy
+headers:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>$NOD
 <a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>&lt;number-of-nodes&gt;
 <a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>&lt;node-id&gt; &lt;x&gt; &lt;y&gt; &lt;z&gt;
@@ -1892,327 +1468,112 @@
 <a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>$ENDNOD
 <a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>$ELM
 <a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>&lt;number-of-elements&gt;
-<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>&lt;elm-number&gt; &lt;elm-type&gt; &lt;reg-phys&gt; &lt;reg-elem&gt; &lt;number-of-nodes&gt; &lt;node-list&gt;
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>&lt;element-records&gt;
 <a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>...
 <a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>$ENDELM
 </code></pre></div>
-<h3 id="features">Features<a class="headerlink" href="#features" title="Permanent link">&para;</a></h3>
+<p>The parser converts the legacy flat data into the same <code>Mesh</code>, <code>NodeEntity</code>, and
+<code>ElementEntity</code> model used for later versions.</p>
+<h2 id="msh-2x">MSH 2.x<a class="headerlink" href="#msh-2x" title="Permanent link">&para;</a></h2>
+<p>For MSH 2.0, 2.1, and 2.2, gmshparser parses:</p>
 <ul>
-<li>No <code>$MeshFormat</code> section</li>
-<li>Simple node and element sections</li>
-<li>Legacy element type numbering</li>
-<li>Physical and elementary region tags</li>
+<li><code>$MeshFormat</code></li>
+<li><code>$Nodes</code></li>
+<li><code>$Elements</code></li>
 </ul>
-<h3 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>$NOD
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>6
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>1 0.0 0.0 0.0
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>2 1.0 0.0 0.0
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>3 1.0 1.0 0.0
-<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>4 0.0 1.0 0.0
-<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>5 2.0 0.0 0.0
-<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>6 2.0 1.0 0.0
-<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>$ENDNOD
-<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>$ELM
-<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>2
-<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>1 3 0 1 4 1 2 3 4
-<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>2 3 0 1 4 2 5 6 3
-<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a>$ENDELM
-</code></pre></div>
-<h2 id="msh-202122-standard-format">MSH 2.0/2.1/2.2 (Standard Format)<a class="headerlink" href="#msh-202122-standard-format" title="Permanent link">&para;</a></h2>
-<p>The widely-used standard format with <code>$MeshFormat</code> section.</p>
-<h3 id="structure_1">Structure<a class="headerlink" href="#structure_1" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>$MeshFormat
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>&lt;version&gt; &lt;file-type&gt; &lt;data-size&gt;
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>$EndMeshFormat
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>$Nodes
-<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>&lt;number-of-nodes&gt;
-<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>&lt;node-id&gt; &lt;x&gt; &lt;y&gt; &lt;z&gt;
-<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>...
-<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>$EndNodes
-<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>$Elements
-<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>&lt;number-of-elements&gt;
-<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a>&lt;elm-id&gt; &lt;elm-type&gt; &lt;number-of-tags&gt; &lt;tag-list&gt; &lt;node-list&gt;
-<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a>...
-<a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a>$EndElements
-</code></pre></div>
-<h3 id="msh-21-addition">MSH 2.1 Addition<a class="headerlink" href="#msh-21-addition" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>$PhysicalNames
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>&lt;number-of-physical-names&gt;
-<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>&lt;dimension&gt; &lt;physical-tag&gt; &quot;&lt;physical-name&gt;&quot;
-<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>...
-<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>$EndPhysicalNames
-</code></pre></div>
-<h3 id="features_1">Features<a class="headerlink" href="#features_1" title="Permanent link">&para;</a></h3>
+<p>Element records may contain physical, elementary, and partition tags. The
+current parser uses the elementary entity tag for grouping but does not expose
+the complete tag list on each element.</p>
+<p><code>$PhysicalNames</code> and other optional sections are not stored by the current data
+model.</p>
+<h2 id="msh-4x">MSH 4.x<a class="headerlink" href="#msh-4x" title="Permanent link">&para;</a></h2>
+<p>For MSH 4.0 and 4.1, gmshparser parses the entity-block forms of <code>$Nodes</code> and
+<code>$Elements</code> and stores each block as a node or element entity.</p>
+<p>The standalone <code>$Entities</code> section and its geometry, bounding boxes, topology,
+and physical tags are not retained. Entity dimension and tag values available
+in the node and element block headers are preserved.</p>
+<h2 id="common-limitations">Common limitations<a class="headerlink" href="#common-limitations" title="Permanent link">&para;</a></h2>
+<p>The current reader does not provide:</p>
 <ul>
-<li>Explicit version declaration</li>
-<li>Node and element sections with clear syntax</li>
-<li>Support for element tags (physical, elementary, partition)</li>
-<li>Optional physical group names (2.1+)</li>
-<li>ASCII or binary formats supported</li>
+<li>binary MSH support</li>
+<li>mesh writing or format conversion</li>
+<li>compressed-file handling</li>
+<li>preservation of every optional MSH section</li>
+<li>post-processing datasets such as <code>$NodeData</code>, <code>$ElementData</code>, or
+  <code>$ElementNodeData</code></li>
+<li>periodic-entity metadata</li>
+<li>complete physical-name and physical-tag metadata</li>
 </ul>
-<h3 id="example-msh-22">Example (MSH 2.2)<a class="headerlink" href="#example-msh-22" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>$MeshFormat
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>2.2 0 8
-<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>$EndMeshFormat
-<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>$Nodes
-<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>6
-<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>1 0.0 0.0 0.0
-<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>2 1.0 0.0 0.0
-<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>3 1.0 1.0 0.0
-<a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a>4 0.0 1.0 0.0
-<a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a>5 2.0 0.0 0.0
-<a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a>6 2.0 1.0 0.0
-<a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a>$EndNodes
-<a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a>$Elements
-<a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a>2
-<a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a>1 3 2 1 1 1 2 3 4
-<a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a>2 3 2 1 1 2 5 6 3
-<a id="__codelineno-4-17" name="__codelineno-4-17" href="#__codelineno-4-17"></a>$EndElements
-</code></pre></div>
-<h2 id="msh-4041-modern-format">MSH 4.0/4.1 (Modern Format)<a class="headerlink" href="#msh-4041-modern-format" title="Permanent link">&para;</a></h2>
-<p>The current Gmsh format with entity-based organization.</p>
-<h3 id="structure_2">Structure<a class="headerlink" href="#structure_2" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>$MeshFormat
-<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>&lt;version&gt; &lt;file-type&gt; &lt;data-size&gt;
-<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>$EndMeshFormat
-<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>$Entities
-<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>&lt;numPoints&gt; &lt;numCurves&gt; &lt;numSurfaces&gt; &lt;numVolumes&gt;
-<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>&lt;point-entities&gt;
-<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a>&lt;curve-entities&gt;
-<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a>&lt;surface-entities&gt;
-<a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a>&lt;volume-entities&gt;
-<a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a>$EndEntities
-<a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a>$Nodes
-<a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a>&lt;numEntityBlocks&gt; &lt;numNodes&gt; &lt;minNodeTag&gt; &lt;maxNodeTag&gt;
-<a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a>&lt;entityDim&gt; &lt;entityTag&gt; &lt;parametric&gt; &lt;numNodesInBlock&gt;
-<a id="__codelineno-5-14" name="__codelineno-5-14" href="#__codelineno-5-14"></a>&lt;nodeTag&gt;
-<a id="__codelineno-5-15" name="__codelineno-5-15" href="#__codelineno-5-15"></a>...
-<a id="__codelineno-5-16" name="__codelineno-5-16" href="#__codelineno-5-16"></a>&lt;x&gt; &lt;y&gt; &lt;z&gt;
-<a id="__codelineno-5-17" name="__codelineno-5-17" href="#__codelineno-5-17"></a>...
-<a id="__codelineno-5-18" name="__codelineno-5-18" href="#__codelineno-5-18"></a>$EndNodes
-<a id="__codelineno-5-19" name="__codelineno-5-19" href="#__codelineno-5-19"></a>$Elements
-<a id="__codelineno-5-20" name="__codelineno-5-20" href="#__codelineno-5-20"></a>&lt;numEntityBlocks&gt; &lt;numElements&gt; &lt;minElementTag&gt; &lt;maxElementTag&gt;
-<a id="__codelineno-5-21" name="__codelineno-5-21" href="#__codelineno-5-21"></a>&lt;entityDim&gt; &lt;entityTag&gt; &lt;elementType&gt; &lt;numElementsInBlock&gt;
-<a id="__codelineno-5-22" name="__codelineno-5-22" href="#__codelineno-5-22"></a>&lt;elementTag&gt; &lt;nodeTag1&gt; &lt;nodeTag2&gt; ...
-<a id="__codelineno-5-23" name="__codelineno-5-23" href="#__codelineno-5-23"></a>...
-<a id="__codelineno-5-24" name="__codelineno-5-24" href="#__codelineno-5-24"></a>$EndElements
-</code></pre></div>
-<h3 id="features_2">Features<a class="headerlink" href="#features_2" title="Permanent link">&para;</a></h3>
-<ul>
-<li>Entity-based organization (points, curves, surfaces, volumes)</li>
-<li>Explicit entity topology</li>
-<li>Node and element blocks grouped by entity</li>
-<li>More efficient for large meshes</li>
-<li>Better support for high-order elements</li>
-</ul>
-<h3 id="example-msh-41">Example (MSH 4.1)<a class="headerlink" href="#example-msh-41" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>$MeshFormat
-<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>4.1 0 8
-<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>$EndMeshFormat
-<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>$Nodes
-<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>1 6 1 6
-<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>2 1 0 6
-<a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a>1
-<a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a>2
-<a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a>3
-<a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a>4
-<a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a>5
-<a id="__codelineno-6-12" name="__codelineno-6-12" href="#__codelineno-6-12"></a>6
-<a id="__codelineno-6-13" name="__codelineno-6-13" href="#__codelineno-6-13"></a>0.0 0.0 0.0
-<a id="__codelineno-6-14" name="__codelineno-6-14" href="#__codelineno-6-14"></a>1.0 0.0 0.0
-<a id="__codelineno-6-15" name="__codelineno-6-15" href="#__codelineno-6-15"></a>1.0 1.0 0.0
-<a id="__codelineno-6-16" name="__codelineno-6-16" href="#__codelineno-6-16"></a>0.0 1.0 0.0
-<a id="__codelineno-6-17" name="__codelineno-6-17" href="#__codelineno-6-17"></a>2.0 0.0 0.0
-<a id="__codelineno-6-18" name="__codelineno-6-18" href="#__codelineno-6-18"></a>2.0 1.0 0.0
-<a id="__codelineno-6-19" name="__codelineno-6-19" href="#__codelineno-6-19"></a>$EndNodes
-<a id="__codelineno-6-20" name="__codelineno-6-20" href="#__codelineno-6-20"></a>$Elements
-<a id="__codelineno-6-21" name="__codelineno-6-21" href="#__codelineno-6-21"></a>1 2 1 2
-<a id="__codelineno-6-22" name="__codelineno-6-22" href="#__codelineno-6-22"></a>2 1 3 2
-<a id="__codelineno-6-23" name="__codelineno-6-23" href="#__codelineno-6-23"></a>1 1 2 3 4
-<a id="__codelineno-6-24" name="__codelineno-6-24" href="#__codelineno-6-24"></a>2 2 5 6 3
-<a id="__codelineno-6-25" name="__codelineno-6-25" href="#__codelineno-6-25"></a>$EndElements
-</code></pre></div>
-<h2 id="element-types">Element Types<a class="headerlink" href="#element-types" title="Permanent link">&para;</a></h2>
-<p>All formats use the same element type numbering:</p>
+<p>Unknown sections are skipped by the main parsing loop unless a parser for that
+section is registered in the relevant version-specific parser list.</p>
+<h2 id="element-types">Element types<a class="headerlink" href="#element-types" title="Permanent link">&para;</a></h2>
+<p>Element type codes are stored as the numeric values defined by Gmsh. Common
+codes include:</p>
 <table>
 <thead>
 <tr>
-<th>Type</th>
-<th>Name</th>
-<th>Nodes</th>
+<th>Code</th>
+<th>Element</th>
 <th>Dimension</th>
 </tr>
 </thead>
 <tbody>
 <tr>
+<td>15</td>
+<td>point</td>
+<td>0</td>
+</tr>
+<tr>
 <td>1</td>
-<td>Line</td>
-<td>2</td>
-<td>1D</td>
+<td>two-node line</td>
+<td>1</td>
 </tr>
 <tr>
 <td>2</td>
-<td>Triangle</td>
-<td>3</td>
-<td>2D</td>
+<td>three-node triangle</td>
+<td>2</td>
 </tr>
 <tr>
 <td>3</td>
-<td>Quadrangle</td>
-<td>4</td>
-<td>2D</td>
+<td>four-node quadrangle</td>
+<td>2</td>
 </tr>
 <tr>
 <td>4</td>
-<td>Tetrahedron</td>
-<td>4</td>
-<td>3D</td>
+<td>four-node tetrahedron</td>
+<td>3</td>
 </tr>
 <tr>
 <td>5</td>
-<td>Hexahedron</td>
-<td>8</td>
-<td>3D</td>
+<td>eight-node hexahedron</td>
+<td>3</td>
 </tr>
 <tr>
 <td>6</td>
-<td>Prism</td>
-<td>6</td>
-<td>3D</td>
+<td>six-node prism</td>
+<td>3</td>
 </tr>
 <tr>
 <td>7</td>
-<td>Pyramid</td>
-<td>5</td>
-<td>3D</td>
-</tr>
-<tr>
-<td>8</td>
-<td>Line (3-node)</td>
+<td>five-node pyramid</td>
 <td>3</td>
-<td>1D</td>
-</tr>
-<tr>
-<td>9</td>
-<td>Triangle (6-node)</td>
-<td>6</td>
-<td>2D</td>
-</tr>
-<tr>
-<td>10</td>
-<td>Quadrangle (9-node)</td>
-<td>9</td>
-<td>2D</td>
-</tr>
-<tr>
-<td>11</td>
-<td>Tetrahedron (10-node)</td>
-<td>10</td>
-<td>3D</td>
-</tr>
-<tr>
-<td>15</td>
-<td>Point</td>
-<td>1</td>
-<td>0D</td>
-</tr>
-<tr>
-<td>...</td>
-<td>Higher-order elements</td>
-<td>...</td>
-<td>...</td>
 </tr>
 </tbody>
 </table>
-<p>See the <a href="https://gmsh.info/doc/texinfo/gmsh.html#MSH-file-format">Gmsh documentation</a> for the complete list.</p>
-<h2 id="version-detection">Version Detection<a class="headerlink" href="#version-detection" title="Permanent link">&para;</a></h2>
-<p>gmshparser automatically detects the file format version:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">gmshparser</span>
-<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>
-<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="n">mesh</span> <span class="o">=</span> <span class="n">gmshparser</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">&quot;mesh.msh&quot;</span><span class="p">)</span>
-<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="n">version</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">get_version</span><span class="p">()</span>
-<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>
-<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="k">if</span> <span class="n">version</span> <span class="o">==</span> <span class="mf">1.0</span><span class="p">:</span>
-<a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Legacy MSH 1.0 format&quot;</span><span class="p">)</span>
-<a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a><span class="k">elif</span> <span class="n">version</span> <span class="o">&gt;=</span> <span class="mf">2.0</span> <span class="ow">and</span> <span class="n">version</span> <span class="o">&lt;</span> <span class="mf">3.0</span><span class="p">:</span>
-<a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Standard MSH 2.x format&quot;</span><span class="p">)</span>
-<a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a><span class="k">elif</span> <span class="n">version</span> <span class="o">&gt;=</span> <span class="mf">4.0</span><span class="p">:</span>
-<a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Modern MSH 4.x format&quot;</span><span class="p">)</span>
+<p>The parser also recognizes several higher-order element codes when deriving the
+entity dimension. Refer to the official Gmsh MSH specification for the complete
+code table.</p>
+<h2 id="check-the-detected-format">Check the detected format<a class="headerlink" href="#check-the-detected-format" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">gmshparser</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="n">mesh</span> <span class="o">=</span> <span class="n">gmshparser</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">&quot;mesh.msh&quot;</span><span class="p">)</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="nb">print</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">get_version</span><span class="p">())</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="nb">print</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">is_ascii</span><span class="p">())</span>
 </code></pre></div>
-<h3 id="detection-algorithm">Detection Algorithm<a class="headerlink" href="#detection-algorithm" title="Permanent link">&para;</a></h3>
-<ol>
-<li>Read first line of file</li>
-<li>If line is <code>$MeshFormat</code>: Parse version from next line</li>
-<li>If line is <code>$NOD</code>: Assume MSH 1.0</li>
-<li>Otherwise: Error (unsupported format)</li>
-</ol>
-<h2 id="format-compatibility">Format Compatibility<a class="headerlink" href="#format-compatibility" title="Permanent link">&para;</a></h2>
-<h3 id="gmshparser-gmshparser">gmshparser → gmshparser<a class="headerlink" href="#gmshparser-gmshparser" title="Permanent link">&para;</a></h3>
-<p>All supported versions can be read and processed with the same API:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="c1"># Same code works for all versions</span>
-<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="k">for</span> <span class="n">entity</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">get_node_entities</span><span class="p">():</span>
-<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>    <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">entity</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">():</span>
-<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>        <span class="nb">print</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">get_tag</span><span class="p">(),</span> <span class="n">node</span><span class="o">.</span><span class="n">get_coordinates</span><span class="p">())</span>
-</code></pre></div>
-<h3 id="gmsh-gmshparser">Gmsh → gmshparser<a class="headerlink" href="#gmsh-gmshparser" title="Permanent link">&para;</a></h3>
-<p>gmshparser can read all mesh files generated by:</p>
-<ul>
-<li>Gmsh 1.x (MSH 1.0)</li>
-<li>Gmsh 2.x (MSH 2.0, 2.1, 2.2)</li>
-<li>Gmsh 4.x (MSH 4.0, 4.1)</li>
-</ul>
-<h3 id="limitations">Limitations<a class="headerlink" href="#limitations" title="Permanent link">&para;</a></h3>
-<ul>
-<li><strong>Binary format</strong>: Not supported (ASCII only)</li>
-<li><strong>Compressed format</strong>: Not supported</li>
-<li><strong>Post-processing data</strong>: Node/element data sections not parsed (but can be added if needed)</li>
-<li><strong>Periodic entities</strong>: Not explicitly handled</li>
-</ul>
-<h2 id="converting-between-versions">Converting Between Versions<a class="headerlink" href="#converting-between-versions" title="Permanent link">&para;</a></h2>
-<p>To convert between formats, use Gmsh itself:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="c1"># Convert to MSH 2.2</span>
-<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>gmsh<span class="w"> </span>input.msh<span class="w"> </span>-format<span class="w"> </span>msh22<span class="w"> </span>-o<span class="w"> </span>output.msh
-<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>
-<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="c1"># Convert to MSH 4.1</span>
-<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>gmsh<span class="w"> </span>input.msh<span class="w"> </span>-format<span class="w"> </span>msh41<span class="w"> </span>-o<span class="w"> </span>output.msh
-</code></pre></div>
-<p>Or in Python with gmshparser:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="c1"># Read any version</span>
-<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="n">mesh</span> <span class="o">=</span> <span class="n">gmshparser</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">&quot;input.msh&quot;</span><span class="p">)</span>
-<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>
-<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="c1"># Extract and rewrite (would need custom writer)</span>
-<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a><span class="c1"># Note: gmshparser currently only reads, not writes</span>
-</code></pre></div>
-<h2 id="testing">Testing<a class="headerlink" href="#testing" title="Permanent link">&para;</a></h2>
-<p>gmshparser is tested against real mesh files for all supported versions:</p>
-<ul>
-<li>10+ test files covering all versions</li>
-<li>Elements from 0D (points) to 3D (tetrahedra)</li>
-<li>Various mesh complexities</li>
-<li>100% success rate on test suite</li>
-</ul>
-<p>See the <a href="../../developer-guide/test-results/">Test Results</a> for details.</p>
-<h2 id="future-support">Future Support<a class="headerlink" href="#future-support" title="Permanent link">&para;</a></h2>
-<p>Potential future additions:</p>
-<ul>
-<li>Binary format support</li>
-<li>Post-processing data sections</li>
-<li>MSH format writing (currently read-only)</li>
-<li>Compressed file support</li>
-</ul>
-<h2 id="references">References<a class="headerlink" href="#references" title="Permanent link">&para;</a></h2>
-<ul>
-<li><a href="https://gmsh.info/doc/texinfo/gmsh.html#MSH-file-format">Official Gmsh MSH Format Documentation</a></li>
-<li><a href="https://gmsh.info/">Gmsh Website</a></li>
-<li><a href="https://gitlab.onelab.info/gmsh/gmsh">Gmsh GitLab Repository</a></li>
-</ul>
-<h2 id="next-steps">Next Steps<a class="headerlink" href="#next-steps" title="Permanent link">&para;</a></h2>
-<ul>
-<li>Try parsing different format versions</li>
-<li>Check the <a href="../../api/overview/">API Reference</a></li>
-<li>Learn about <a href="../../developer-guide/writing-parsers/">Writing Custom Parsers</a></li>
-</ul>
+<h2 id="test-coverage">Test coverage<a class="headerlink" href="#test-coverage" title="Permanent link">&para;</a></h2>
+<p>Repository test data includes files for each supported version family. Exact
+test and coverage totals are intentionally not duplicated here; the current
+GitHub Actions run is authoritative. See <a href="../../developer-guide/test-results/">Test Results</a>.</p>
 
 
 

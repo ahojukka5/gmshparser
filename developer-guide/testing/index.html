@@ -6,13 +6,13 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="A lightweight Python package for parsing Gmsh .msh mesh files">
+        <meta name="description" content="A lightweight Python package for parsing ASCII Gmsh MSH files">
       
       
         <meta name="author" content="Jukka Aho">
       
       
-        <link rel="canonical" href="https://gmshparser.readthedocs.io/developer-guide/testing/">
+        <link rel="canonical" href="https://ahojukka5.github.io/gmshparser/developer-guide/testing/">
       
       
         <link rel="prev" href="../writing-parsers/">
@@ -831,102 +831,35 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#running-tests" class="md-nav__link">
+  <a href="#install-the-development-environment" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Running Tests
+        Install the development environment
       
     </span>
   </a>
-  
-    <nav class="md-nav" aria-label="Running Tests">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#run-all-tests" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Run All Tests
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#run-specific-test-file" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Run Specific Test File
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#run-with-coverage" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Run with Coverage
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#generate-html-coverage-report" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Generate HTML Coverage Report
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#writing-tests" class="md-nav__link">
+  <a href="#run-the-suite" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Writing Tests
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Writing Tests">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#test-structure" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Test Structure
+        Run the suite
       
     </span>
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
-  <a href="#testing-parsers" class="md-nav__link">
+      
+        <li class="md-nav__item">
+  <a href="#formatting-and-linting" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Testing Parsers
+        Formatting and linting
       
     </span>
   </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -934,7 +867,7 @@
   <a href="#test-data" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Test Data
+        Test data
       
     </span>
   </a>
@@ -942,10 +875,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#coverage-goals" class="md-nav__link">
+  <a href="#writing-tests" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Coverage Goals
+        Writing tests
       
     </span>
   </a>
@@ -956,18 +889,7 @@
   <a href="#continuous-integration" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Continuous Integration
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#next-steps" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Next Steps
+        Continuous integration
       
     </span>
   </a>
@@ -1331,102 +1253,35 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#running-tests" class="md-nav__link">
+  <a href="#install-the-development-environment" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Running Tests
+        Install the development environment
       
     </span>
   </a>
-  
-    <nav class="md-nav" aria-label="Running Tests">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#run-all-tests" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Run All Tests
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#run-specific-test-file" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Run Specific Test File
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#run-with-coverage" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Run with Coverage
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#generate-html-coverage-report" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Generate HTML Coverage Report
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#writing-tests" class="md-nav__link">
+  <a href="#run-the-suite" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Writing Tests
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Writing Tests">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#test-structure" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Test Structure
+        Run the suite
       
     </span>
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
-  <a href="#testing-parsers" class="md-nav__link">
+      
+        <li class="md-nav__item">
+  <a href="#formatting-and-linting" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Testing Parsers
+        Formatting and linting
       
     </span>
   </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -1434,7 +1289,7 @@
   <a href="#test-data" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Test Data
+        Test data
       
     </span>
   </a>
@@ -1442,10 +1297,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#coverage-goals" class="md-nav__link">
+  <a href="#writing-tests" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Coverage Goals
+        Writing tests
       
     </span>
   </a>
@@ -1456,18 +1311,7 @@
   <a href="#continuous-integration" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Continuous Integration
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#next-steps" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Next Steps
+        Continuous integration
       
     </span>
   </a>
@@ -1495,64 +1339,65 @@
 
 
 <h1 id="testing-guide">Testing Guide<a class="headerlink" href="#testing-guide" title="Permanent link">&para;</a></h1>
-<p>This guide covers testing practices for gmshparser development.</p>
-<h2 id="running-tests">Running Tests<a class="headerlink" href="#running-tests" title="Permanent link">&para;</a></h2>
-<h3 id="run-all-tests">Run All Tests<a class="headerlink" href="#run-all-tests" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>pytest
+<p>The repository uses pytest, pytest-cov, Black, and flake8 through uv dependency
+groups.</p>
+<h2 id="install-the-development-environment">Install the development environment<a class="headerlink" href="#install-the-development-environment" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>uv<span class="w"> </span>sync
 </code></pre></div>
-<h3 id="run-specific-test-file">Run Specific Test File<a class="headerlink" href="#run-specific-test-file" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>pytest<span class="w"> </span>tests/test_helpers.py
+<p>The default <code>dev</code> group includes the <code>test</code> and <code>lint</code> groups.</p>
+<h2 id="run-the-suite">Run the suite<a class="headerlink" href="#run-the-suite" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>uv<span class="w"> </span>run<span class="w"> </span>pytest
 </code></pre></div>
-<h3 id="run-with-coverage">Run with Coverage<a class="headerlink" href="#run-with-coverage" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>pytest<span class="w"> </span>--cov<span class="o">=</span>gmshparser<span class="w"> </span>--cov-report<span class="o">=</span>term-missing
+<p>The default pytest options in <code>pyproject.toml</code> enable verbose output and terminal
+coverage reporting.</p>
+<p>Run one module or test:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>uv<span class="w"> </span>run<span class="w"> </span>pytest<span class="w"> </span>tests/test_helpers.py
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>uv<span class="w"> </span>run<span class="w"> </span>pytest<span class="w"> </span>tests/test_helpers.py::test_get_triangles
 </code></pre></div>
-<h3 id="generate-html-coverage-report">Generate HTML Coverage Report<a class="headerlink" href="#generate-html-coverage-report" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>pytest<span class="w"> </span>--cov<span class="o">=</span>gmshparser<span class="w"> </span>--cov-report<span class="o">=</span>html
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>open<span class="w"> </span>htmlcov/index.html
+<p>Generate an HTML coverage report:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>uv<span class="w"> </span>run<span class="w"> </span>pytest<span class="w"> </span>--cov<span class="o">=</span>gmshparser<span class="w"> </span>--cov-report<span class="o">=</span>html
 </code></pre></div>
-<h2 id="writing-tests">Writing Tests<a class="headerlink" href="#writing-tests" title="Permanent link">&para;</a></h2>
-<h3 id="test-structure">Test Structure<a class="headerlink" href="#test-structure" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">test_feature_name</span><span class="p">():</span>
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Test description.&quot;&quot;&quot;</span>
-<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>    <span class="c1"># Arrange - set up test data</span>
-<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>    <span class="n">mesh</span> <span class="o">=</span> <span class="n">gmshparser</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">&quot;testdata/simple/testmesh.msh&quot;</span><span class="p">)</span>
-<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>
-<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>    <span class="c1"># Act - perform action</span>
-<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>    <span class="n">result</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">()</span>
-<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>
-<a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a>    <span class="c1"># Assert - verify expectations</span>
-<a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a>    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span>
+<p>Open <code>htmlcov/index.html</code> in a browser.</p>
+<h2 id="formatting-and-linting">Formatting and linting<a class="headerlink" href="#formatting-and-linting" title="Permanent link">&para;</a></h2>
+<p>Run the same checks as CI:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>uv<span class="w"> </span>run<span class="w"> </span>black<span class="w"> </span>gmshparser<span class="w"> </span>tests<span class="w"> </span>examples<span class="w"> </span>--check
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>uv<span class="w"> </span>run<span class="w"> </span>flake8<span class="w"> </span>gmshparser<span class="w"> </span>tests
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>uv<span class="w"> </span>run<span class="w"> </span>pytest<span class="w"> </span>--cov<span class="o">=</span>gmshparser<span class="w"> </span>--cov-report<span class="o">=</span>xml<span class="w"> </span>--cov-report<span class="o">=</span>term
 </code></pre></div>
-<h3 id="testing-parsers">Testing Parsers<a class="headerlink" href="#testing-parsers" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">test_parser</span><span class="p">():</span>
-<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Test parser with known mesh file.&quot;&quot;&quot;</span>
-<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>    <span class="n">mesh</span> <span class="o">=</span> <span class="n">gmshparser</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">&quot;testdata/simple/testmesh_v2_0.msh&quot;</span><span class="p">)</span>
-<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>
-<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>    <span class="k">assert</span> <span class="n">mesh</span><span class="o">.</span><span class="n">get_version</span><span class="p">()</span> <span class="o">==</span> <span class="mf">2.0</span>
-<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>    <span class="k">assert</span> <span class="n">mesh</span><span class="o">.</span><span class="n">get_number_of_nodes</span><span class="p">()</span> <span class="o">==</span> <span class="mi">6</span>
-<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a>    <span class="k">assert</span> <span class="n">mesh</span><span class="o">.</span><span class="n">get_number_of_elements</span><span class="p">()</span> <span class="o">==</span> <span class="mi">2</span>
+<p>Apply Black formatting with:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>uv<span class="w"> </span>run<span class="w"> </span>black<span class="w"> </span>gmshparser<span class="w"> </span>tests<span class="w"> </span>examples
 </code></pre></div>
-<h2 id="test-data">Test Data<a class="headerlink" href="#test-data" title="Permanent link">&para;</a></h2>
-<p>Test meshes are located in <code>testdata/</code>:</p>
+<h2 id="test-data">Test data<a class="headerlink" href="#test-data" title="Permanent link">&para;</a></h2>
+<p>Mesh fixtures live under <code>testdata/</code>. They include simple version-specific
+meshes and more complex files collected for regression testing. Tests should
+refer to files that are committed to the repository rather than describing or
+assuming uncommitted benchmark datasets.</p>
+<p>See <a href="../../testdata/README.md">Test Data</a> for the current organization.</p>
+<h2 id="writing-tests">Writing tests<a class="headerlink" href="#writing-tests" title="Permanent link">&para;</a></h2>
+<p>A parser test should verify the behavior that callers observe:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">gmshparser</span>
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>
+<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="k">def</span><span class="w"> </span><span class="nf">test_mesh_version_and_counts</span><span class="p">():</span>
+<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>    <span class="n">mesh</span> <span class="o">=</span> <span class="n">gmshparser</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">&quot;testdata/simple/testmesh_v2_0.msh&quot;</span><span class="p">)</span>
+<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>
+<a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a>    <span class="k">assert</span> <span class="n">mesh</span><span class="o">.</span><span class="n">get_version</span><span class="p">()</span> <span class="o">==</span> <span class="mf">2.0</span>
+<a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a>    <span class="k">assert</span> <span class="n">mesh</span><span class="o">.</span><span class="n">get_number_of_nodes</span><span class="p">()</span> <span class="o">==</span> <span class="mi">6</span>
+<a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a>    <span class="k">assert</span> <span class="n">mesh</span><span class="o">.</span><span class="n">get_number_of_elements</span><span class="p">()</span> <span class="o">==</span> <span class="mi">2</span>
+</code></pre></div>
+<p>For new behavior:</p>
 <ul>
-<li><code>testdata/simple/</code> - Simple meshes for unit tests</li>
-<li><code>testdata/complex/</code> - Complex meshes with mixed elements</li>
-<li><code>testdata/large/</code> - Large meshes for performance testing</li>
+<li>add the smallest useful mesh fixture</li>
+<li>verify public API results, not only internal implementation details</li>
+<li>cover malformed or unsupported input when relevant</li>
+<li>keep documentation examples consistent with the tested API</li>
 </ul>
-<p>See <a href="../../testdata/README.md">testdata/README.md</a> for details.</p>
-<h2 id="coverage-goals">Coverage Goals<a class="headerlink" href="#coverage-goals" title="Permanent link">&para;</a></h2>
-<ul>
-<li>Target: 95%+ coverage</li>
-<li>Current: 97% coverage</li>
-<li>All new features must include tests</li>
-</ul>
-<h2 id="continuous-integration">Continuous Integration<a class="headerlink" href="#continuous-integration" title="Permanent link">&para;</a></h2>
-<p>Tests run automatically on every push via GitHub Actions.</p>
-<h2 id="next-steps">Next Steps<a class="headerlink" href="#next-steps" title="Permanent link">&para;</a></h2>
-<ul>
-<li>See <a href="../test-results/">Test Results</a> for current test status</li>
-<li>Check <a href="../contributing/">Contributing Guide</a> for development workflow</li>
-</ul>
+<h2 id="continuous-integration">Continuous integration<a class="headerlink" href="#continuous-integration" title="Permanent link">&para;</a></h2>
+<p>GitHub Actions runs formatting, linting, tests, distribution builds, and package
+smoke tests on Python 3.12, 3.13, and 3.14. The documentation workflow builds
+MkDocs separately.</p>
+<p>Exact test counts and coverage percentages change over time. The current CI run
+and Codecov report are the authoritative results.</p>
 
 
 

@@ -1,75 +1,75 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
-         <loc>https://gmshparser.readthedocs.io/</loc>
+         <loc>https://ahojukka5.github.io/gmshparser/</loc>
          <lastmod>2026-07-24</lastmod>
     </url>
     <url>
-         <loc>https://gmshparser.readthedocs.io/about/changelog/</loc>
+         <loc>https://ahojukka5.github.io/gmshparser/about/changelog/</loc>
          <lastmod>2026-07-24</lastmod>
     </url>
     <url>
-         <loc>https://gmshparser.readthedocs.io/about/license/</loc>
+         <loc>https://ahojukka5.github.io/gmshparser/about/license/</loc>
          <lastmod>2026-07-24</lastmod>
     </url>
     <url>
-         <loc>https://gmshparser.readthedocs.io/api/helpers/</loc>
+         <loc>https://ahojukka5.github.io/gmshparser/api/helpers/</loc>
          <lastmod>2026-07-24</lastmod>
     </url>
     <url>
-         <loc>https://gmshparser.readthedocs.io/api/mesh/</loc>
+         <loc>https://ahojukka5.github.io/gmshparser/api/mesh/</loc>
          <lastmod>2026-07-24</lastmod>
     </url>
     <url>
-         <loc>https://gmshparser.readthedocs.io/api/overview/</loc>
+         <loc>https://ahojukka5.github.io/gmshparser/api/overview/</loc>
          <lastmod>2026-07-24</lastmod>
     </url>
     <url>
-         <loc>https://gmshparser.readthedocs.io/api/parsers/</loc>
+         <loc>https://ahojukka5.github.io/gmshparser/api/parsers/</loc>
          <lastmod>2026-07-24</lastmod>
     </url>
     <url>
-         <loc>https://gmshparser.readthedocs.io/developer-guide/architecture/</loc>
+         <loc>https://ahojukka5.github.io/gmshparser/developer-guide/architecture/</loc>
          <lastmod>2026-07-24</lastmod>
     </url>
     <url>
-         <loc>https://gmshparser.readthedocs.io/developer-guide/contributing/</loc>
+         <loc>https://ahojukka5.github.io/gmshparser/developer-guide/contributing/</loc>
          <lastmod>2026-07-24</lastmod>
     </url>
     <url>
-         <loc>https://gmshparser.readthedocs.io/developer-guide/test-results/</loc>
+         <loc>https://ahojukka5.github.io/gmshparser/developer-guide/test-results/</loc>
          <lastmod>2026-07-24</lastmod>
     </url>
     <url>
-         <loc>https://gmshparser.readthedocs.io/developer-guide/testing/</loc>
+         <loc>https://ahojukka5.github.io/gmshparser/developer-guide/testing/</loc>
          <lastmod>2026-07-24</lastmod>
     </url>
     <url>
-         <loc>https://gmshparser.readthedocs.io/developer-guide/writing-parsers/</loc>
+         <loc>https://ahojukka5.github.io/gmshparser/developer-guide/writing-parsers/</loc>
          <lastmod>2026-07-24</lastmod>
     </url>
     <url>
-         <loc>https://gmshparser.readthedocs.io/user-guide/basic-usage/</loc>
+         <loc>https://ahojukka5.github.io/gmshparser/user-guide/basic-usage/</loc>
          <lastmod>2026-07-24</lastmod>
     </url>
     <url>
-         <loc>https://gmshparser.readthedocs.io/user-guide/cli/</loc>
+         <loc>https://ahojukka5.github.io/gmshparser/user-guide/cli/</loc>
          <lastmod>2026-07-24</lastmod>
     </url>
     <url>
-         <loc>https://gmshparser.readthedocs.io/user-guide/getting-started/</loc>
+         <loc>https://ahojukka5.github.io/gmshparser/user-guide/getting-started/</loc>
          <lastmod>2026-07-24</lastmod>
     </url>
     <url>
-         <loc>https://gmshparser.readthedocs.io/user-guide/installation/</loc>
+         <loc>https://ahojukka5.github.io/gmshparser/user-guide/installation/</loc>
          <lastmod>2026-07-24</lastmod>
     </url>
     <url>
-         <loc>https://gmshparser.readthedocs.io/user-guide/supported-formats/</loc>
+         <loc>https://ahojukka5.github.io/gmshparser/user-guide/supported-formats/</loc>
          <lastmod>2026-07-24</lastmod>
     </url>
     <url>
-         <loc>https://gmshparser.readthedocs.io/user-guide/visualization/</loc>
+         <loc>https://ahojukka5.github.io/gmshparser/user-guide/visualization/</loc>
          <lastmod>2026-07-24</lastmod>
     </url>
 </urlset>

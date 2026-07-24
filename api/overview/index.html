@@ -6,13 +6,13 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="A lightweight Python package for parsing Gmsh .msh mesh files">
+        <meta name="description" content="A lightweight Python package for parsing ASCII Gmsh MSH files">
       
       
         <meta name="author" content="Jukka Aho">
       
       
-        <link rel="canonical" href="https://gmshparser.readthedocs.io/api/overview/">
+        <link rel="canonical" href="https://ahojukka5.github.io/gmshparser/api/overview/">
       
       
         <link rel="prev" href="../../developer-guide/test-results/">
@@ -946,22 +946,33 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#main-functions" class="md-nav__link">
+  <a href="#package-entry-points" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Main Functions
+        Package entry points
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Main Functions">
+    <nav class="md-nav" aria-label="Package entry points">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#parse" class="md-nav__link">
+  <a href="#gmshparserparse" class="md-nav__link">
     <span class="md-ellipsis">
       
-        parse()
+        gmshparser.parse()
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#package-metadata" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Package metadata
       
     </span>
   </a>
@@ -974,71 +985,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#core-classes" class="md-nav__link">
+  <a href="#data-model" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Core Classes
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Core Classes">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#mesh" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Mesh
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#node-nodeentity" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Node &amp; NodeEntity
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#element-elemententity" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Element &amp; ElementEntity
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#parsers" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Parsers
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#helper-functions" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Helper Functions
+        Data model
       
     </span>
   </a>
@@ -1046,10 +996,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#quick-reference" class="md-nav__link">
+  <a href="#common-operations" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Quick Reference
+        Common operations
       
     </span>
   </a>
@@ -1057,10 +1007,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#next-steps" class="md-nav__link">
+  <a href="#helpers" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Next Steps
+        Helpers
       
     </span>
   </a>
@@ -1309,22 +1259,33 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#main-functions" class="md-nav__link">
+  <a href="#package-entry-points" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Main Functions
+        Package entry points
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Main Functions">
+    <nav class="md-nav" aria-label="Package entry points">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#parse" class="md-nav__link">
+  <a href="#gmshparserparse" class="md-nav__link">
     <span class="md-ellipsis">
       
-        parse()
+        gmshparser.parse()
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#package-metadata" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Package metadata
       
     </span>
   </a>
@@ -1337,71 +1298,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#core-classes" class="md-nav__link">
+  <a href="#data-model" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Core Classes
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Core Classes">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#mesh" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Mesh
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#node-nodeentity" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Node &amp; NodeEntity
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#element-elemententity" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Element &amp; ElementEntity
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#parsers" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Parsers
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#helper-functions" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Helper Functions
+        Data model
       
     </span>
   </a>
@@ -1409,10 +1309,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#quick-reference" class="md-nav__link">
+  <a href="#common-operations" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Quick Reference
+        Common operations
       
     </span>
   </a>
@@ -1420,10 +1320,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#next-steps" class="md-nav__link">
+  <a href="#helpers" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Next Steps
+        Helpers
       
     </span>
   </a>
@@ -1451,77 +1351,60 @@
 
 
 <h1 id="api-reference">API Reference<a class="headerlink" href="#api-reference" title="Permanent link">&para;</a></h1>
-<p>gmshparser provides a simple, clean API for parsing Gmsh mesh files.</p>
-<h2 id="main-functions">Main Functions<a class="headerlink" href="#main-functions" title="Permanent link">&para;</a></h2>
-<h3 id="parse">parse()<a class="headerlink" href="#parse" title="Permanent link">&para;</a></h3>
-<p>Parse a Gmsh mesh file and return a Mesh object.</p>
+<h2 id="package-entry-points">Package entry points<a class="headerlink" href="#package-entry-points" title="Permanent link">&para;</a></h2>
+<h3 id="gmshparserparse"><code>gmshparser.parse()</code><a class="headerlink" href="#gmshparserparse" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">gmshparser</span>
 <a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
 <a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="n">mesh</span> <span class="o">=</span> <span class="n">gmshparser</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">&quot;mesh.msh&quot;</span><span class="p">)</span>
 </code></pre></div>
-<p><strong>Parameters:</strong></p>
-<ul>
-<li><code>filename</code> (str): Path to the <code>.msh</code> file</li>
-</ul>
-<p><strong>Returns:</strong></p>
-<ul>
-<li><code>Mesh</code>: Parsed mesh object</li>
-</ul>
-<p><strong>Raises:</strong></p>
-<ul>
-<li><code>FileNotFoundError</code>: If file doesn't exist</li>
-<li><code>ValueError</code>: If file format is unsupported or invalid</li>
-</ul>
-<h2 id="core-classes">Core Classes<a class="headerlink" href="#core-classes" title="Permanent link">&para;</a></h2>
-<h3 id="mesh">Mesh<a class="headerlink" href="#mesh" title="Permanent link">&para;</a></h3>
-<p>The main mesh container class.</p>
-<p>For detailed API, see <a href="../mesh/">Mesh API</a>.</p>
-<h3 id="node-nodeentity">Node &amp; NodeEntity<a class="headerlink" href="#node-nodeentity" title="Permanent link">&para;</a></h3>
-<p>Classes for node data organization.</p>
-<h3 id="element-elemententity">Element &amp; ElementEntity<a class="headerlink" href="#element-elemententity" title="Permanent link">&para;</a></h3>
-<p>Classes for element data organization.</p>
-<h3 id="parsers">Parsers<a class="headerlink" href="#parsers" title="Permanent link">&para;</a></h3>
-<p>Parser classes for different mesh sections.</p>
-<p>See <a href="../parsers/">Parsers API</a> for details.</p>
-<h2 id="helper-functions">Helper Functions<a class="headerlink" href="#helper-functions" title="Permanent link">&para;</a></h2>
-<p>Utility functions for common mesh operations.</p>
-<p>See <a href="../helpers/">Helpers API</a> for details.</p>
-<h2 id="quick-reference">Quick Reference<a class="headerlink" href="#quick-reference" title="Permanent link">&para;</a></h2>
+<p><code>parse()</code> accepts a filename and returns a populated <code>Mesh</code>. Supported ASCII MSH
+versions are detected automatically.</p>
+<p>Typical exceptions include <code>FileNotFoundError</code> for a missing file and
+<code>ValueError</code> for unsupported version metadata. Malformed section contents may
+raise conversion or parsing exceptions from the relevant parser.</p>
+<h3 id="package-metadata">Package metadata<a class="headerlink" href="#package-metadata" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">gmshparser</span>
 <a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="c1"># Parse mesh</span>
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="n">mesh</span> <span class="o">=</span> <span class="n">gmshparser</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">&quot;mesh.msh&quot;</span><span class="p">)</span>
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>
-<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="c1"># Get mesh info</span>
-<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="n">mesh</span><span class="o">.</span><span class="n">get_version</span><span class="p">()</span>
-<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="n">mesh</span><span class="o">.</span><span class="n">get_number_of_nodes</span><span class="p">()</span>
-<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="n">mesh</span><span class="o">.</span><span class="n">get_number_of_elements</span><span class="p">()</span>
-<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>
-<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="c1"># Access nodes</span>
-<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="k">for</span> <span class="n">entity</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">get_node_entities</span><span class="p">():</span>
-<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>    <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">entity</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">():</span>
-<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a>        <span class="n">node</span><span class="o">.</span><span class="n">get_tag</span><span class="p">()</span>
-<a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a>        <span class="n">node</span><span class="o">.</span><span class="n">get_coordinates</span><span class="p">()</span>
-<a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a>
-<a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a><span class="c1"># Access elements</span>
-<a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a><span class="k">for</span> <span class="n">entity</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">get_element_entities</span><span class="p">():</span>
-<a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a>    <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="n">entity</span><span class="o">.</span><span class="n">get_elements</span><span class="p">():</span>
-<a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a>        <span class="n">element</span><span class="o">.</span><span class="n">get_tag</span><span class="p">()</span>
-<a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a>        <span class="n">element</span><span class="o">.</span><span class="n">get_connectivity</span><span class="p">()</span>
-<a id="__codelineno-1-22" name="__codelineno-1-22" href="#__codelineno-1-22"></a>
-<a id="__codelineno-1-23" name="__codelineno-1-23" href="#__codelineno-1-23"></a><span class="c1"># Helper functions</span>
-<a id="__codelineno-1-24" name="__codelineno-1-24" href="#__codelineno-1-24"></a><span class="kn">from</span><span class="w"> </span><span class="nn">gmshparser.helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_triangles</span><span class="p">,</span> <span class="n">get_quads</span><span class="p">,</span> <span class="n">get_elements_2d</span>
-<a id="__codelineno-1-25" name="__codelineno-1-25" href="#__codelineno-1-25"></a>
-<a id="__codelineno-1-26" name="__codelineno-1-26" href="#__codelineno-1-26"></a><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">T</span> <span class="o">=</span> <span class="n">get_triangles</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
-<a id="__codelineno-1-27" name="__codelineno-1-27" href="#__codelineno-1-27"></a><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">Q</span> <span class="o">=</span> <span class="n">get_quads</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
-<a id="__codelineno-1-28" name="__codelineno-1-28" href="#__codelineno-1-28"></a><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">triangles</span><span class="p">,</span> <span class="n">quads</span> <span class="o">=</span> <span class="n">get_elements_2d</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="nb">print</span><span class="p">(</span><span class="n">gmshparser</span><span class="o">.</span><span class="n">__version__</span><span class="p">)</span>
 </code></pre></div>
-<h2 id="next-steps">Next Steps<a class="headerlink" href="#next-steps" title="Permanent link">&para;</a></h2>
+<h2 id="data-model">Data model<a class="headerlink" href="#data-model" title="Permanent link">&para;</a></h2>
 <ul>
-<li><a href="../mesh/">Mesh API</a> - Complete Mesh class reference</li>
-<li><a href="../parsers/">Parsers API</a> - Parser classes</li>
-<li><a href="../helpers/">Helpers API</a> - Utility functions</li>
+<li><a href="../mesh/"><code>Mesh</code></a> stores format metadata, counts, tag ranges, and entity lists.</li>
+<li><code>NodeEntity</code> groups <code>Node</code> objects.</li>
+<li><code>ElementEntity</code> groups <code>Element</code> objects with a shared Gmsh element type.</li>
+<li><a href="../parsers/"><code>MainParser</code> and section parsers</a> populate the model.</li>
 </ul>
+<h2 id="common-operations">Common operations<a class="headerlink" href="#common-operations" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">mesh</span><span class="o">.</span><span class="n">get_version</span><span class="p">()</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="n">mesh</span><span class="o">.</span><span class="n">is_ascii</span><span class="p">()</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="n">mesh</span><span class="o">.</span><span class="n">get_number_of_nodes</span><span class="p">()</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="n">mesh</span><span class="o">.</span><span class="n">get_number_of_elements</span><span class="p">()</span>
+</code></pre></div>
+<p>Iterate over nodes:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="k">for</span> <span class="n">entity</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">get_node_entities</span><span class="p">():</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>    <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">entity</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">():</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>        <span class="n">node_id</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">get_tag</span><span class="p">()</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>        <span class="n">coordinates</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">get_coordinates</span><span class="p">()</span>
+</code></pre></div>
+<p>Iterate over elements:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="k">for</span> <span class="n">entity</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">get_element_entities</span><span class="p">():</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>    <span class="n">element_type</span> <span class="o">=</span> <span class="n">entity</span><span class="o">.</span><span class="n">get_element_type</span><span class="p">()</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>    <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="n">entity</span><span class="o">.</span><span class="n">get_elements</span><span class="p">():</span>
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>        <span class="n">element_id</span> <span class="o">=</span> <span class="n">element</span><span class="o">.</span><span class="n">get_tag</span><span class="p">()</span>
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>        <span class="n">connectivity</span> <span class="o">=</span> <span class="n">element</span><span class="o">.</span><span class="n">get_connectivity</span><span class="p">()</span>
+</code></pre></div>
+<h2 id="helpers">Helpers<a class="headerlink" href="#helpers" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">gmshparser.helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_elements_2d</span><span class="p">,</span> <span class="n">get_quads</span><span class="p">,</span> <span class="n">get_triangles</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">triangles</span> <span class="o">=</span> <span class="n">get_triangles</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">quads</span> <span class="o">=</span> <span class="n">get_quads</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="n">mixed</span> <span class="o">=</span> <span class="n">get_elements_2d</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
+</code></pre></div>
+<p><code>get_triangles()</code> and <code>get_quads()</code> return zero-based connectivity into their
+coordinate arrays. <code>get_elements_2d()</code> returns a dictionary with <code>nodes</code>,
+<code>triangles</code>, <code>quads</code>, and <code>node_ids</code>, preserving original node tags in the
+connectivity lists.</p>
+<p>See <a href="../helpers/">Helpers API</a> for examples.</p>
 
 
 

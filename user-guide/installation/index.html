@@ -6,13 +6,13 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="A lightweight Python package for parsing Gmsh .msh mesh files">
+        <meta name="description" content="A lightweight Python package for parsing ASCII Gmsh MSH files">
       
       
         <meta name="author" content="Jukka Aho">
       
       
-        <link rel="canonical" href="https://gmshparser.readthedocs.io/user-guide/installation/">
+        <link rel="canonical" href="https://ahojukka5.github.io/gmshparser/user-guide/installation/">
       
       
         <link rel="prev" href="../getting-started/">
@@ -548,10 +548,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#install-from-pypi" class="md-nav__link">
+  <a href="#stable-release" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Install from PyPI
+        Stable release
       
     </span>
   </a>
@@ -559,21 +559,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#install-the-development-version" class="md-nav__link">
+  <a href="#development-version" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Install the development version
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#visualization-dependencies" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Visualization dependencies
+        Development version
       
     </span>
   </a>
@@ -592,10 +581,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#development-installation" class="md-nav__link">
+  <a href="#visualization-dependency" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Development installation
+        Visualization dependency
       
     </span>
   </a>
@@ -603,10 +592,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#system-requirements" class="md-nav__link">
+  <a href="#development-environment" class="md-nav__link">
     <span class="md-ellipsis">
       
-        System requirements
+        Development environment
       
     </span>
   </a>
@@ -614,10 +603,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#troubleshooting" class="md-nav__link">
+  <a href="#upgrade" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Troubleshooting
+        Upgrade
       
     </span>
   </a>
@@ -625,21 +614,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#upgrading" class="md-nav__link">
+  <a href="#uninstall" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Upgrading
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#uninstalling" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Uninstalling
+        Uninstall
       
     </span>
   </a>
@@ -1286,10 +1264,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#install-from-pypi" class="md-nav__link">
+  <a href="#stable-release" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Install from PyPI
+        Stable release
       
     </span>
   </a>
@@ -1297,21 +1275,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#install-the-development-version" class="md-nav__link">
+  <a href="#development-version" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Install the development version
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#visualization-dependencies" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Visualization dependencies
+        Development version
       
     </span>
   </a>
@@ -1330,10 +1297,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#development-installation" class="md-nav__link">
+  <a href="#visualization-dependency" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Development installation
+        Visualization dependency
       
     </span>
   </a>
@@ -1341,10 +1308,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#system-requirements" class="md-nav__link">
+  <a href="#development-environment" class="md-nav__link">
     <span class="md-ellipsis">
       
-        System requirements
+        Development environment
       
     </span>
   </a>
@@ -1352,10 +1319,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#troubleshooting" class="md-nav__link">
+  <a href="#upgrade" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Troubleshooting
+        Upgrade
       
     </span>
   </a>
@@ -1363,21 +1330,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#upgrading" class="md-nav__link">
+  <a href="#uninstall" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Upgrading
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#uninstalling" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Uninstalling
+        Uninstall
       
     </span>
   </a>
@@ -1405,76 +1361,68 @@
 
 
 <h1 id="installation">Installation<a class="headerlink" href="#installation" title="Permanent link">&para;</a></h1>
-<h2 id="install-from-pypi">Install from PyPI<a class="headerlink" href="#install-from-pypi" title="Permanent link">&para;</a></h2>
-<p>Install the latest stable release with <code>uv</code>:</p>
+<h2 id="stable-release">Stable release<a class="headerlink" href="#stable-release" title="Permanent link">&para;</a></h2>
+<p>Add gmshparser to a uv-managed project:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>uv<span class="w"> </span>add<span class="w"> </span>gmshparser
 </code></pre></div>
-<p>The package can also be installed with pip:</p>
+<p>Install it into the active Python environment with pip:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>pip<span class="w"> </span>install<span class="w"> </span>gmshparser
 </code></pre></div>
-<h2 id="install-the-development-version">Install the development version<a class="headerlink" href="#install-the-development-version" title="Permanent link">&para;</a></h2>
-<p>Install directly from GitHub:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>uv<span class="w"> </span>add<span class="w"> </span>git+https://github.com/ahojukka5/gmshparser.git
+<p>The package requires Python 3.12 or newer.</p>
+<h2 id="development-version">Development version<a class="headerlink" href="#development-version" title="Permanent link">&para;</a></h2>
+<p>Install the current <code>master</code> branch directly from GitHub:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>uv<span class="w"> </span>add<span class="w"> </span><span class="s2">&quot;gmshparser @ git+https://github.com/ahojukka5/gmshparser.git&quot;</span>
 </code></pre></div>
 <p>or with pip:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>pip<span class="w"> </span>install<span class="w"> </span>git+https://github.com/ahojukka5/gmshparser.git
 </code></pre></div>
-<h2 id="visualization-dependencies">Visualization dependencies<a class="headerlink" href="#visualization-dependencies" title="Permanent link">&para;</a></h2>
-<p>The parser itself does not depend on matplotlib. Install it separately when using the visualization examples:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>uv<span class="w"> </span>add<span class="w"> </span>matplotlib
-</code></pre></div>
-<p>For a repository checkout, the predefined dependency group can be used instead:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>uv<span class="w"> </span>sync<span class="w"> </span>--group<span class="w"> </span>visualization
-</code></pre></div>
 <h2 id="verify-the-installation">Verify the installation<a class="headerlink" href="#verify-the-installation" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;import gmshparser; print(gmshparser.__version__)&quot;</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>python<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;import gmshparser; print(gmshparser.__version__)&quot;</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>gmshparser<span class="w"> </span>--version
 </code></pre></div>
-<h2 id="development-installation">Development installation<a class="headerlink" href="#development-installation" title="Permanent link">&para;</a></h2>
-<p>Clone the repository and let <code>uv</code> create the environment:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/ahojukka5/gmshparser.git
-<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="nb">cd</span><span class="w"> </span>gmshparser
-<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>uv<span class="w"> </span>sync
+<p>In a uv-managed project, prefix commands with <code>uv run</code> when needed:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;import gmshparser; print(gmshparser.__version__)&quot;</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>uv<span class="w"> </span>run<span class="w"> </span>gmshparser<span class="w"> </span>--version
 </code></pre></div>
-<p>The default development environment contains the <code>test</code> and <code>lint</code> groups. Other groups are installed explicitly:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="c1"># Documentation toolchain</span>
-<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>uv<span class="w"> </span>sync<span class="w"> </span>--group<span class="w"> </span>docs
-<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>
-<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="c1"># Visualization examples</span>
-<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>uv<span class="w"> </span>sync<span class="w"> </span>--group<span class="w"> </span>visualization
-<a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a>
-<a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="c1"># Every development group</span>
-<a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a>uv<span class="w"> </span>sync<span class="w"> </span>--all-groups
+<h2 id="visualization-dependency">Visualization dependency<a class="headerlink" href="#visualization-dependency" title="Permanent link">&para;</a></h2>
+<p>The core package does not depend on matplotlib. Add it only for visualization:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>uv<span class="w"> </span>add<span class="w"> </span>matplotlib
 </code></pre></div>
-<p>Run commands through the managed environment:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>uv<span class="w"> </span>run<span class="w"> </span>pytest
-<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>uv<span class="w"> </span>run<span class="w"> </span>black<span class="w"> </span>.<span class="w"> </span>--check
-<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>uv<span class="w"> </span>run<span class="w"> </span>flake8<span class="w"> </span>gmshparser<span class="w"> </span>tests
+<p>For a repository checkout, use the predefined dependency group:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>uv<span class="w"> </span>sync<span class="w"> </span>--group<span class="w"> </span>visualization
 </code></pre></div>
-<p>Dependency lock files are intentionally not committed in this repository. <code>uv</code> may create a local <code>uv.lock</code>; it is ignored by Git.</p>
-<h2 id="system-requirements">System requirements<a class="headerlink" href="#system-requirements" title="Permanent link">&para;</a></h2>
-<ul>
-<li>Python 3.12 or later</li>
-<li>A current version of <code>uv</code>, recommended for development</li>
-</ul>
-<h2 id="troubleshooting">Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permanent link">&para;</a></h2>
-<p>Check the interpreter selected by <code>uv</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>--version
+<h2 id="development-environment">Development environment<a class="headerlink" href="#development-environment" title="Permanent link">&para;</a></h2>
+<p>Clone the repository and let uv create the local environment:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/ahojukka5/gmshparser.git
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="nb">cd</span><span class="w"> </span>gmshparser
+<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>uv<span class="w"> </span>sync
 </code></pre></div>
-<p>Recreate the environment when dependency state becomes inconsistent:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>rm<span class="w"> </span>-rf<span class="w"> </span>.venv<span class="w"> </span>uv.lock
-<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>uv<span class="w"> </span>sync
+<p>The default <code>dev</code> group includes the <code>test</code> and <code>lint</code> groups. Install other
+groups explicitly:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>uv<span class="w"> </span>sync<span class="w"> </span>--group<span class="w"> </span>docs
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>uv<span class="w"> </span>sync<span class="w"> </span>--group<span class="w"> </span>visualization
+<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>uv<span class="w"> </span>sync<span class="w"> </span>--all-groups
 </code></pre></div>
-<h2 id="upgrading">Upgrading<a class="headerlink" href="#upgrading" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>uv<span class="w"> </span>add<span class="w"> </span>--upgrade<span class="w"> </span>gmshparser
+<p>Run project commands through uv:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>uv<span class="w"> </span>run<span class="w"> </span>pytest
+<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>uv<span class="w"> </span>run<span class="w"> </span>black<span class="w"> </span>.<span class="w"> </span>--check
+<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>uv<span class="w"> </span>run<span class="w"> </span>flake8<span class="w"> </span>gmshparser<span class="w"> </span>tests
+</code></pre></div>
+<p>Dependency lock files are intentionally not committed. A locally generated
+<code>uv.lock</code> is ignored by Git.</p>
+<h2 id="upgrade">Upgrade<a class="headerlink" href="#upgrade" title="Permanent link">&para;</a></h2>
+<p>In a uv project:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>uv<span class="w"> </span>add<span class="w"> </span>gmshparser<span class="w"> </span>--upgrade-package<span class="w"> </span>gmshparser
 </code></pre></div>
 <p>With pip:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>pip<span class="w"> </span>install<span class="w"> </span>--upgrade<span class="w"> </span>gmshparser
+<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>pip<span class="w"> </span>install<span class="w"> </span>--upgrade<span class="w"> </span>gmshparser
 </code></pre></div>
-<h2 id="uninstalling">Uninstalling<a class="headerlink" href="#uninstalling" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>uv<span class="w"> </span>remove<span class="w"> </span>gmshparser
+<h2 id="uninstall">Uninstall<a class="headerlink" href="#uninstall" title="Permanent link">&para;</a></h2>
+<p>Remove the dependency from a uv project:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>uv<span class="w"> </span>remove<span class="w"> </span>gmshparser
 </code></pre></div>
 <p>With pip:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>pip<span class="w"> </span>uninstall<span class="w"> </span>gmshparser
+<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>pip<span class="w"> </span>uninstall<span class="w"> </span>gmshparser
 </code></pre></div>
 
 

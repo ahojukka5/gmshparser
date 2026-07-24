@@ -6,13 +6,13 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="A lightweight Python package for parsing Gmsh .msh mesh files">
+        <meta name="description" content="A lightweight Python package for parsing ASCII Gmsh MSH files">
       
       
         <meta name="author" content="Jukka Aho">
       
       
-        <link rel="canonical" href="https://gmshparser.readthedocs.io/api/helpers/">
+        <link rel="canonical" href="https://ahojukka5.github.io/gmshparser/api/helpers/">
       
       
         <link rel="prev" href="../parsers/">
@@ -1078,34 +1078,6 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label=" get_quads">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#gmshparser.helpers.get_quads--parameters" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Parameters
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#gmshparser.helpers.get_quads--returns" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Returns
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
 </li>
         
       </ul>
@@ -1134,34 +1106,6 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label=" get_elements_2d">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#gmshparser.helpers.get_elements_2d--parameters" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Parameters
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#gmshparser.helpers.get_elements_2d--returns" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Returns
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
 </li>
         
       </ul>
@@ -1170,15 +1114,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#utility-functions" class="md-nav__link">
+  <a href="#line-parsers" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Utility Functions
+        Line parsers
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Utility Functions">
+    <nav class="md-nav" aria-label="Line parsers">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -1212,7 +1156,7 @@
   <a href="#see-also" class="md-nav__link">
     <span class="md-ellipsis">
       
-        See Also
+        See also
       
     </span>
   </a>
@@ -1425,34 +1369,6 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label=" get_quads">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#gmshparser.helpers.get_quads--parameters" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Parameters
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#gmshparser.helpers.get_quads--returns" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Returns
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
 </li>
         
       </ul>
@@ -1481,34 +1397,6 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label=" get_elements_2d">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#gmshparser.helpers.get_elements_2d--parameters" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Parameters
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#gmshparser.helpers.get_elements_2d--returns" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Returns
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
 </li>
         
       </ul>
@@ -1517,15 +1405,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#utility-functions" class="md-nav__link">
+  <a href="#line-parsers" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Utility Functions
+        Line parsers
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Utility Functions">
+    <nav class="md-nav" aria-label="Line parsers">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -1559,7 +1447,7 @@
   <a href="#see-also" class="md-nav__link">
     <span class="md-ellipsis">
       
-        See Also
+        See also
       
     </span>
   </a>
@@ -1587,9 +1475,7 @@
 
 
 <h1 id="helpers-api">Helpers API<a class="headerlink" href="#helpers-api" title="Permanent link">&para;</a></h1>
-<p>Utility functions for common mesh operations.</p>
-<h2 id="get_triangles">get_triangles()<a class="headerlink" href="#get_triangles" title="Permanent link">&para;</a></h2>
-<p>Extract triangular elements from mesh for plotting.</p>
+<h2 id="get_triangles"><code>get_triangles()</code><a class="headerlink" href="#get_triangles" title="Permanent link">&para;</a></h2>
 
 
 <div class="doc doc-object doc-function">
@@ -1708,19 +1594,16 @@ plt.triplot(X, Y, T)</p>
             </details>
     </div>
 
-</div><p><strong>Example:</strong></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">gmshparser</span>
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="kn">from</span><span class="w"> </span><span class="nn">gmshparser.helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_triangles</span>
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="n">mesh</span> <span class="o">=</span> <span class="n">gmshparser</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">&quot;mesh.msh&quot;</span><span class="p">)</span>
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">T</span> <span class="o">=</span> <span class="n">get_triangles</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>
-<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="n">plt</span><span class="o">.</span><span class="n">triplot</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">T</span><span class="p">)</span>
-<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</div><p>Returns <code>(X, Y, triangles)</code>. Triangle connectivity contains zero-based indices
+into <code>X</code> and <code>Y</code>.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">gmshparser.helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_triangles</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">triangles</span> <span class="o">=</span> <span class="n">get_triangles</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="n">plt</span><span class="o">.</span><span class="n">triplot</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">triangles</span><span class="p">)</span>
 </code></pre></div>
-<h2 id="get_quads">get_quads()<a class="headerlink" href="#get_quads" title="Permanent link">&para;</a></h2>
-<p>Extract quadrilateral elements from mesh.</p>
+<p>Only two-dimensional Gmsh type-2 elements are included.</p>
+<h2 id="get_quads"><code>get_quads()</code><a class="headerlink" href="#get_quads" title="Permanent link">&para;</a></h2>
 
 
 <div class="doc doc-object doc-function">
@@ -1751,16 +1634,80 @@ for quad in Q:
 </blockquote>
 </blockquote>
 </blockquote>
-<h5 id="gmshparser.helpers.get_quads--parameters">Parameters<a class="headerlink" href="#gmshparser.helpers.get_quads--parameters" title="Permanent link">&para;</a></h5>
-<p>mesh : Mesh
-    Mesh object containing quadrilateral elements</p>
-<h5 id="gmshparser.helpers.get_quads--returns">Returns<a class="headerlink" href="#gmshparser.helpers.get_quads--returns" title="Permanent link">&para;</a></h5>
-<p>X : list
-    List of x-coordinates of nodes
-Y : list
-    List of y-coordinates of nodes
-Q : list
-    List of quadrilateral connectivity, each entry is [n0, n1, n2, n3]</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>mesh</code>
+            </td>
+            <td>
+                  <code><a class="autorefs autorefs-internal" title="            gmshparser.mesh.Mesh" href="../mesh/#gmshparser.mesh.Mesh">Mesh</a></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Mesh object containing quadrilateral elements</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+<th>Name</th>          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+<td><code>X</code></td>            <td>
+                  <code><span title="list">list</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>List of x-coordinates of nodes</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+<td><code>Y</code></td>            <td>
+                  <code><span title="list">list</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>List of y-coordinates of nodes</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+<td><code>Q</code></td>            <td>
+                  <code><span title="list">list</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>List of quadrilateral connectivity, each entry is [n0, n1, n2, n3]</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
 
 
             <details class="mkdocstrings-source">
@@ -1898,20 +1845,18 @@ Q : list
             </details>
     </div>
 
-</div><p><strong>Example:</strong></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">gmshparser.helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_quads</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="n">mesh</span> <span class="o">=</span> <span class="n">gmshparser</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">&quot;quad_mesh.msh&quot;</span><span class="p">)</span>
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">Q</span> <span class="o">=</span> <span class="n">get_quads</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>
-<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="c1"># Plot quads</span>
-<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="k">for</span> <span class="n">quad</span> <span class="ow">in</span> <span class="n">Q</span><span class="p">:</span>
-<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>    <span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="n">X</span><span class="p">[</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">quad</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="n">X</span><span class="p">[</span><span class="n">quad</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span>
-<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>    <span class="n">y</span> <span class="o">=</span> <span class="p">[</span><span class="n">Y</span><span class="p">[</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">quad</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="n">Y</span><span class="p">[</span><span class="n">quad</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span>
-<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="s1">&#39;k-&#39;</span><span class="p">)</span>
+</div><p>Returns <code>(X, Y, quads)</code>. Quad connectivity contains zero-based indices into <code>X</code>
+and <code>Y</code>.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">matplotlib.patches</span><span class="w"> </span><span class="kn">import</span> <span class="n">Polygon</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">gmshparser.helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_quads</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">quads</span> <span class="o">=</span> <span class="n">get_quads</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="k">for</span> <span class="n">quad</span> <span class="ow">in</span> <span class="n">quads</span><span class="p">:</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>    <span class="n">coordinates</span> <span class="o">=</span> <span class="p">[(</span><span class="n">X</span><span class="p">[</span><span class="n">index</span><span class="p">],</span> <span class="n">Y</span><span class="p">[</span><span class="n">index</span><span class="p">])</span> <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="n">quad</span><span class="p">]</span>
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>    <span class="n">axes</span><span class="o">.</span><span class="n">add_patch</span><span class="p">(</span><span class="n">Polygon</span><span class="p">(</span><span class="n">coordinates</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
 </code></pre></div>
-<h2 id="get_elements_2d">get_elements_2d()<a class="headerlink" href="#get_elements_2d" title="Permanent link">&para;</a></h2>
-<p>Extract all 2D elements (triangles and quads).</p>
+<p>Only two-dimensional Gmsh type-3 elements are included.</p>
+<h2 id="get_elements_2d"><code>get_elements_2d()</code><a class="headerlink" href="#get_elements_2d" title="Permanent link">&para;</a></h2>
 
 
 <div class="doc doc-object doc-function">
@@ -1928,16 +1873,64 @@ Q : list
         <p>Return 2D mesh elements (triangles and quads) for visualization.</p>
 <p>Extracts all 2D elements from the mesh, supporting both triangular
 (type 2) and quadrilateral (type 3) elements.</p>
-<h5 id="gmshparser.helpers.get_elements_2d--parameters">Parameters<a class="headerlink" href="#gmshparser.helpers.get_elements_2d--parameters" title="Permanent link">&para;</a></h5>
-<p>mesh : Mesh
-    Mesh object containing 2D elements</p>
-<h5 id="gmshparser.helpers.get_elements_2d--returns">Returns<a class="headerlink" href="#gmshparser.helpers.get_elements_2d--returns" title="Permanent link">&para;</a></h5>
-<p>dict
-    Dictionary with keys:
-    - 'nodes': dict mapping node_id to (x, y) coordinates
-    - 'triangles': list of triangle connectivity [n0, n1, n2]
-    - 'quads': list of quad connectivity [n0, n1, n2, n3]
-    - 'node_ids': list of all node IDs used</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>mesh</code>
+            </td>
+            <td>
+                  <code><a class="autorefs autorefs-internal" title="            gmshparser.mesh.Mesh" href="../mesh/#gmshparser.mesh.Mesh">Mesh</a></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Mesh object containing 2D elements</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="dict">dict</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Dictionary with keys:
+- 'nodes': dict mapping node_id to (x, y) coordinates
+- 'triangles': list of triangle connectivity [n0, n1, n2]
+- 'quads': list of quad connectivity [n0, n1, n2, n3]
+- 'node_ids': list of all node IDs used</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
 
 
             <details class="mkdocstrings-source">
@@ -2051,22 +2044,33 @@ Q : list
             </details>
     </div>
 
-</div><p><strong>Example:</strong></p>
+</div><p>Returns a dictionary rather than coordinate arrays:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">gmshparser.helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_elements_2d</span>
 <a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="n">mesh</span> <span class="o">=</span> <span class="n">gmshparser</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">&quot;mixed_mesh.msh&quot;</span><span class="p">)</span>
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">triangles</span><span class="p">,</span> <span class="n">quads</span> <span class="o">=</span> <span class="n">get_elements_2d</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
-<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>
-<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Found </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">triangles</span><span class="p">)</span><span class="si">}</span><span class="s2"> triangles and </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">quads</span><span class="p">)</span><span class="si">}</span><span class="s2"> quads&quot;</span><span class="p">)</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="n">data</span> <span class="o">=</span> <span class="n">get_elements_2d</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="n">nodes</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;nodes&quot;</span><span class="p">]</span>
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="n">triangles</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;triangles&quot;</span><span class="p">]</span>
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="n">quads</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;quads&quot;</span><span class="p">]</span>
+<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="n">node_ids</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;node_ids&quot;</span><span class="p">]</span>
 </code></pre></div>
-<h2 id="utility-functions">Utility Functions<a class="headerlink" href="#utility-functions" title="Permanent link">&para;</a></h2>
-<h3 id="parse_ints">parse_ints()<a class="headerlink" href="#parse_ints" title="Permanent link">&para;</a></h3>
-<p>Parse space-separated integers from string.</p>
-<h3 id="parse_floats">parse_floats()<a class="headerlink" href="#parse_floats" title="Permanent link">&para;</a></h3>
-<p>Parse space-separated floats from string.</p>
-<h2 id="see-also">See Also<a class="headerlink" href="#see-also" title="Permanent link">&para;</a></h2>
 <ul>
-<li><a href="../../user-guide/visualization/">Visualization Guide</a></li>
+<li><code>nodes</code> maps original Gmsh node tags to <code>(x, y)</code> coordinates.</li>
+<li><code>triangles</code> and <code>quads</code> preserve original node tags in their connectivity.</li>
+<li><code>node_ids</code> is the sorted list of referenced node tags.</li>
+</ul>
+<p>Do not unpack this helper as <code>(X, Y, triangles, quads)</code> and do not apply a
+<code>-1</code> offset to its node tags.</p>
+<h2 id="line-parsers">Line parsers<a class="headerlink" href="#line-parsers" title="Permanent link">&para;</a></h2>
+<h3 id="parse_ints"><code>parse_ints()</code><a class="headerlink" href="#parse_ints" title="Permanent link">&para;</a></h3>
+<p>Reads one line from a text stream and returns its space-separated values as
+integers.</p>
+<h3 id="parse_floats"><code>parse_floats()</code><a class="headerlink" href="#parse_floats" title="Permanent link">&para;</a></h3>
+<p>Reads one line from a text stream and returns its space-separated values as
+floating-point numbers.</p>
+<h2 id="see-also">See also<a class="headerlink" href="#see-also" title="Permanent link">&para;</a></h2>
+<ul>
+<li><a href="../../user-guide/visualization/">Visualization</a></li>
 <li><a href="../../user-guide/basic-usage/">Basic Usage</a></li>
 </ul>
 

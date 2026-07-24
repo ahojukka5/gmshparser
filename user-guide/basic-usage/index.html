@@ -6,13 +6,13 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="A lightweight Python package for parsing Gmsh .msh mesh files">
+        <meta name="description" content="A lightweight Python package for parsing ASCII Gmsh MSH files">
       
       
         <meta name="author" content="Jukka Aho">
       
       
-        <link rel="canonical" href="https://gmshparser.readthedocs.io/user-guide/basic-usage/">
+        <link rel="canonical" href="https://ahojukka5.github.io/gmshparser/user-guide/basic-usage/">
       
       
         <link rel="prev" href="../installation/">
@@ -576,10 +576,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#parsing-a-mesh-file" class="md-nav__link">
+  <a href="#parse-a-mesh" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Parsing a Mesh File
+        Parse a mesh
       
     </span>
   </a>
@@ -587,10 +587,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#mesh-information" class="md-nav__link">
+  <a href="#mesh-metadata" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Mesh Information
+        Mesh metadata
       
     </span>
   </a>
@@ -598,22 +598,55 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#working-with-nodes" class="md-nav__link">
+  <a href="#nodes" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Working with Nodes
+        Nodes
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Working with Nodes">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#elements" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Elements
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#filter-by-element-type" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Filter by element type
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#visualization-helpers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Visualization helpers
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Visualization helpers">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#iterate-all-nodes" class="md-nav__link">
+  <a href="#triangles" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Iterate All Nodes
+        Triangles
       
     </span>
   </a>
@@ -621,10 +654,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#get-specific-node-data" class="md-nav__link">
+  <a href="#quadrangles" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Get Specific Node Data
+        Quadrangles
       
     </span>
   </a>
@@ -632,10 +665,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#entity-information" class="md-nav__link">
+  <a href="#mixed-2d-meshes" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Entity Information
+        Mixed 2D meshes
       
     </span>
   </a>
@@ -648,160 +681,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#working-with-elements" class="md-nav__link">
+  <a href="#export-nodes-to-csv" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Working with Elements
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Working with Elements">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#iterate-all-elements" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Iterate All Elements
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#element-types" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Element Types
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#filter-elements-by-type" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Filter Elements by Type
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#using-helper-functions" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Using Helper Functions
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Using Helper Functions">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#extract-triangles-for-plotting" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Extract Triangles for Plotting
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#extract-quadrilaterals" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Extract Quadrilaterals
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#extract-all-2d-elements" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Extract All 2D Elements
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#practical-examples" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Practical Examples
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Practical Examples">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#example-1-export-nodes-to-csv" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Example 1: Export Nodes to CSV
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#example-2-count-element-types" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Example 2: Count Element Types
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#example-3-build-a-connectivity-matrix" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Example 3: Build a Connectivity Matrix
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#working-with-different-msh-versions" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Working with Different MSH Versions
+        Export nodes to CSV
       
     </span>
   </a>
@@ -812,18 +695,7 @@
   <a href="#error-handling" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Error Handling
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#next-steps" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Next Steps
+        Error handling
       
     </span>
   </a>
@@ -1442,10 +1314,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#parsing-a-mesh-file" class="md-nav__link">
+  <a href="#parse-a-mesh" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Parsing a Mesh File
+        Parse a mesh
       
     </span>
   </a>
@@ -1453,10 +1325,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#mesh-information" class="md-nav__link">
+  <a href="#mesh-metadata" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Mesh Information
+        Mesh metadata
       
     </span>
   </a>
@@ -1464,22 +1336,55 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#working-with-nodes" class="md-nav__link">
+  <a href="#nodes" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Working with Nodes
+        Nodes
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Working with Nodes">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#elements" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Elements
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#filter-by-element-type" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Filter by element type
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#visualization-helpers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Visualization helpers
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Visualization helpers">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#iterate-all-nodes" class="md-nav__link">
+  <a href="#triangles" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Iterate All Nodes
+        Triangles
       
     </span>
   </a>
@@ -1487,10 +1392,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#get-specific-node-data" class="md-nav__link">
+  <a href="#quadrangles" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Get Specific Node Data
+        Quadrangles
       
     </span>
   </a>
@@ -1498,10 +1403,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#entity-information" class="md-nav__link">
+  <a href="#mixed-2d-meshes" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Entity Information
+        Mixed 2D meshes
       
     </span>
   </a>
@@ -1514,160 +1419,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#working-with-elements" class="md-nav__link">
+  <a href="#export-nodes-to-csv" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Working with Elements
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Working with Elements">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#iterate-all-elements" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Iterate All Elements
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#element-types" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Element Types
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#filter-elements-by-type" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Filter Elements by Type
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#using-helper-functions" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Using Helper Functions
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Using Helper Functions">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#extract-triangles-for-plotting" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Extract Triangles for Plotting
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#extract-quadrilaterals" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Extract Quadrilaterals
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#extract-all-2d-elements" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Extract All 2D Elements
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#practical-examples" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Practical Examples
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Practical Examples">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#example-1-export-nodes-to-csv" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Example 1: Export Nodes to CSV
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#example-2-count-element-types" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Example 2: Count Element Types
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#example-3-build-a-connectivity-matrix" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Example 3: Build a Connectivity Matrix
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#working-with-different-msh-versions" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Working with Different MSH Versions
+        Export nodes to CSV
       
     </span>
   </a>
@@ -1678,18 +1433,7 @@
   <a href="#error-handling" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Error Handling
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#next-steps" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Next Steps
+        Error handling
       
     </span>
   </a>
@@ -1717,245 +1461,115 @@
 
 
 <h1 id="basic-usage">Basic Usage<a class="headerlink" href="#basic-usage" title="Permanent link">&para;</a></h1>
-<p>This guide covers the fundamental usage patterns of gmshparser.</p>
-<h2 id="parsing-a-mesh-file">Parsing a Mesh File<a class="headerlink" href="#parsing-a-mesh-file" title="Permanent link">&para;</a></h2>
-<p>The primary function you'll use is <code>gmshparser.parse()</code>:</p>
+<h2 id="parse-a-mesh">Parse a mesh<a class="headerlink" href="#parse-a-mesh" title="Permanent link">&para;</a></h2>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">gmshparser</span>
 <a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
 <a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="n">mesh</span> <span class="o">=</span> <span class="n">gmshparser</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">&quot;path/to/mesh.msh&quot;</span><span class="p">)</span>
 </code></pre></div>
-<p>This automatically detects the file format version and returns a <code>Mesh</code> object.</p>
-<h2 id="mesh-information">Mesh Information<a class="headerlink" href="#mesh-information" title="Permanent link">&para;</a></h2>
-<p>After parsing, you can query basic mesh information:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1"># Get mesh metadata</span>
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Mesh name: </span><span class="si">{</span><span class="n">mesh</span><span class="o">.</span><span class="n">get_name</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Mesh version: </span><span class="si">{</span><span class="n">mesh</span><span class="o">.</span><span class="n">get_version</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Number of nodes: </span><span class="si">{</span><span class="n">mesh</span><span class="o">.</span><span class="n">get_number_of_nodes</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Number of elements: </span><span class="si">{</span><span class="n">mesh</span><span class="o">.</span><span class="n">get_number_of_elements</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>
-<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="c1"># Get node tag ranges</span>
-<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Min node tag: </span><span class="si">{</span><span class="n">mesh</span><span class="o">.</span><span class="n">get_min_node_tag</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Max node tag: </span><span class="si">{</span><span class="n">mesh</span><span class="o">.</span><span class="n">get_max_node_tag</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>
-<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="c1"># Get element tag ranges</span>
-<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Min element tag: </span><span class="si">{</span><span class="n">mesh</span><span class="o">.</span><span class="n">get_min_element_tag</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Max element tag: </span><span class="si">{</span><span class="n">mesh</span><span class="o">.</span><span class="n">get_max_element_tag</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a>
-<a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="c1"># Get entity counts</span>
-<a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Node entities: </span><span class="si">{</span><span class="n">mesh</span><span class="o">.</span><span class="n">get_number_of_node_entities</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Element entities: </span><span class="si">{</span><span class="n">mesh</span><span class="o">.</span><span class="n">get_number_of_element_entities</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<p>The parser detects the supported MSH version automatically and returns a
+<code>Mesh</code> object.</p>
+<h2 id="mesh-metadata">Mesh metadata<a class="headerlink" href="#mesh-metadata" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nb">print</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">get_name</span><span class="p">())</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="nb">print</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">get_version</span><span class="p">())</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="nb">print</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">get_number_of_nodes</span><span class="p">())</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="nb">print</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">get_number_of_elements</span><span class="p">())</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="nb">print</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">get_min_node_tag</span><span class="p">(),</span> <span class="n">mesh</span><span class="o">.</span><span class="n">get_max_node_tag</span><span class="p">())</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="nb">print</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">get_min_element_tag</span><span class="p">(),</span> <span class="n">mesh</span><span class="o">.</span><span class="n">get_max_element_tag</span><span class="p">())</span>
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="nb">print</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">get_number_of_node_entities</span><span class="p">())</span>
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="nb">print</span><span class="p">(</span><span class="n">mesh</span><span class="o">.</span><span class="n">get_number_of_element_entities</span><span class="p">())</span>
 </code></pre></div>
-<h2 id="working-with-nodes">Working with Nodes<a class="headerlink" href="#working-with-nodes" title="Permanent link">&para;</a></h2>
-<p>Nodes in gmshparser are organized by entities. Here's how to access them:</p>
-<h3 id="iterate-all-nodes">Iterate All Nodes<a class="headerlink" href="#iterate-all-nodes" title="Permanent link">&para;</a></h3>
+<h2 id="nodes">Nodes<a class="headerlink" href="#nodes" title="Permanent link">&para;</a></h2>
+<p>Nodes are grouped into node entities:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="k">for</span> <span class="n">entity</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">get_node_entities</span><span class="p">():</span>
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>    <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">entity</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">():</span>
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>        <span class="n">node_id</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">get_tag</span><span class="p">()</span>
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>        <span class="n">coords</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">get_coordinates</span><span class="p">()</span>
-<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>        <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span class="o">=</span> <span class="n">coords</span>
-<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Node </span><span class="si">{</span><span class="n">node_id</span><span class="si">}</span><span class="s2">: (</span><span class="si">{</span><span class="n">x</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">y</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">z</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>    <span class="nb">print</span><span class="p">(</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>        <span class="s2">&quot;entity&quot;</span><span class="p">,</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>        <span class="n">entity</span><span class="o">.</span><span class="n">get_dimension</span><span class="p">(),</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>        <span class="n">entity</span><span class="o">.</span><span class="n">get_tag</span><span class="p">(),</span>
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>        <span class="n">entity</span><span class="o">.</span><span class="n">get_number_of_nodes</span><span class="p">(),</span>
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>    <span class="p">)</span>
+<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>
+<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>    <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">entity</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">():</span>
+<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>        <span class="n">node_id</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">get_tag</span><span class="p">()</span>
+<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a>        <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">get_coordinates</span><span class="p">()</span>
+<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a>        <span class="nb">print</span><span class="p">(</span><span class="n">node_id</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span>
 </code></pre></div>
-<h3 id="get-specific-node-data">Get Specific Node Data<a class="headerlink" href="#get-specific-node-data" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1"># Get all nodes from first entity</span>
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="n">first_entity</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">get_node_entities</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
-<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="n">nodes</span> <span class="o">=</span> <span class="n">first_entity</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">()</span>
-<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>
-<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="c1"># Access node properties</span>
-<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">nodes</span><span class="p">:</span>
-<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>    <span class="n">tag</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">get_tag</span><span class="p">()</span>          <span class="c1"># Node ID</span>
-<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>    <span class="n">coords</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">get_coordinates</span><span class="p">()</span>  <span class="c1"># (x, y, z) tuple</span>
-<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>    <span class="n">x</span> <span class="o">=</span> <span class="n">coords</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a>    <span class="n">y</span> <span class="o">=</span> <span class="n">coords</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-<a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a>    <span class="n">z</span> <span class="o">=</span> <span class="n">coords</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+<h2 id="elements">Elements<a class="headerlink" href="#elements" title="Permanent link">&para;</a></h2>
+<p>Elements are grouped into element entities. The entity stores the Gmsh element
+type shared by its elements:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="k">for</span> <span class="n">entity</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">get_element_entities</span><span class="p">():</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>    <span class="n">element_type</span> <span class="o">=</span> <span class="n">entity</span><span class="o">.</span><span class="n">get_element_type</span><span class="p">()</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>    <span class="nb">print</span><span class="p">(</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>        <span class="s2">&quot;entity&quot;</span><span class="p">,</span>
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>        <span class="n">entity</span><span class="o">.</span><span class="n">get_dimension</span><span class="p">(),</span>
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>        <span class="n">entity</span><span class="o">.</span><span class="n">get_tag</span><span class="p">(),</span>
+<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>        <span class="n">element_type</span><span class="p">,</span>
+<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>        <span class="n">entity</span><span class="o">.</span><span class="n">get_number_of_elements</span><span class="p">(),</span>
+<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>    <span class="p">)</span>
+<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a>
+<a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a>    <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="n">entity</span><span class="o">.</span><span class="n">get_elements</span><span class="p">():</span>
+<a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a>        <span class="nb">print</span><span class="p">(</span><span class="n">element</span><span class="o">.</span><span class="n">get_tag</span><span class="p">(),</span> <span class="n">element</span><span class="o">.</span><span class="n">get_connectivity</span><span class="p">())</span>
 </code></pre></div>
-<h3 id="entity-information">Entity Information<a class="headerlink" href="#entity-information" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="k">for</span> <span class="n">entity</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">get_node_entities</span><span class="p">():</span>
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>    <span class="n">dimension</span> <span class="o">=</span> <span class="n">entity</span><span class="o">.</span><span class="n">get_dimension</span><span class="p">()</span>
-<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>    <span class="n">entity_tag</span> <span class="o">=</span> <span class="n">entity</span><span class="o">.</span><span class="n">get_tag</span><span class="p">()</span>
-<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>    <span class="n">num_nodes</span> <span class="o">=</span> <span class="n">entity</span><span class="o">.</span><span class="n">get_number_of_nodes</span><span class="p">()</span>
-<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Entity </span><span class="si">{</span><span class="n">entity_tag</span><span class="si">}</span><span class="s2"> (dim=</span><span class="si">{</span><span class="n">dimension</span><span class="si">}</span><span class="s2">): </span><span class="si">{</span><span class="n">num_nodes</span><span class="si">}</span><span class="s2"> nodes&quot;</span><span class="p">)</span>
+<p>Gmsh element types are numeric. Common values include 1 for a two-node line, 2
+for a three-node triangle, 3 for a four-node quadrangle, and 4 for a
+four-node tetrahedron. Consult the official Gmsh MSH specification for the full
+list.</p>
+<h2 id="filter-by-element-type">Filter by element type<a class="headerlink" href="#filter-by-element-type" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="n">triangles</span> <span class="o">=</span> <span class="p">[]</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="k">for</span> <span class="n">entity</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">get_element_entities</span><span class="p">():</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>    <span class="k">if</span> <span class="n">entity</span><span class="o">.</span><span class="n">get_element_type</span><span class="p">()</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>        <span class="n">triangles</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>            <span class="n">element</span><span class="o">.</span><span class="n">get_connectivity</span><span class="p">()</span> <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="n">entity</span><span class="o">.</span><span class="n">get_elements</span><span class="p">()</span>
+<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>        <span class="p">)</span>
 </code></pre></div>
-<h2 id="working-with-elements">Working with Elements<a class="headerlink" href="#working-with-elements" title="Permanent link">&para;</a></h2>
-<p>Elements are also organized by entities:</p>
-<h3 id="iterate-all-elements">Iterate All Elements<a class="headerlink" href="#iterate-all-elements" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="k">for</span> <span class="n">entity</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">get_element_entities</span><span class="p">():</span>
-<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>    <span class="n">element_type</span> <span class="o">=</span> <span class="n">entity</span><span class="o">.</span><span class="n">get_element_type</span><span class="p">()</span>
-<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Element type: </span><span class="si">{</span><span class="n">element_type</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>
-<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>    <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="n">entity</span><span class="o">.</span><span class="n">get_elements</span><span class="p">():</span>
-<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>        <span class="n">elem_id</span> <span class="o">=</span> <span class="n">element</span><span class="o">.</span><span class="n">get_tag</span><span class="p">()</span>
-<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a>        <span class="n">connectivity</span> <span class="o">=</span> <span class="n">element</span><span class="o">.</span><span class="n">get_connectivity</span><span class="p">()</span>
-<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Element </span><span class="si">{</span><span class="n">elem_id</span><span class="si">}</span><span class="s2">: nodes </span><span class="si">{</span><span class="n">connectivity</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<h2 id="visualization-helpers">Visualization helpers<a class="headerlink" href="#visualization-helpers" title="Permanent link">&para;</a></h2>
+<h3 id="triangles">Triangles<a class="headerlink" href="#triangles" title="Permanent link">&para;</a></h3>
+<p><code>get_triangles()</code> returns coordinate arrays and zero-based connectivity suitable
+for matplotlib:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">gmshparser.helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_triangles</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">triangles</span> <span class="o">=</span> <span class="n">get_triangles</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
 </code></pre></div>
-<h3 id="element-types">Element Types<a class="headerlink" href="#element-types" title="Permanent link">&para;</a></h3>
-<p>Gmsh uses numeric codes for element types:</p>
-<table>
-<thead>
-<tr>
-<th>Code</th>
-<th>Element Type</th>
-<th>Nodes</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>15</td>
-<td>Point</td>
-<td>1</td>
-</tr>
-<tr>
-<td>1</td>
-<td>Line</td>
-<td>2</td>
-</tr>
-<tr>
-<td>2</td>
-<td>Triangle</td>
-<td>3</td>
-</tr>
-<tr>
-<td>3</td>
-<td>Quadrangle</td>
-<td>4</td>
-</tr>
-<tr>
-<td>4</td>
-<td>Tetrahedron</td>
-<td>4</td>
-</tr>
-<tr>
-<td>5</td>
-<td>Hexahedron</td>
-<td>8</td>
-</tr>
-<tr>
-<td>8</td>
-<td>Line (3-node)</td>
-<td>3</td>
-</tr>
-<tr>
-<td>9</td>
-<td>Triangle (6-node)</td>
-<td>6</td>
-</tr>
-<tr>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-</tr>
-</tbody>
-</table>
-<p>See the <a href="https://gmsh.info/doc/texinfo/gmsh.html#MSH-file-format">Gmsh documentation</a> for a complete list.</p>
-<h3 id="filter-elements-by-type">Filter Elements by Type<a class="headerlink" href="#filter-elements-by-type" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="c1"># Get all triangular elements</span>
-<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="k">for</span> <span class="n">entity</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">get_element_entities</span><span class="p">():</span>
-<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>    <span class="k">if</span> <span class="n">entity</span><span class="o">.</span><span class="n">get_element_type</span><span class="p">()</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>  <span class="c1"># Triangle</span>
-<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>        <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="n">entity</span><span class="o">.</span><span class="n">get_elements</span><span class="p">():</span>
-<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Triangle </span><span class="si">{</span><span class="n">element</span><span class="o">.</span><span class="n">get_tag</span><span class="p">()</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">element</span><span class="o">.</span><span class="n">get_connectivity</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<h3 id="quadrangles">Quadrangles<a class="headerlink" href="#quadrangles" title="Permanent link">&para;</a></h3>
+<p><code>get_quads()</code> uses the same zero-based indexing convention:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">gmshparser.helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_quads</span>
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">quads</span> <span class="o">=</span> <span class="n">get_quads</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
 </code></pre></div>
-<h2 id="using-helper-functions">Using Helper Functions<a class="headerlink" href="#using-helper-functions" title="Permanent link">&para;</a></h2>
-<p>gmshparser provides helper functions for common tasks:</p>
-<h3 id="extract-triangles-for-plotting">Extract Triangles for Plotting<a class="headerlink" href="#extract-triangles-for-plotting" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">gmshparser.helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_triangles</span>
+<h3 id="mixed-2d-meshes">Mixed 2D meshes<a class="headerlink" href="#mixed-2d-meshes" title="Permanent link">&para;</a></h3>
+<p><code>get_elements_2d()</code> returns a dictionary. Its element connectivity retains the
+original Gmsh node tags rather than converting them to zero-based indices:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">gmshparser.helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_elements_2d</span>
 <a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>
-<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="n">mesh</span> <span class="o">=</span> <span class="n">gmshparser</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">&quot;mesh.msh&quot;</span><span class="p">)</span>
-<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">T</span> <span class="o">=</span> <span class="n">get_triangles</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
-<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>
-<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="c1"># X, Y: coordinate arrays</span>
-<a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="c1"># T: connectivity array for matplotlib.triplot</span>
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="n">data</span> <span class="o">=</span> <span class="n">get_elements_2d</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
+<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>
+<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="n">nodes</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;nodes&quot;</span><span class="p">]</span>          <span class="c1"># node tag -&gt; (x, y)</span>
+<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="n">triangles</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;triangles&quot;</span><span class="p">]</span> <span class="c1"># connectivity using node tags</span>
+<a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="n">quads</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;quads&quot;</span><span class="p">]</span>         <span class="c1"># connectivity using node tags</span>
+<a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a><span class="n">node_ids</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;node_ids&quot;</span><span class="p">]</span>
 </code></pre></div>
-<h3 id="extract-quadrilaterals">Extract Quadrilaterals<a class="headerlink" href="#extract-quadrilaterals" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">gmshparser.helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_quads</span>
+<p>See <a href="../visualization/">Visualization</a> for plotting examples.</p>
+<h2 id="export-nodes-to-csv">Export nodes to CSV<a class="headerlink" href="#export-nodes-to-csv" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">csv</span>
 <a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>
-<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="n">mesh</span> <span class="o">=</span> <span class="n">gmshparser</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">&quot;mesh.msh&quot;</span><span class="p">)</span>
-<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">Q</span> <span class="o">=</span> <span class="n">get_quads</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
-<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>
-<a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="c1"># Q: quadrilateral connectivity array</span>
+<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;nodes.csv&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">newline</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">stream</span><span class="p">:</span>
+<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>    <span class="n">writer</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">writer</span><span class="p">(</span><span class="n">stream</span><span class="p">)</span>
+<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>    <span class="n">writer</span><span class="o">.</span><span class="n">writerow</span><span class="p">([</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="s2">&quot;z&quot;</span><span class="p">])</span>
+<a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a>
+<a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a>    <span class="k">for</span> <span class="n">entity</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">get_node_entities</span><span class="p">():</span>
+<a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a>        <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">entity</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">():</span>
+<a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a>            <span class="n">writer</span><span class="o">.</span><span class="n">writerow</span><span class="p">([</span><span class="n">node</span><span class="o">.</span><span class="n">get_tag</span><span class="p">(),</span> <span class="o">*</span><span class="n">node</span><span class="o">.</span><span class="n">get_coordinates</span><span class="p">()])</span>
 </code></pre></div>
-<h3 id="extract-all-2d-elements">Extract All 2D Elements<a class="headerlink" href="#extract-all-2d-elements" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">gmshparser.helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_elements_2d</span>
-<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>
-<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="n">mesh</span> <span class="o">=</span> <span class="n">gmshparser</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">&quot;mesh.msh&quot;</span><span class="p">)</span>
-<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">triangles</span><span class="p">,</span> <span class="n">quads</span> <span class="o">=</span> <span class="n">get_elements_2d</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
-<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>
-<a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a><span class="c1"># Returns both triangles and quads</span>
+<h2 id="error-handling">Error handling<a class="headerlink" href="#error-handling" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="k">try</span><span class="p">:</span>
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>    <span class="n">mesh</span> <span class="o">=</span> <span class="n">gmshparser</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">&quot;mesh.msh&quot;</span><span class="p">)</span>
+<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
+<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Mesh file not found&quot;</span><span class="p">)</span>
+<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+<a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unsupported or invalid MSH file: </span><span class="si">{</span><span class="n">error</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </code></pre></div>
-<h2 id="practical-examples">Practical Examples<a class="headerlink" href="#practical-examples" title="Permanent link">&para;</a></h2>
-<h3 id="example-1-export-nodes-to-csv">Example 1: Export Nodes to CSV<a class="headerlink" href="#example-1-export-nodes-to-csv" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">gmshparser</span>
-<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="kn">import</span><span class="w"> </span><span class="nn">csv</span>
-<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>
-<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="n">mesh</span> <span class="o">=</span> <span class="n">gmshparser</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">&quot;mesh.msh&quot;</span><span class="p">)</span>
-<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>
-<a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;nodes.csv&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">newline</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-<a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a>    <span class="n">writer</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">writer</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
-<a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a>    <span class="n">writer</span><span class="o">.</span><span class="n">writerow</span><span class="p">([</span><span class="s2">&quot;ID&quot;</span><span class="p">,</span> <span class="s2">&quot;X&quot;</span><span class="p">,</span> <span class="s2">&quot;Y&quot;</span><span class="p">,</span> <span class="s2">&quot;Z&quot;</span><span class="p">])</span>
-<a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a>
-<a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a>    <span class="k">for</span> <span class="n">entity</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">get_node_entities</span><span class="p">():</span>
-<a id="__codelineno-10-11" name="__codelineno-10-11" href="#__codelineno-10-11"></a>        <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">entity</span><span class="o">.</span><span class="n">get_nodes</span><span class="p">():</span>
-<a id="__codelineno-10-12" name="__codelineno-10-12" href="#__codelineno-10-12"></a>            <span class="n">tag</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">get_tag</span><span class="p">()</span>
-<a id="__codelineno-10-13" name="__codelineno-10-13" href="#__codelineno-10-13"></a>            <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">get_coordinates</span><span class="p">()</span>
-<a id="__codelineno-10-14" name="__codelineno-10-14" href="#__codelineno-10-14"></a>            <span class="n">writer</span><span class="o">.</span><span class="n">writerow</span><span class="p">([</span><span class="n">tag</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">])</span>
-</code></pre></div>
-<h3 id="example-2-count-element-types">Example 2: Count Element Types<a class="headerlink" href="#example-2-count-element-types" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">gmshparser</span>
-<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">Counter</span>
-<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>
-<a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="n">mesh</span> <span class="o">=</span> <span class="n">gmshparser</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">&quot;mesh.msh&quot;</span><span class="p">)</span>
-<a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a>
-<a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a><span class="n">element_types</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">()</span>
-<a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a><span class="k">for</span> <span class="n">entity</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">get_element_entities</span><span class="p">():</span>
-<a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a>    <span class="n">elem_type</span> <span class="o">=</span> <span class="n">entity</span><span class="o">.</span><span class="n">get_element_type</span><span class="p">()</span>
-<a id="__codelineno-11-9" name="__codelineno-11-9" href="#__codelineno-11-9"></a>    <span class="n">elem_count</span> <span class="o">=</span> <span class="n">entity</span><span class="o">.</span><span class="n">get_number_of_elements</span><span class="p">()</span>
-<a id="__codelineno-11-10" name="__codelineno-11-10" href="#__codelineno-11-10"></a>    <span class="n">element_types</span><span class="p">[</span><span class="n">elem_type</span><span class="p">]</span> <span class="o">+=</span> <span class="n">elem_count</span>
-<a id="__codelineno-11-11" name="__codelineno-11-11" href="#__codelineno-11-11"></a>
-<a id="__codelineno-11-12" name="__codelineno-11-12" href="#__codelineno-11-12"></a><span class="k">for</span> <span class="n">elem_type</span><span class="p">,</span> <span class="n">count</span> <span class="ow">in</span> <span class="n">element_types</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-<a id="__codelineno-11-13" name="__codelineno-11-13" href="#__codelineno-11-13"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Type </span><span class="si">{</span><span class="n">elem_type</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">count</span><span class="si">}</span><span class="s2"> elements&quot;</span><span class="p">)</span>
-</code></pre></div>
-<h3 id="example-3-build-a-connectivity-matrix">Example 3: Build a Connectivity Matrix<a class="headerlink" href="#example-3-build-a-connectivity-matrix" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">gmshparser</span>
-<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
-<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>
-<a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="n">mesh</span> <span class="o">=</span> <span class="n">gmshparser</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">&quot;mesh.msh&quot;</span><span class="p">)</span>
-<a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a>
-<a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a><span class="c1"># Collect all triangular elements</span>
-<a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a><span class="n">triangles</span> <span class="o">=</span> <span class="p">[]</span>
-<a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a><span class="k">for</span> <span class="n">entity</span> <span class="ow">in</span> <span class="n">mesh</span><span class="o">.</span><span class="n">get_element_entities</span><span class="p">():</span>
-<a id="__codelineno-12-9" name="__codelineno-12-9" href="#__codelineno-12-9"></a>    <span class="k">if</span> <span class="n">entity</span><span class="o">.</span><span class="n">get_element_type</span><span class="p">()</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>  <span class="c1"># Triangle</span>
-<a id="__codelineno-12-10" name="__codelineno-12-10" href="#__codelineno-12-10"></a>        <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="n">entity</span><span class="o">.</span><span class="n">get_elements</span><span class="p">():</span>
-<a id="__codelineno-12-11" name="__codelineno-12-11" href="#__codelineno-12-11"></a>            <span class="n">triangles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">element</span><span class="o">.</span><span class="n">get_connectivity</span><span class="p">())</span>
-<a id="__codelineno-12-12" name="__codelineno-12-12" href="#__codelineno-12-12"></a>
-<a id="__codelineno-12-13" name="__codelineno-12-13" href="#__codelineno-12-13"></a><span class="c1"># Convert to numpy array</span>
-<a id="__codelineno-12-14" name="__codelineno-12-14" href="#__codelineno-12-14"></a><span class="n">connectivity</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">triangles</span><span class="p">)</span>
-<a id="__codelineno-12-15" name="__codelineno-12-15" href="#__codelineno-12-15"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Triangle connectivity shape: </span><span class="si">{</span><span class="n">connectivity</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-</code></pre></div>
-<h2 id="working-with-different-msh-versions">Working with Different MSH Versions<a class="headerlink" href="#working-with-different-msh-versions" title="Permanent link">&para;</a></h2>
-<p>gmshparser handles version differences automatically:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="c1"># Works with any supported version (1.0, 2.0, 2.1, 2.2, 4.0, 4.1)</span>
-<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="n">mesh</span> <span class="o">=</span> <span class="n">gmshparser</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">&quot;any_version.msh&quot;</span><span class="p">)</span>
-<a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>
-<a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a><span class="c1"># Check which version was detected</span>
-<a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a><span class="n">version</span> <span class="o">=</span> <span class="n">mesh</span><span class="o">.</span><span class="n">get_version</span><span class="p">()</span>
-<a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Detected MSH version: </span><span class="si">{</span><span class="n">version</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-</code></pre></div>
-<p>The API remains consistent regardless of the file format version.</p>
-<h2 id="error-handling">Error Handling<a class="headerlink" href="#error-handling" title="Permanent link">&para;</a></h2>
-<p>Handle parsing errors gracefully:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">gmshparser</span>
-<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>
-<a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="k">try</span><span class="p">:</span>
-<a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a>    <span class="n">mesh</span> <span class="o">=</span> <span class="n">gmshparser</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s2">&quot;mesh.msh&quot;</span><span class="p">)</span>
-<a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a><span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
-<a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Mesh file not found&quot;</span><span class="p">)</span>
-<a id="__codelineno-14-7" name="__codelineno-14-7" href="#__codelineno-14-7"></a><span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-<a id="__codelineno-14-8" name="__codelineno-14-8" href="#__codelineno-14-8"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error parsing mesh: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-</code></pre></div>
-<h2 id="next-steps">Next Steps<a class="headerlink" href="#next-steps" title="Permanent link">&para;</a></h2>
-<ul>
-<li>Learn about the <a href="../cli/">Command Line Interface</a></li>
-<li>Explore <a href="../visualization/">Visualization options</a></li>
-<li>Check the <a href="../../api/overview/">API Reference</a></li>
-</ul>
+<p>Unexpected or malformed section contents may also raise parsing-related Python
+exceptions. When reporting such a case, include the smallest mesh file that
+reproduces it.</p>
 
 
 

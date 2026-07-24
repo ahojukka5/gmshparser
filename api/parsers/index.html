@@ -6,13 +6,13 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="A lightweight Python package for parsing Gmsh .msh mesh files">
+        <meta name="description" content="A lightweight Python package for parsing ASCII Gmsh MSH files">
       
       
         <meta name="author" content="Jukka Aho">
       
       
-        <link rel="canonical" href="https://gmshparser.readthedocs.io/api/parsers/">
+        <link rel="canonical" href="https://ahojukka5.github.io/gmshparser/api/parsers/">
       
       
         <link rel="prev" href="../mesh/">
@@ -1030,78 +1030,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#meshformatparser" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        MeshFormatParser
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#nodesparser" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        NodesParser
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#elementsparser" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        ElementsParser
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#v1-parsers" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        V1 Parsers
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="V1 Parsers">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#nodesparserv1" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        NodesParserV1
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#elementsparserv1" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        ElementsParserV1
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#mainparser" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1134,23 +1062,6 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label=" __init__">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#gmshparser.main_parser.MainParser.__init__--parameters" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Parameters
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
 </li>
         
           <li class="md-nav__item">
@@ -1161,34 +1072,6 @@
       
     </span>
   </a>
-  
-    <nav class="md-nav" aria-label=" parse">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#gmshparser.main_parser.MainParser.parse--parameters" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Parameters
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#gmshparser.main_parser.MainParser.parse--raises" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Raises
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
         
@@ -1203,10 +1086,155 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#see-also" class="md-nav__link">
+  <a href="#format-metadata" class="md-nav__link">
     <span class="md-ellipsis">
       
-        See Also
+        Format metadata
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Format metadata">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#meshformatparser" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MeshFormatParser
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#msh-10-parsers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MSH 1.0 parsers
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="MSH 1.0 parsers">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#nodesparserv1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        NodesParserV1
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#elementsparserv1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ElementsParserV1
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#msh-2x-parsers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MSH 2.x parsers
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="MSH 2.x parsers">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#nodesparserv2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        NodesParserV2
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#elementsparserv2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ElementsParserV2
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#msh-4x-parsers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MSH 4.x parsers
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="MSH 4.x parsers">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#nodesparser" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        NodesParser
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#elementsparser" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ElementsParser
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#parser-registries" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parser registries
       
     </span>
   </a>
@@ -1427,78 +1455,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#meshformatparser" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        MeshFormatParser
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#nodesparser" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        NodesParser
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#elementsparser" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        ElementsParser
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#v1-parsers" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        V1 Parsers
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="V1 Parsers">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#nodesparserv1" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        NodesParserV1
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#elementsparserv1" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        ElementsParserV1
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#mainparser" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1531,23 +1487,6 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label=" __init__">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#gmshparser.main_parser.MainParser.__init__--parameters" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Parameters
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
 </li>
         
           <li class="md-nav__item">
@@ -1558,34 +1497,6 @@
       
     </span>
   </a>
-  
-    <nav class="md-nav" aria-label=" parse">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#gmshparser.main_parser.MainParser.parse--parameters" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Parameters
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#gmshparser.main_parser.MainParser.parse--raises" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Raises
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
         
@@ -1600,10 +1511,155 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#see-also" class="md-nav__link">
+  <a href="#format-metadata" class="md-nav__link">
     <span class="md-ellipsis">
       
-        See Also
+        Format metadata
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Format metadata">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#meshformatparser" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MeshFormatParser
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#msh-10-parsers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MSH 1.0 parsers
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="MSH 1.0 parsers">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#nodesparserv1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        NodesParserV1
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#elementsparserv1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ElementsParserV1
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#msh-2x-parsers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MSH 2.x parsers
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="MSH 2.x parsers">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#nodesparserv2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        NodesParserV2
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#elementsparserv2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ElementsParserV2
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#msh-4x-parsers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MSH 4.x parsers
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="MSH 4.x parsers">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#nodesparser" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        NodesParser
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#elementsparser" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ElementsParser
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#parser-registries" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Parser registries
       
     </span>
   </a>
@@ -1631,8 +1687,7 @@
 
 
 <h1 id="parsers-api">Parsers API<a class="headerlink" href="#parsers-api" title="Permanent link">&para;</a></h1>
-<h2 id="abstractparser">AbstractParser<a class="headerlink" href="#abstractparser" title="Permanent link">&para;</a></h2>
-<p>Base class for all parsers.</p>
+<h2 id="abstractparser"><code>AbstractParser</code><a class="headerlink" href="#abstractparser" title="Permanent link">&para;</a></h2>
 
 
 <div class="doc doc-object doc-class">
@@ -1748,19 +1803,8 @@ must return string <code>$Nodes</code>.</p>
 
     </div>
 
-</div><h2 id="meshformatparser">MeshFormatParser<a class="headerlink" href="#meshformatparser" title="Permanent link">&para;</a></h2>
-<p>Parses <code>$MeshFormat</code> section.</p>
-<h2 id="nodesparser">NodesParser<a class="headerlink" href="#nodesparser" title="Permanent link">&para;</a></h2>
-<p>Parses <code>$Nodes</code> section (MSH 2.x and 4.x).</p>
-<h2 id="elementsparser">ElementsParser<a class="headerlink" href="#elementsparser" title="Permanent link">&para;</a></h2>
-<p>Parses <code>$Elements</code> section (MSH 2.x and 4.x).</p>
-<h2 id="v1-parsers">V1 Parsers<a class="headerlink" href="#v1-parsers" title="Permanent link">&para;</a></h2>
-<h3 id="nodesparserv1">NodesParserV1<a class="headerlink" href="#nodesparserv1" title="Permanent link">&para;</a></h3>
-<p>Parses <code>$NOD</code> section (MSH 1.0).</p>
-<h3 id="elementsparserv1">ElementsParserV1<a class="headerlink" href="#elementsparserv1" title="Permanent link">&para;</a></h3>
-<p>Parses <code>$ELM</code> section (MSH 1.0).</p>
-<h2 id="mainparser">MainParser<a class="headerlink" href="#mainparser" title="Permanent link">&para;</a></h2>
-<p>Coordinates all parsers and handles version detection.</p>
+</div><p>Section parsers expose a section name and a static <code>parse(mesh, io)</code> method.</p>
+<h2 id="mainparser"><code>MainParser</code><a class="headerlink" href="#mainparser" title="Permanent link">&para;</a></h2>
 
 
 <div class="doc doc-object doc-class">
@@ -2058,10 +2102,38 @@ the appropriate parsers for that version.</p>
     <div class="doc doc-contents ">
 
         <p>Initialize the main parser.</p>
-<h6 id="gmshparser.main_parser.MainParser.__init__--parameters">Parameters<a class="headerlink" href="#gmshparser.main_parser.MainParser.__init__--parameters" title="Permanent link">&para;</a></h6>
-<p>parsers : list, optional
-    List of parser classes to use. If None, parsers will be selected
-    automatically based on the detected version.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>parsers</code>
+            </td>
+            <td>
+                  <code><span title="list">list</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>List of parser classes to use. If None, parsers will be selected
+automatically based on the detected version.</p>
+              </div>
+            </td>
+            <td>
+                  <code>None</code>
+            </td>
+          </tr>
+      </tbody>
+    </table>
 
 
             <details class="mkdocstrings-source">
@@ -2109,14 +2181,76 @@ the appropriate parsers for that version.</p>
 then selects the appropriate parsers for that version.</p>
 <p>For MSH 1.0 files (which don't have $MeshFormat), version is detected
 from the $NOD section name.</p>
-<h6 id="gmshparser.main_parser.MainParser.parse--parameters">Parameters<a class="headerlink" href="#gmshparser.main_parser.MainParser.parse--parameters" title="Permanent link">&para;</a></h6>
-<p>mesh : Mesh
-    Mesh object to populate
-io : TextIO
-    Input stream to read from</p>
-<h6 id="gmshparser.main_parser.MainParser.parse--raises">Raises<a class="headerlink" href="#gmshparser.main_parser.MainParser.parse--raises" title="Permanent link">&para;</a></h6>
-<p>ValueError
-    If the version is not supported or if parsing fails</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>mesh</code>
+            </td>
+            <td>
+                  <code><a class="autorefs autorefs-internal" title="            gmshparser.mesh.Mesh" href="../mesh/#gmshparser.mesh.Mesh">Mesh</a></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Mesh object to populate</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>io</code>
+            </td>
+            <td>
+                  <code><span title="typing.TextIO">TextIO</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Input stream to read from</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+<p><span class="doc-section-title">Raises:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="ValueError">ValueError</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>If the version is not supported or if parsing fails</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
 
 
             <details class="mkdocstrings-source">
@@ -2266,11 +2400,38 @@ io : TextIO
 
     </div>
 
-</div><h2 id="see-also">See Also<a class="headerlink" href="#see-also" title="Permanent link">&para;</a></h2>
-<ul>
-<li><a href="../../developer-guide/writing-parsers/">Writing Custom Parsers</a></li>
-<li><a href="../../developer-guide/architecture/">Architecture</a></li>
-</ul>
+</div><p><code>MainParser</code> detects the MSH version and selects one of the version-specific
+parser registries.</p>
+<h2 id="format-metadata">Format metadata<a class="headerlink" href="#format-metadata" title="Permanent link">&para;</a></h2>
+<h3 id="meshformatparser"><code>MeshFormatParser</code><a class="headerlink" href="#meshformatparser" title="Permanent link">&para;</a></h3>
+<p>Parses <code>$MeshFormat</code>, validates the version, and records the ASCII flag and data
+precision. MSH 1.0 does not contain this section.</p>
+<h2 id="msh-10-parsers">MSH 1.0 parsers<a class="headerlink" href="#msh-10-parsers" title="Permanent link">&para;</a></h2>
+<h3 id="nodesparserv1"><code>NodesParserV1</code><a class="headerlink" href="#nodesparserv1" title="Permanent link">&para;</a></h3>
+<p>Parses the legacy <code>$NOD</code> section.</p>
+<h3 id="elementsparserv1"><code>ElementsParserV1</code><a class="headerlink" href="#elementsparserv1" title="Permanent link">&para;</a></h3>
+<p>Parses the legacy <code>$ELM</code> section.</p>
+<h2 id="msh-2x-parsers">MSH 2.x parsers<a class="headerlink" href="#msh-2x-parsers" title="Permanent link">&para;</a></h2>
+<h3 id="nodesparserv2"><code>NodesParserV2</code><a class="headerlink" href="#nodesparserv2" title="Permanent link">&para;</a></h3>
+<p>Parses the flat <code>$Nodes</code> layout used by MSH 2.0, 2.1, and 2.2.</p>
+<h3 id="elementsparserv2"><code>ElementsParserV2</code><a class="headerlink" href="#elementsparserv2" title="Permanent link">&para;</a></h3>
+<p>Parses the flat <code>$Elements</code> layout used by MSH 2.0, 2.1, and 2.2. It groups
+records into <code>ElementEntity</code> objects using the elementary entity tag when
+available. The complete MSH 2.x element-tag list is not exposed by the current
+model.</p>
+<h2 id="msh-4x-parsers">MSH 4.x parsers<a class="headerlink" href="#msh-4x-parsers" title="Permanent link">&para;</a></h2>
+<h3 id="nodesparser"><code>NodesParser</code><a class="headerlink" href="#nodesparser" title="Permanent link">&para;</a></h3>
+<p>Parses the entity-block <code>$Nodes</code> layout used by MSH 4.0 and 4.1.</p>
+<h3 id="elementsparser"><code>ElementsParser</code><a class="headerlink" href="#elementsparser" title="Permanent link">&para;</a></h3>
+<p>Parses the entity-block <code>$Elements</code> layout used by MSH 4.0 and 4.1.</p>
+<h2 id="parser-registries">Parser registries<a class="headerlink" href="#parser-registries" title="Permanent link">&para;</a></h2>
+<p>The default registries are defined in <code>gmshparser.main_parser</code>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">DEFAULT_PARSERS_V1</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="n">DEFAULT_PARSERS_V2</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="n">DEFAULT_PARSERS_V4</span>
+</code></pre></div>
+<p>See <a href="../../developer-guide/writing-parsers/">Writing Parsers</a> before adding or
+registering a new section parser.</p>
 
 
 
