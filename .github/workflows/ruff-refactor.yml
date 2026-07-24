@@ -1,19 +1,20 @@
 name: Ruff modernization refactor
 
 on:
-  push:
-    branches: [agent/ruff-modernization]
+  pull_request:
+    branches: [master]
 
 permissions:
   contents: write
 
 jobs:
   refactor:
+    if: github.head_ref == 'agent/ruff-modernization'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
         with:
-          ref: agent/ruff-modernization
+          ref: ${{ github.head_ref }}
 
       - name: Install uv and Python
         uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
@@ -45,4 +46,4 @@ jobs:
             exit 0
           fi
           git commit -m "Apply Ruff modernization fixes"
-          git push origin HEAD:agent/ruff-modernization
+          git push origin HEAD:${{ github.head_ref }}
