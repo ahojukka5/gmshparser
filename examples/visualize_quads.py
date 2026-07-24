@@ -1,98 +1,98 @@
-"""Example: Visualize quadrilateral mesh using matplotlib.
+"""Visualize quadrilateral and mixed 2D meshes with matplotlib."""
 
-This example demonstrates how to visualize a mesh containing quadrilateral
-elements using gmshparser and matplotlib.
-"""
+from pathlib import Path
+
+import matplotlib.pyplot as plt
 
 import gmshparser
-import matplotlib.pyplot as plt
-import matplotlib.patches as patches
 
 
-def visualize_quads_simple():
-    """Simple quad visualization using get_quads()."""
-    # Parse mesh file
-    mesh = gmshparser.parse("../data/testmesh_v2_0.msh")
+REPOSITORY_ROOT = Path(__file__).resolve().parents[1]
+TESTDATA = REPOSITORY_ROOT / "testdata"
 
-    # Extract quad elements
-    X, Y, Q = gmshparser.helpers.get_quads(mesh)
 
-    # Create figure
-    fig, ax = plt.subplots(figsize=(8, 6))
+def visualize_quads_simple() -> None:
+    """Visualize the quadrilateral MSH 2.0 test mesh."""
+    mesh = gmshparser.parse(str(TESTDATA / "simple" / "testmesh_v2_0.msh"))
+    x_coordinates, y_coordinates, quads = gmshparser.helpers.get_quads(mesh)
 
-    # Plot each quad as a polygon
-    for quad in Q:
-        coords = [[X[i], Y[i]] for i in quad]
-        coords.append(coords[0])  # Close the polygon
-        xs, ys = zip(*coords)
-        ax.plot(xs, ys, "k-", linewidth=1.5)
+    _, axes = plt.subplots(figsize=(8, 6))
 
-    # Plot nodes
-    ax.plot(X, Y, "ro", markersize=8)
+    for quad in quads:
+        coordinates = [
+            (x_coordinates[index], y_coordinates[index]) for index in quad
+        ]
+        coordinates.append(coordinates[0])
+        x_values, y_values = zip(*coordinates)
+        axes.plot(x_values, y_values, "k-", linewidth=1.5)
 
-    # Add node labels
-    for i, (x, y) in enumerate(zip(X, Y)):
-        ax.text(x, y, f" {i}", fontsize=10, verticalalignment="bottom")
+    axes.plot(x_coordinates, y_coordinates, "ro", markersize=8)
 
-    ax.set_aspect("equal")
-    ax.set_title("Quadrilateral Mesh Visualization")
-    ax.set_xlabel("X")
-    ax.set_ylabel("Y")
-    ax.grid(True, alpha=0.3)
+    for index, (x_value, y_value) in enumerate(
+        zip(x_coordinates, y_coordinates)
+    ):
+        axes.text(
+            x_value,
+            y_value,
+            f" {index}",
+            fontsize=10,
+            verticalalignment="bottom",
+        )
+
+    axes.set_aspect("equal")
+    axes.set_title("Quadrilateral Mesh Visualization")
+    axes.set_xlabel("X")
+    axes.set_ylabel("Y")
+    axes.grid(True, alpha=0.3)
     plt.tight_layout()
     plt.savefig("quad_mesh_simple.png", dpi=150)
     print("Saved: quad_mesh_simple.png")
 
 
-def visualize_mixed_mesh():
-    """Visualize mesh with both triangles and quads."""
-    # Parse mesh file
-    mesh = gmshparser.parse("../data/test_from_internet/mixed_v2_0.msh")
-
-    # Extract all 2D elements
+def visualize_mixed_mesh() -> None:
+    """Visualize a mesh containing both triangles and quadrilaterals."""
+    mesh = gmshparser.parse(
+        str(TESTDATA / "complex" / "test_from_internet" / "mixed_v2_0.msh")
+    )
     data = gmshparser.helpers.get_elements_2d(mesh)
     nodes = data["nodes"]
 
-    # Create figure
-    fig, ax = plt.subplots(figsize=(10, 6))
+    _, axes = plt.subplots(figsize=(10, 6))
 
-    # Plot triangles in blue
-    for tri in data["triangles"]:
-        coords = [(nodes[nid][0], nodes[nid][1]) for nid in tri]
-        coords.append(coords[0])  # Close the polygon
-        xs, ys = zip(*coords)
-        ax.plot(
-            xs,
-            ys,
+    for triangle in data["triangles"]:
+        coordinates = [nodes[node_tag] for node_tag in triangle]
+        coordinates.append(coordinates[0])
+        x_values, y_values = zip(*coordinates)
+        axes.plot(
+            x_values,
+            y_values,
             "b-",
             linewidth=1.5,
-            label="Triangle" if tri == data["triangles"][0] else "",
+            label="Triangle" if triangle == data["triangles"][0] else "",
         )
 
-    # Plot quads in red
     for quad in data["quads"]:
-        coords = [(nodes[nid][0], nodes[nid][1]) for nid in quad]
-        coords.append(coords[0])  # Close the polygon
-        xs, ys = zip(*coords)
-        ax.plot(
-            xs,
-            ys,
+        coordinates = [nodes[node_tag] for node_tag in quad]
+        coordinates.append(coordinates[0])
+        x_values, y_values = zip(*coordinates)
+        axes.plot(
+            x_values,
+            y_values,
             "r-",
             linewidth=1.5,
             label="Quad" if quad == data["quads"][0] else "",
         )
 
-    # Plot nodes
-    X = [nodes[nid][0] for nid in data["node_ids"]]
-    Y = [nodes[nid][1] for nid in data["node_ids"]]
-    ax.plot(X, Y, "ko", markersize=6)
+    x_coordinates = [nodes[node_tag][0] for node_tag in data["node_ids"]]
+    y_coordinates = [nodes[node_tag][1] for node_tag in data["node_ids"]]
+    axes.plot(x_coordinates, y_coordinates, "ko", markersize=6)
 
-    ax.set_aspect("equal")
-    ax.set_title("Mixed Mesh: Triangles and Quadrilaterals")
-    ax.set_xlabel("X")
-    ax.set_ylabel("Y")
-    ax.grid(True, alpha=0.3)
-    ax.legend()
+    axes.set_aspect("equal")
+    axes.set_title("Mixed Mesh: Triangles and Quadrilaterals")
+    axes.set_xlabel("X")
+    axes.set_ylabel("Y")
+    axes.grid(True, alpha=0.3)
+    axes.legend()
     plt.tight_layout()
     plt.savefig("mixed_mesh.png", dpi=150)
     print("Saved: mixed_mesh.png")
