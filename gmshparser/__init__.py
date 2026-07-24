@@ -1,9 +1,8 @@
-from . import helpers
+from . import api, helpers
+from .api import read
 from .main_parser import MainParser
 from .mesh import Mesh
 from .version_manager import MshFormatVersion, VersionManager
-from . import api
-from .api import read
 
 __all__ = [
     "MainParser",
