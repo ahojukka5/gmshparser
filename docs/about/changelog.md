@@ -89,4 +89,21 @@ semantic versioning.
 
 ### Fixed
 
-- corrected packaging metadata and release files
+- MSH 1.0 parsing compatibility
+- version detection for legacy formats
+
+## [0.1.0]
+
+### Added
+
+- initial mesh parser
+- MSH 4.1 parsing
+- Python API
+- command-line helpers
+- triangle visualization helper
+
+## Links
+
+- [PyPI releases](https://pypi.org/project/gmshparser/#history)
+- [GitHub releases](https://github.com/ahojukka5/gmshparser/releases)
+- [GitHub commits](https://github.com/ahojukka5/gmshparser/commits)
