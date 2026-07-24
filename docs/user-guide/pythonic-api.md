@@ -117,8 +117,30 @@ assert ElementType.TRIANGLE == 2
 assert int(ElementType.QUADRANGLE) == 3
 ```
 
-Unnamed higher-order or future values remain usable as `TYPE_<id>` enum
-pseudo-members.
+The element type registry exposes topology metadata without separate lookup
+tables:
+
+```python
+kind = ElementType.SECOND_ORDER_TRIANGLE
+
+print(kind.family)              # triangle
+print(kind.dimension)           # 2
+print(kind.order)               # 2
+print(kind.node_count)          # 6
+print(kind.primary_node_count)  # 3
+print(kind.is_linear)           # False
+print(kind.is_high_order)       # True
+print(kind.is_complete)         # True
+```
+
+The same information is available directly from an element through
+`element.info`, `element.family`, `element.order`, `element.expected_node_count`,
+`element.primary_node_count`, `element.is_linear`, `element.is_high_order`, and
+`element.is_complete`.
+
+Unknown numeric values remain usable as `TYPE_<id>` enum pseudo-members, with
+metadata properties set to `None`. Parsers reject types whose topology is needed
+but unknown instead of silently guessing their dimension.
 
 Filter without traversing entity blocks:
 

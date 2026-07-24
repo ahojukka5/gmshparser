@@ -2,7 +2,6 @@ from . import api, helpers
 from .api import (
     Element,
     ElementCollection,
-    ElementType,
     Entity,
     EntityCollection,
     Node,
@@ -15,6 +14,13 @@ from .api import (
 from .api import (
     Mesh as ModernMesh,
 )
+from .element_types import (
+    ElementFamily,
+    ElementType,
+    ElementTypeInfo,
+    InvalidElementConnectivityError,
+    UnknownElementTypeError,
+)
 from .main_parser import MainParser
 from .mesh import Mesh
 from .version_manager import MshFormatVersion, VersionManager
@@ -22,9 +28,12 @@ from .version_manager import MshFormatVersion, VersionManager
 __all__ = [
     "Element",
     "ElementCollection",
+    "ElementFamily",
     "ElementType",
+    "ElementTypeInfo",
     "Entity",
     "EntityCollection",
+    "InvalidElementConnectivityError",
     "MainParser",
     "Mesh",
     "ModernMesh",
@@ -33,6 +42,7 @@ __all__ = [
     "NodeCollection",
     "PhysicalGroup",
     "PhysicalGroupCollection",
+    "UnknownElementTypeError",
     "Version",
     "VersionManager",
     "api",

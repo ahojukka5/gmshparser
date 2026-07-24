@@ -5,6 +5,7 @@ from typing import TextIO
 from .abstract_parser import AbstractParser
 from .element import Element
 from .element_entity import ElementEntity
+from .element_types import validate_element_connectivity
 from .mesh import Mesh
 
 
@@ -24,62 +25,57 @@ class ElementsParserV2(AbstractParser):
         num_elements = int(line.strip())
         mesh.set_number_of_elements(num_elements)
 
-        element_groups = {}
+        element_groups: dict[tuple[int, int, int], list[tuple[int, list[int]]]] = {}
         min_tag = float("inf")
         max_tag = 0
 
         for _ in range(num_elements):
-            parts = list(map(int, io.readline().strip().split()))
+            fields = [int(value) for value in io.readline().strip().split()]
 
-            elm_number = parts[0]
-            elm_type = parts[1]
-            num_tags = parts[2]
+            element_tag = fields[0]
+            element_type_id = fields[1]
+            num_tags = fields[2]
             tags_start = 3
             tags_end = tags_start + num_tags
-            tags = parts[tags_start:tags_end]
-            node_list = parts[tags_end:]
+            tags = fields[tags_start:tags_end]
+            node_tags = fields[tags_end:]
+
+            element_type = validate_element_connectivity(
+                element_type_id,
+                node_tags,
+                element_tag=element_tag,
+            )
+            dimension = element_type.dimension
+            assert dimension is not None
 
             physical_tags = (tags[0],) if tags and tags[0] > 0 else ()
             entity_tag = tags[1] if len(tags) > 1 else 1
-            dimension = ElementsParserV2._get_element_dimension(elm_type)
 
-            mesh.set_element_physical_tags(elm_number, physical_tags)
+            mesh.set_element_physical_tags(element_tag, physical_tags)
             mesh.add_entity_physical_tags(dimension, entity_tag, physical_tags)
 
-            min_tag = min(min_tag, elm_number)
-            max_tag = max(max_tag, elm_number)
+            min_tag = min(min_tag, element_tag)
+            max_tag = max(max_tag, element_tag)
 
-            key = (dimension, entity_tag, elm_type)
-            element_groups.setdefault(key, []).append((elm_number, node_list))
+            key = (dimension, entity_tag, int(element_type))
+            element_groups.setdefault(key, []).append((element_tag, node_tags))
 
-        mesh.set_min_element_tag(int(min_tag))
-        mesh.set_max_element_tag(int(max_tag))
+        if num_elements:
+            mesh.set_min_element_tag(int(min_tag))
+            mesh.set_max_element_tag(int(max_tag))
         mesh.set_number_of_element_entities(len(element_groups))
 
-        for (dimension, entity_tag, elm_type), elements in element_groups.items():
+        for (dimension, entity_tag, element_type), elements in element_groups.items():
             entity = ElementEntity()
             entity.set_dimension(dimension)
             entity.set_tag(entity_tag)
-            entity.set_element_type(elm_type)
+            entity.set_element_type(element_type)
             entity.set_number_of_elements(len(elements))
 
-            for elm_number, node_list in elements:
+            for element_tag, node_tags in elements:
                 element = Element()
-                element.set_tag(elm_number)
-                element.set_connectivity(node_list)
+                element.set_tag(element_tag)
+                element.set_connectivity(node_tags)
                 entity.add_element(element)
 
             mesh.add_element_entity(entity)
-
-    @staticmethod
-    def _get_element_dimension(elm_type: int) -> int:
-        """Get the topological dimension for a numeric Gmsh element type."""
-        if elm_type == 15:
-            return 0
-        if elm_type in [1, 8, 26, 27, 28]:
-            return 1
-        if elm_type in [2, 3, 9, 10, 16, 20, 21, 22, 23, 24, 25]:
-            return 2
-        if elm_type in [4, 5, 6, 7, 11, 12, 13, 14, 17, 18, 19, 29, 30, 31, 92, 93]:
-            return 3
-        return 3

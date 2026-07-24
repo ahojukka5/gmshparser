@@ -113,23 +113,49 @@ section is registered in the relevant version-specific parser list.
 
 ## Element types
 
-The modern API represents element type codes as `ElementType` integer-enum
-values. Common codes include:
+Element types are interpreted through one centralized registry shared by the
+MSH 1.x, 2.x, and 4.x parsers. The registry currently covers every type the
+package previously recognized when inferring dimensions: numeric IDs 1–31 and
+92–93.
 
-| Code | Element | Dimension |
-| --- | --- | --- |
-| 15 | point | 0 |
-| 1 | two-node line | 1 |
-| 2 | three-node triangle | 2 |
-| 3 | four-node quadrangle | 2 |
-| 4 | four-node tetrahedron | 3 |
-| 5 | eight-node hexahedron | 3 |
-| 6 | six-node prism | 3 |
-| 7 | five-node pyramid | 3 |
+Each registered `ElementType` exposes its family, topological dimension,
+polynomial order, connectivity size, number of primary nodes, and whether the
+high-order element is complete:
 
-The parser also recognizes several higher-order element codes when deriving the
-entity dimension. Refer to the official Gmsh MSH specification for the complete
-code table.
+```python
+from gmshparser import ElementType
+
+kind = ElementType.SECOND_ORDER_TRIANGLE
+print(kind.family)              # triangle
+print(kind.dimension)           # 2
+print(kind.order)               # 2
+print(kind.node_count)          # 6
+print(kind.primary_node_count)  # 3
+print(kind.is_high_order)       # True
+print(kind.is_complete)         # True
+```
+
+The parser validates element connectivity against this metadata. It also checks
+that MSH 4 element-block dimensions agree with the element type. Unknown numeric
+types remain representable as `ElementType(999)`, but flat MSH 1.x and 2.x
+records are rejected with `UnknownElementTypeError` instead of being silently
+classified as three-dimensional.
+
+Common first-order codes are:
+
+| Code | Element | Dimension | Nodes |
+| --- | --- | --- | --- |
+| 15 | point | 0 | 1 |
+| 1 | line | 1 | 2 |
+| 2 | triangle | 2 | 3 |
+| 3 | quadrangle | 2 | 4 |
+| 4 | tetrahedron | 3 | 4 |
+| 5 | hexahedron | 3 | 8 |
+| 6 | prism | 3 | 6 |
+| 7 | pyramid | 3 | 5 |
+
+Refer to the official Gmsh MSH specification for the complete upstream type
+table and node ordering.
 
 ## Check the detected format
 

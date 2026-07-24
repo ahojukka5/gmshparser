@@ -22,7 +22,11 @@ semantic versioning.
 - unified `mesh.entities` view combining legacy node and element blocks
 - `mesh.entity()`, `mesh.physical_group()`, and dimension views for points,
   curves, surfaces, and volumes
-- descriptive `ElementType` integer enum with support for unnamed numeric types
+- centralized element type registry for numeric IDs 1–31 and 92–93 with
+  family, dimension, polynomial order, connectivity size, primary-node count,
+  and complete/incomplete metadata
+- descriptive `ElementType` integer enum that keeps unknown numeric values
+  representable without silently inferring their topology
 - separate Cartesian and parametric node coordinates
 - PEP 621 console-script metadata for the installed `gmshparser` command
 - `gmshparser --version` support
@@ -33,6 +37,8 @@ semantic versioning.
 
 - made `Element.element_type` the canonical modern attribute while retaining
   `Element.type` as an alias
+- unified MSH 1.x, 2.x, and 4.x dimension and connectivity validation around the
+  centralized element registry
 - exported modern value and collection types at package level while retaining
   `gmshparser.Mesh` as the original compatibility class
 - made visualization helpers accept both the modern `read()` model and the
