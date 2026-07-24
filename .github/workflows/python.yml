@@ -32,19 +32,6 @@ jobs:
       - name: Install test and lint dependencies
         run: uv sync --no-default-groups --group test --group lint
 
-      - name: Capture formatting diff
-        if: matrix.python-version == '3.12'
-        run: |
-          uv run --no-sync black gmshparser tests examples
-          git diff -- gmshparser tests examples > black.diff
-
-      - name: Upload formatting diff
-        if: matrix.python-version == '3.12'
-        uses: actions/upload-artifact@v4
-        with:
-          name: black-formatting-diff
-          path: black.diff
-
       - name: Check formatting
         run: uv run --no-sync black gmshparser tests examples --check
 
