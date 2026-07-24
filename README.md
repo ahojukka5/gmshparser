@@ -115,13 +115,14 @@ uv add matplotlib
 ## Development
 
 The repository uses uv and intentionally does not commit dependency lock files.
+Ruff provides both formatting and linting.
 
 ```bash
 git clone https://github.com/ahojukka5/gmshparser.git
 cd gmshparser
 uv sync
-uv run black gmshparser tests examples --check
-uv run flake8 gmshparser tests
+uv run ruff format --check gmshparser tests examples
+uv run ruff check gmshparser tests examples
 uv run pytest
 ```
 

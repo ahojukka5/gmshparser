@@ -8,7 +8,6 @@ from .elements_parser import ElementsParser
 from .elements_parser_v1 import ElementsParserV1
 from .elements_parser_v2 import ElementsParserV2
 from .abstract_parser import AbstractParser
-from .version_manager import VersionManager, MshFormatVersion
 
 # Default parsers for MSH 4.x format
 DEFAULT_PARSERS_V4 = [

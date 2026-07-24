@@ -3,6 +3,15 @@ from .main_parser import MainParser
 from .version_manager import VersionManager, MshFormatVersion
 from . import helpers
 
+__all__ = [
+    "MainParser",
+    "Mesh",
+    "MshFormatVersion",
+    "VersionManager",
+    "helpers",
+    "parse",
+]
+
 __version__ = "0.3.1"
 __author__ = "Jukka Aho <ahojukka5@gmail.com>"
 

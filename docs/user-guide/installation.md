@@ -81,8 +81,8 @@ Run project commands through uv:
 
 ```bash
 uv run pytest
-uv run black . --check
-uv run flake8 gmshparser tests
+uv run ruff format --check gmshparser tests examples
+uv run ruff check gmshparser tests examples
 ```
 
 Dependency lock files are intentionally not committed. A locally generated

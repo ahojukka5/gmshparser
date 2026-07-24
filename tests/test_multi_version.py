@@ -218,7 +218,7 @@ $EndMeshFormat
 
     try:
         try:
-            mesh = gmshparser.parse(filename)
+            gmshparser.parse(filename)
             assert False, "Should have raised ValueError"
         except ValueError as e:
             assert "Unrecognized" in str(e) or "not supported" in str(e)
@@ -239,7 +239,7 @@ $EndMeshFormat
 
     try:
         try:
-            mesh = gmshparser.parse(filename)
+            gmshparser.parse(filename)
             assert False, "Should have raised ValueError"
         except ValueError as e:
             assert "Unrecognized" in str(e)

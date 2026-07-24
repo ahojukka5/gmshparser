@@ -53,7 +53,7 @@ class ElementsParserV1(AbstractParser):
 
             elm_number = int(line[0])
             elm_type = int(line[1])
-            reg_phys = int(line[2])  # Physical entity tag
+            _reg_phys = int(line[2])  # Physical entity tag is not retained yet
             reg_elem = int(line[3])  # Elementary entity tag
             number_of_nodes = int(line[4])
 
