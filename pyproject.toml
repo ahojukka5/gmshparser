@@ -23,8 +23,7 @@ test = [
     "pytest-cov>=4,<8",
 ]
 lint = [
-    "black>=24,<27",
-    "flake8>=7,<8",
+    "ruff>=0.15,<1",
 ]
 docs = [
     "mkdocs>=1.6,<2",
@@ -56,3 +55,23 @@ addopts = "--cov=gmshparser -v --cov-report=term-missing"
 testpaths = [
     "tests",
 ]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 88
+
+[tool.ruff.lint]
+select = [
+    "E4",
+    "E7",
+    "E9",
+    "F",
+    "B",
+    "I",
+    "UP",
+]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+line-ending = "auto"
