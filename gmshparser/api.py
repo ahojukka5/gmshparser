@@ -352,10 +352,7 @@ class EntityCollection:
             if (dimension is None or entity.dimension == dimension)
             and (has_nodes is None or bool(entity.nodes) is has_nodes)
             and (has_elements is None or bool(entity.elements) is has_elements)
-            and (
-                wanted_type is None
-                or wanted_type in entity.element_types
-            )
+            and (wanted_type is None or wanted_type in entity.element_types)
         )
 
     @property
