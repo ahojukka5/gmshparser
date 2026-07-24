@@ -47,6 +47,12 @@ semantic versioning.
 
 ### Changed
 
+- made `gmshparser.read()` build immutable modern values through a dedicated
+  `ModernMeshBuilder` without constructing a compatibility `Mesh`
+- made version-specific node and element parsers emit raw blocks through a shared
+  parser-target protocol while preserving the compatibility `parse()` API
+- retained `Mesh.from_legacy()` as an explicit supported conversion without using
+  it in the normal modern-reader path
 - made `Element.element_type` the canonical modern attribute while retaining
   `Element.type` as an alias
 - unified MSH 1.x, 2.x, and 4.x dimension and connectivity validation around the
