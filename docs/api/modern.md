@@ -1,11 +1,18 @@
 # Modern API Reference
 
 The modern API is available through `gmshparser.read()` and the value objects in
-`gmshparser.api`.
+`gmshparser.api`. The equivalent `gmshparser.api.parse()` name is provided inside
+the explicit modern namespace. Top-level `gmshparser.parse()` continues to
+return the original compatibility model.
 
-## Entry point
+## Entry points
 
 ::: gmshparser.api.read
+    options:
+      show_source: true
+      heading_level: 3
+
+::: gmshparser.api.parse
     options:
       show_source: true
       heading_level: 3
@@ -50,6 +57,12 @@ The modern API is available through `gmshparser.read()` and the value objects in
       heading_level: 3
       members: true
 
+::: gmshparser.api.PhysicalGroupCollection
+    options:
+      show_source: true
+      heading_level: 3
+      members: true
+
 ## Value objects
 
 ::: gmshparser.api.Node
@@ -65,6 +78,12 @@ The modern API is available through `gmshparser.read()` and the value objects in
       members: true
 
 ::: gmshparser.api.Entity
+    options:
+      show_source: true
+      heading_level: 3
+      members: true
+
+::: gmshparser.api.PhysicalGroup
     options:
       show_source: true
       heading_level: 3
