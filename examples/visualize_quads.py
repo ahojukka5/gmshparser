@@ -19,18 +19,14 @@ def visualize_quads_simple() -> None:
     _, axes = plt.subplots(figsize=(8, 6))
 
     for quad in quads:
-        coordinates = [
-            (x_coordinates[index], y_coordinates[index]) for index in quad
-        ]
+        coordinates = [(x_coordinates[index], y_coordinates[index]) for index in quad]
         coordinates.append(coordinates[0])
         x_values, y_values = zip(*coordinates)
         axes.plot(x_values, y_values, "k-", linewidth=1.5)
 
     axes.plot(x_coordinates, y_coordinates, "ro", markersize=8)
 
-    for index, (x_value, y_value) in enumerate(
-        zip(x_coordinates, y_coordinates)
-    ):
+    for index, (x_value, y_value) in enumerate(zip(x_coordinates, y_coordinates)):
         axes.text(
             x_value,
             y_value,
