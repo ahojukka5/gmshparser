@@ -1,25 +1,27 @@
 # Installation
 
-## Install from PyPI
+## Stable release
 
-Install the latest stable release with `uv`:
+Add gmshparser to a uv-managed project:
 
 ```bash
 uv add gmshparser
 ```
 
-The package can also be installed with pip:
+Install it into the active Python environment with pip:
 
 ```bash
 pip install gmshparser
 ```
 
-## Install the development version
+The package requires Python 3.12 or newer.
 
-Install directly from GitHub:
+## Development version
+
+Install the current `master` branch directly from GitHub:
 
 ```bash
-uv add git+https://github.com/ahojukka5/gmshparser.git
+uv add "gmshparser @ git+https://github.com/ahojukka5/gmshparser.git"
 ```
 
 or with pip:
@@ -28,29 +30,37 @@ or with pip:
 pip install git+https://github.com/ahojukka5/gmshparser.git
 ```
 
-## Visualization dependencies
+## Verify the installation
 
-The parser itself does not depend on matplotlib. Install it separately when using the visualization examples:
+```bash
+python -c "import gmshparser; print(gmshparser.__version__)"
+gmshparser --version
+```
+
+In a uv-managed project, prefix commands with `uv run` when needed:
+
+```bash
+uv run python -c "import gmshparser; print(gmshparser.__version__)"
+uv run gmshparser --version
+```
+
+## Visualization dependency
+
+The core package does not depend on matplotlib. Add it only for visualization:
 
 ```bash
 uv add matplotlib
 ```
 
-For a repository checkout, the predefined dependency group can be used instead:
+For a repository checkout, use the predefined dependency group:
 
 ```bash
 uv sync --group visualization
 ```
 
-## Verify the installation
+## Development environment
 
-```bash
-uv run python -c "import gmshparser; print(gmshparser.__version__)"
-```
-
-## Development installation
-
-Clone the repository and let `uv` create the environment:
+Clone the repository and let uv create the local environment:
 
 ```bash
 git clone https://github.com/ahojukka5/gmshparser.git
@@ -58,20 +68,16 @@ cd gmshparser
 uv sync
 ```
 
-The default development environment contains the `test` and `lint` groups. Other groups are installed explicitly:
+The default `dev` group includes the `test` and `lint` groups. Install other
+groups explicitly:
 
 ```bash
-# Documentation toolchain
 uv sync --group docs
-
-# Visualization examples
 uv sync --group visualization
-
-# Every development group
 uv sync --all-groups
 ```
 
-Run commands through the managed environment:
+Run project commands through uv:
 
 ```bash
 uv run pytest
@@ -79,32 +85,15 @@ uv run black . --check
 uv run flake8 gmshparser tests
 ```
 
-Dependency lock files are intentionally not committed in this repository. `uv` may create a local `uv.lock`; it is ignored by Git.
+Dependency lock files are intentionally not committed. A locally generated
+`uv.lock` is ignored by Git.
 
-## System requirements
+## Upgrade
 
-- Python 3.12 or later
-- A current version of `uv`, recommended for development
-
-## Troubleshooting
-
-Check the interpreter selected by `uv`:
+In a uv project:
 
 ```bash
-uv run python --version
-```
-
-Recreate the environment when dependency state becomes inconsistent:
-
-```bash
-rm -rf .venv uv.lock
-uv sync
-```
-
-## Upgrading
-
-```bash
-uv add --upgrade gmshparser
+uv add gmshparser --upgrade-package gmshparser
 ```
 
 With pip:
@@ -113,7 +102,9 @@ With pip:
 pip install --upgrade gmshparser
 ```
 
-## Uninstalling
+## Uninstall
+
+Remove the dependency from a uv project:
 
 ```bash
 uv remove gmshparser
