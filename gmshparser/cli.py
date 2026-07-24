@@ -1,16 +1,19 @@
-import sys
-import argparse
-from . import parse
+"""Command-line helpers for inspecting parsed meshes."""
 
-"""gmshparser cli provides some helpers to convert mesh to another format."""
+import argparse
+import sys
+
+from . import __version__, parse
 
 
 def info(mesh, file) -> None:
+    """Print the mesh summary."""
     print("---- MESH SUMMARY ----", file=file)
     print(mesh, file=file)
 
 
 def nodes(mesh, file) -> None:
+    """Print all nodes in a simple line-oriented format."""
     print(mesh.get_number_of_nodes(), file=file)
     for entity in mesh.get_node_entities():
         for node in entity.get_nodes():
@@ -20,6 +23,7 @@ def nodes(mesh, file) -> None:
 
 
 def elements(mesh, file) -> None:
+    """Print all elements in a simple line-oriented format."""
     print(mesh.get_number_of_elements(), file=file)
     for entity in mesh.get_element_entities():
         eltype = entity.get_element_type()
@@ -30,10 +34,16 @@ def elements(mesh, file) -> None:
 
 
 def main(argv=None, file=sys.stdout) -> None:
-    parser = argparse.ArgumentParser()
+    """Run the gmshparser command-line interface."""
+    parser = argparse.ArgumentParser(
+        description="Inspect an ASCII Gmsh MSH file."
+    )
+    parser.add_argument(
+        "--version", action="version", version=f"%(prog)s {__version__}"
+    )
     choices = {"info": info, "nodes": nodes, "elements": elements}
-    parser.add_argument("filename", action="store")
-    parser.add_argument("action", choices=list(choices.keys()))
-    args = parser.parse_args(argv or sys.argv[1:])
+    parser.add_argument("filename")
+    parser.add_argument("action", choices=list(choices))
+    args = parser.parse_args(sys.argv[1:] if argv is None else argv)
     mesh = parse(args.filename)
     choices[args.action](mesh, file)
