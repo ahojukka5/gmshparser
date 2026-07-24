@@ -63,7 +63,7 @@ class ElementsParser(AbstractParser):
             if element_type.is_known:
                 validate_element_dimension(element_type, dimension)
 
-            records: list[tuple[int, list[int]]] = []
+            records: list[tuple[int, list[int], tuple[int, ...]]] = []
             for _ in range(block_count):
                 element_info = parse_ints(io)
                 if not element_info:
@@ -76,7 +76,7 @@ class ElementsParser(AbstractParser):
                         node_tags,
                         element_tag=element_tag,
                     )
-                records.append((element_tag, node_tags))
+                records.append((element_tag, node_tags, ()))
 
             parsed_elements += block_count
             mesh.add_element_block(
