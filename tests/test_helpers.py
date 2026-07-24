@@ -68,7 +68,7 @@ def test_get_triangles():
     mesh.add_element_entity(ee1)
     mesh.add_element_entity(ee2)
 
-    (X, Y, T) = get_triangles(mesh)
+    X, Y, T = get_triangles(mesh)
     assert X == [0.0, 1.0, 0.0]
     assert Y == [0.0, 0.0, 1.0]
     assert T == [[0, 1, 2]]
@@ -120,7 +120,7 @@ def test_get_quads():
     mesh.add_node_entity(ne)
     mesh.add_element_entity(ee)
 
-    (X, Y, Q) = get_quads(mesh)
+    X, Y, Q = get_quads(mesh)
 
     # Check we have 6 nodes
     assert len(X) == 6

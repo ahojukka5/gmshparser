@@ -3,7 +3,6 @@ from gmshparser.mesh import Mesh
 from io import StringIO
 from pytest import raises
 
-
 __content__ = """
 $MeshFormat
 4.1 0 8
