@@ -143,7 +143,7 @@ def test_msh2_parser_validates_connectivity_against_registry():
 
     with pytest.raises(
         InvalidElementConnectivityError,
-        match="3-node triangle .* requires 3 nodes, got 4",
+        match=r"type TRIANGLE \(2\) requires 3 nodes, got 4",
     ):
         ElementsParserV2.parse(mesh, StringIO("1\n1 2 0 1 2 3 4\n"))
 
@@ -157,7 +157,7 @@ def test_msh4_parser_validates_known_block_dimension_and_connectivity():
 
     with pytest.raises(
         InvalidElementConnectivityError,
-        match="4-node quadrangle .* requires 4 nodes, got 3",
+        match=r"type QUADRANGLE \(3\) requires 4 nodes, got 3",
     ):
         ElementsParser.parse(
             Mesh(),
