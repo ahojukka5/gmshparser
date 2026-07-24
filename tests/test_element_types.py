@@ -148,11 +148,12 @@ def test_msh2_parser_validates_connectivity_against_registry():
         ElementsParserV2.parse(mesh, StringIO("1\n1 2 0 1 2 3 4\n"))
 
 
-def test_msh4_parser_validates_block_dimension_and_connectivity():
-    mesh = Mesh()
-
+def test_msh4_parser_validates_known_block_dimension_and_connectivity():
     with pytest.raises(ValueError, match="has dimension 2.*block declares 3"):
-        ElementsParser.parse(mesh, StringIO("1 1 1 1\n3 1 2 1\n1 1 2 3\n"))
+        ElementsParser.parse(
+            Mesh(),
+            StringIO("1 1 1 1\n3 1 2 1\n1 1 2 3\n"),
+        )
 
     with pytest.raises(
         InvalidElementConnectivityError,
@@ -162,3 +163,16 @@ def test_msh4_parser_validates_block_dimension_and_connectivity():
             Mesh(),
             StringIO("1 1 1 1\n2 1 3 1\n1 1 2 3\n"),
         )
+
+
+def test_msh4_parser_preserves_unknown_types_using_declared_block_dimension():
+    mesh = Mesh()
+
+    ElementsParser.parse(
+        mesh,
+        StringIO("1 1 1 1\n3 7 999 1\n1 10 20 30\n"),
+    )
+
+    entity = mesh.get_element_entity(3, 7)
+    assert entity.get_element_type() == 999
+    assert entity.get_element(1).get_connectivity() == [10, 20, 30]
