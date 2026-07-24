@@ -91,6 +91,18 @@ def test_mesh_bounds_are_computed_from_nodes():
     assert mesh.bounds == ((0.0, 0.0, 0.0), (2.0, 1.0, 0.0))
 
 
+def test_helpers_accept_the_modern_api():
+    mesh = gmshparser.read(StringIO(MESH))
+
+    x_coordinates, y_coordinates, quads = gmshparser.helpers.get_quads(mesh)
+    mixed = gmshparser.helpers.get_elements_2d(mesh)
+
+    assert x_coordinates == [0.0, 1.0, 1.0, 0.0, 2.0, 2.0]
+    assert y_coordinates == [0.0, 0.0, 1.0, 1.0, 0.0, 1.0]
+    assert quads == [[0, 1, 2, 3], [1, 4, 5, 2]]
+    assert mixed["quads"] == [[1, 2, 3, 4], [2, 5, 6, 3]]
+
+
 def test_read_path_and_parse_keep_both_apis(tmp_path):
     path = tmp_path / "mesh.msh"
     path.write_text(MESH)
