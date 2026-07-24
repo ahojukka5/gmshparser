@@ -1,14 +1,36 @@
 from . import api, helpers
-from .api import ElementType, Version, read
+from .api import (
+    Element,
+    ElementCollection,
+    ElementType,
+    Entity,
+    EntityCollection,
+    Mesh as ModernMesh,
+    Node,
+    NodeCollection,
+    PhysicalGroup,
+    PhysicalGroupCollection,
+    Version,
+    read,
+)
 from .main_parser import MainParser
 from .mesh import Mesh
 from .version_manager import MshFormatVersion, VersionManager
 
 __all__ = [
+    "Element",
+    "ElementCollection",
     "ElementType",
+    "Entity",
+    "EntityCollection",
     "MainParser",
     "Mesh",
+    "ModernMesh",
     "MshFormatVersion",
+    "Node",
+    "NodeCollection",
+    "PhysicalGroup",
+    "PhysicalGroupCollection",
     "Version",
     "VersionManager",
     "api",
