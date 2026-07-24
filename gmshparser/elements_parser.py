@@ -4,6 +4,7 @@ from .abstract_parser import AbstractParser
 from .element import Element
 from .element_entity import ElementEntity
 from .element_types import (
+    ElementType,
     validate_element_connectivity,
     validate_element_dimension,
 )
@@ -34,10 +35,9 @@ class ElementsParser(AbstractParser):
             block_metadata = parse_ints(io)
             dimension = block_metadata[0]
             entity_tag = block_metadata[1]
-            element_type = validate_element_dimension(
-                block_metadata[2],
-                dimension,
-            )
+            element_type = ElementType(block_metadata[2])
+            if element_type.is_known:
+                validate_element_dimension(element_type, dimension)
             number_of_elements = block_metadata[3]
 
             entity = ElementEntity()
@@ -50,11 +50,12 @@ class ElementsParser(AbstractParser):
                 element_info = parse_ints(io)
                 element_tag = element_info[0]
                 node_tags = element_info[1:]
-                validate_element_connectivity(
-                    element_type,
-                    node_tags,
-                    element_tag=element_tag,
-                )
+                if element_type.is_known:
+                    validate_element_connectivity(
+                        element_type,
+                        node_tags,
+                        element_tag=element_tag,
+                    )
 
                 element = Element()
                 element.set_tag(element_tag)
