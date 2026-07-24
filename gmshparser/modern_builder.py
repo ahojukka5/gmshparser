@@ -13,9 +13,10 @@ if TYPE_CHECKING:
 
 type EntityKey = tuple[int, int]
 type PhysicalGroupKey = tuple[int, int]
-type RawNode = tuple[int, tuple[float, ...], int, int]
-type RawElement = tuple[int, tuple[int, ...]]
-type RawElementBlock = tuple[int, int, int, tuple[RawElement, ...]]
+type RawNode = tuple[int, tuple[float, ...]]
+type RawNodeBlock = tuple[int, int, list[RawNode]]
+type RawElement = tuple[int, list[int]]
+type RawElementBlock = tuple[int, int, int, list[RawElement]]
 
 
 class ModernMeshBuilder:
@@ -38,7 +39,7 @@ class ModernMeshBuilder:
         self._min_element_tag = 0
         self._max_element_tag = 0
 
-        self._raw_nodes: list[RawNode] = []
+        self._raw_node_blocks: list[RawNodeBlock] = []
         self._raw_element_blocks: list[RawElementBlock] = []
         self._physical_names: dict[PhysicalGroupKey, str] = {}
         self._entity_physical_tags: dict[EntityKey, tuple[int, ...]] = {}
@@ -134,13 +135,13 @@ class ModernMeshBuilder:
     ) -> None:
         """Store one parsed node block as compact raw records."""
         del parametric_coordinate_count
-        for node_tag, coordinates in nodes:
-            values = tuple(coordinates)
-            if len(values) < 3:
+        records = nodes if isinstance(nodes, list) else list(nodes)
+        for node_tag, coordinates in records:
+            if len(coordinates) < 3:
                 raise InvalidMeshError(
                     f"Node {node_tag} has fewer than three coordinates"
                 )
-            self._raw_nodes.append((node_tag, values, dimension, entity_tag))
+        self._raw_node_blocks.append((dimension, entity_tag, records))
 
     def add_node_entity(self, node_entity: NodeEntity) -> None:
         """Accept legacy-style blocks from third-party section parsers."""
@@ -162,9 +163,7 @@ class ModernMeshBuilder:
         elements,
     ) -> None:
         """Store one parsed element block without compatibility objects."""
-        records = tuple(
-            (element_tag, tuple(connectivity)) for element_tag, connectivity in elements
-        )
+        records = elements if isinstance(elements, list) else list(elements)
         self._raw_element_blocks.append(
             (dimension, entity_tag, int(element_type), records)
         )
@@ -241,21 +240,24 @@ class ModernMeshBuilder:
         nodes_by_tag: dict[int, Node] = {}
         all_nodes: list[Node] = []
 
-        for node_tag, coordinates, dimension, entity_tag in self._raw_nodes:
-            if node_tag in nodes_by_tag:
-                raise InvalidMeshError(f"Duplicate node tag {node_tag}")
+        for dimension, entity_tag, raw_nodes in self._raw_node_blocks:
             key = dimension, entity_tag
-            node = Node(
-                tag=node_tag,
-                coordinates=(coordinates[0], coordinates[1], coordinates[2]),
-                dimension=dimension,
-                entity_tag=entity_tag,
-                parametric_coordinates=coordinates[3:],
-                physical_tags=self.get_entity_physical_tags(*key),
-            )
-            nodes_by_tag[node_tag] = node
-            nodes_by_entity.setdefault(key, []).append(node)
-            all_nodes.append(node)
+            entity_nodes = nodes_by_entity.setdefault(key, [])
+            physical_tags = self.get_entity_physical_tags(*key)
+            for node_tag, coordinates in raw_nodes:
+                if node_tag in nodes_by_tag:
+                    raise InvalidMeshError(f"Duplicate node tag {node_tag}")
+                node = Node(
+                    tag=node_tag,
+                    coordinates=(coordinates[0], coordinates[1], coordinates[2]),
+                    dimension=dimension,
+                    entity_tag=entity_tag,
+                    parametric_coordinates=coordinates[3:],
+                    physical_tags=physical_tags,
+                )
+                nodes_by_tag[node_tag] = node
+                entity_nodes.append(node)
+                all_nodes.append(node)
 
         if len(all_nodes) != self._number_of_nodes:
             raise InvalidMeshError(
