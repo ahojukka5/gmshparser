@@ -17,10 +17,10 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - name: Set up Python
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v7
         with:
           python-version: '3.12'
 
@@ -35,7 +35,7 @@ jobs:
           poetry config virtualenvs.in-project true
 
       - name: Load cached virtual environment
-        uses: actions/cache@v5
+        uses: actions/cache@v6
         with:
           path: .venv
           key: docs-venv-${{ runner.os }}-${{ hashFiles('**/poetry.lock') }}
