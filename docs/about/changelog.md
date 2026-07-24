@@ -27,6 +27,10 @@ semantic versioning.
   and complete/incomplete metadata
 - descriptive `ElementType` integer enum that keeps unknown numeric values
   representable without silently inferring their topology
+- optional `gmshparser.numpy` interoperability with detached point arrays,
+  original node tags, node entity keys, and element-type-specific cell blocks
+- zero-based NumPy connectivity with original Gmsh node and element tags retained
+  for round-trip identification
 - separate Cartesian and parametric node coordinates
 - PEP 621 console-script metadata for the installed `gmshparser` command
 - `gmshparser --version` support
