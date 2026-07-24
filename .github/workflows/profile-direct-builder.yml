@@ -1,0 +1,86 @@
+name: Profile direct builder phases
+
+on:
+  push:
+    branches: [direct-modern-builder]
+
+permissions:
+  contents: read
+
+jobs:
+  profile:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: direct-modern-builder
+      - uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9
+        with:
+          version: "0.11.32"
+          python-version: "3.12"
+      - run: uv sync --no-default-groups --group benchmark
+      - name: Measure direct parse and finalization
+        run: |
+          uv run --no-sync python - <<'PY'
+          import gc
+          import json
+          import statistics
+          import tempfile
+          import time
+          import tracemalloc
+          from pathlib import Path
+
+          from benchmarks.run import generate_grid
+          from gmshparser.main_parser import MainParser
+          from gmshparser.modern_builder import ModernMeshBuilder
+
+          results = []
+          with tempfile.TemporaryDirectory() as directory:
+              root = Path(directory)
+              for msh_format in ("2.2", "4.1"):
+                  path = root / f"grid-{msh_format}.msh"
+                  generate_grid(path, msh_format, 224)
+                  parse_samples = []
+                  build_samples = []
+                  for repeat in range(4):
+                      gc.collect()
+                      builder = ModernMeshBuilder(str(path))
+                      tracemalloc.start()
+                      started = time.perf_counter()
+                      with path.open(encoding="utf-8") as stream:
+                          MainParser().parse(builder, stream)
+                      parse_seconds = time.perf_counter() - started
+                      _, parse_peak = tracemalloc.get_traced_memory()
+                      tracemalloc.stop()
+
+                      gc.collect()
+                      tracemalloc.start()
+                      started = time.perf_counter()
+                      mesh = builder.build()
+                      build_seconds = time.perf_counter() - started
+                      _, build_peak = tracemalloc.get_traced_memory()
+                      tracemalloc.stop()
+                      assert len(mesh.elements) == 50176
+
+                      if repeat:
+                          parse_samples.append((parse_seconds, parse_peak))
+                          build_samples.append((build_seconds, build_peak))
+
+                  results.append(
+                      {
+                          "format": msh_format,
+                          "parse_seconds": statistics.median(x[0] for x in parse_samples),
+                          "parse_peak_bytes": statistics.median(x[1] for x in parse_samples),
+                          "build_seconds": statistics.median(x[0] for x in build_samples),
+                          "build_peak_bytes": statistics.median(x[1] for x in build_samples),
+                      }
+                  )
+          Path("direct-builder-profile.json").write_text(json.dumps(results, indent=2))
+          print(json.dumps(results, indent=2))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: direct-builder-profile
+          path: direct-builder-profile.json
+          if-no-files-found: error
