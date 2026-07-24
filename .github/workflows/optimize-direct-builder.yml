@@ -1,0 +1,61 @@
+name: Optimize direct builder
+
+on:
+  push:
+    branches: [direct-modern-builder]
+
+permissions:
+  contents: write
+
+jobs:
+  optimize:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: direct-modern-builder
+      - name: Remove raw-record copies
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path("gmshparser/modern_builder.py")
+          text = path.read_text()
+          replacements = [
+              (
+                  '''type RawNode = tuple[int, tuple[float, ...], int, int]\ntype RawElement = tuple[int, tuple[int, ...]]\ntype RawElementBlock = tuple[int, int, int, tuple[RawElement, ...]]\n''',
+                  '''type RawNode = tuple[int, tuple[float, ...]]\ntype RawNodeBlock = tuple[int, int, list[RawNode]]\ntype RawElement = tuple[int, list[int]]\ntype RawElementBlock = tuple[int, int, int, list[RawElement]]\n''',
+              ),
+              (
+                  '''        self._raw_nodes: list[RawNode] = []\n        self._raw_element_blocks: list[RawElementBlock] = []\n''',
+                  '''        self._raw_node_blocks: list[RawNodeBlock] = []\n        self._raw_element_blocks: list[RawElementBlock] = []\n''',
+              ),
+              (
+                  '''        del parametric_coordinate_count\n        for node_tag, coordinates in nodes:\n            values = tuple(coordinates)\n            if len(values) < 3:\n                raise InvalidMeshError(\n                    f"Node {node_tag} has fewer than three coordinates"\n                )\n            self._raw_nodes.append((node_tag, values, dimension, entity_tag))\n''',
+                  '''        del parametric_coordinate_count\n        records = nodes if isinstance(nodes, list) else list(nodes)\n        for node_tag, coordinates in records:\n            if len(coordinates) < 3:\n                raise InvalidMeshError(\n                    f"Node {node_tag} has fewer than three coordinates"\n                )\n        self._raw_node_blocks.append((dimension, entity_tag, records))\n''',
+              ),
+              (
+                  '''        records = tuple(\n            (element_tag, tuple(connectivity)) for element_tag, connectivity in elements\n        )\n        self._raw_element_blocks.append(\n            (dimension, entity_tag, int(element_type), records)\n        )\n''',
+                  '''        records = elements if isinstance(elements, list) else list(elements)\n        self._raw_element_blocks.append(\n            (dimension, entity_tag, int(element_type), records)\n        )\n''',
+              ),
+              (
+                  '''        for node_tag, coordinates, dimension, entity_tag in self._raw_nodes:\n            if node_tag in nodes_by_tag:\n                raise InvalidMeshError(f"Duplicate node tag {node_tag}")\n            key = dimension, entity_tag\n            node = Node(\n                tag=node_tag,\n                coordinates=(coordinates[0], coordinates[1], coordinates[2]),\n                dimension=dimension,\n                entity_tag=entity_tag,\n                parametric_coordinates=coordinates[3:],\n                physical_tags=self.get_entity_physical_tags(*key),\n            )\n            nodes_by_tag[node_tag] = node\n            nodes_by_entity.setdefault(key, []).append(node)\n            all_nodes.append(node)\n''',
+                  '''        for dimension, entity_tag, raw_nodes in self._raw_node_blocks:\n            key = dimension, entity_tag\n            entity_nodes = nodes_by_entity.setdefault(key, [])\n            physical_tags = self.get_entity_physical_tags(*key)\n            for node_tag, coordinates in raw_nodes:\n                if node_tag in nodes_by_tag:\n                    raise InvalidMeshError(f"Duplicate node tag {node_tag}")\n                node = Node(\n                    tag=node_tag,\n                    coordinates=(coordinates[0], coordinates[1], coordinates[2]),\n                    dimension=dimension,\n                    entity_tag=entity_tag,\n                    parametric_coordinates=coordinates[3:],\n                    physical_tags=physical_tags,\n                )\n                nodes_by_tag[node_tag] = node\n                entity_nodes.append(node)\n                all_nodes.append(node)\n''',
+              ),
+          ]
+          for old, new in replacements:
+              if old not in text:
+                  raise SystemExit(f"Expected snippet not found:\n{old}")
+              text = text.replace(old, new)
+          path.write_text(text)
+          PY
+      - name: Format and commit
+        run: |
+          python -m pip install ruff==0.15.4
+          ruff format gmshparser/modern_builder.py
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add gmshparser/modern_builder.py
+          git commit -m "Avoid copying direct builder records"
+          git push origin HEAD:direct-modern-builder
