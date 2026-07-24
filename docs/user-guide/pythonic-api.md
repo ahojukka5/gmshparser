@@ -2,7 +2,7 @@
 
 `gmshparser.read()` is the recommended entry point for new code. It returns an
 immutable model built around normal Python attributes, iteration, tag lookup,
-direct object relationships, and small filtering operations.
+direct object relationships, physical groups, and small filtering operations.
 
 ```python
 import gmshparser
@@ -10,7 +10,22 @@ import gmshparser
 mesh = gmshparser.read("mesh.msh")
 ```
 
-The original `gmshparser.parse()` API remains available for compatibility.
+The entry points are deliberately separated:
+
+| Call | Returned model |
+| --- | --- |
+| `gmshparser.parse(path)` | original mutable compatibility model |
+| `gmshparser.read(path)` | modern immutable model |
+| `gmshparser.api.parse(path)` | modern immutable model through the explicit modern namespace |
+
+Existing applications using top-level `parse()` therefore remain unchanged.
+Users who prefer the verb `parse` for new code can write:
+
+```python
+from gmshparser.api import parse
+
+mesh = parse("mesh.msh")
+```
 
 ## Mesh metadata
 
@@ -31,6 +46,7 @@ Counts follow normal collection conventions:
 print(len(mesh.nodes))
 print(len(mesh.elements))
 print(len(mesh.entities))
+print(len(mesh.physical_groups))
 ```
 
 ## Nodes
@@ -57,7 +73,8 @@ Useful collection operations include:
 print(mesh.nodes.tags)
 node = mesh.nodes.get(42)
 surface_nodes = mesh.nodes.where(dimension=2)
-entity_nodes = mesh.nodes.where(entity=(2, 7))
+entity_nodes = mesh.nodes.by_entity(dimension=2, tag=7)
+physical_nodes = mesh.nodes.where(physical_tag=10)
 coordinates = mesh.nodes.coordinates
 ```
 
@@ -77,7 +94,7 @@ Elements are flat and tag-addressable. They reference `Node` objects directly:
 
 ```python
 for element in mesh.elements:
-    print(element.tag, element.type, element.node_tags)
+    print(element.tag, element.element_type, element.node_tags)
     for node in element:
         print(node.coordinates)
 
@@ -86,11 +103,14 @@ print(quad.nodes)
 print(quad.connectivity)
 ```
 
+`element.element_type` is the canonical name. `element.type` remains an alias for
+code written against the first version of the modern API.
+
 Element kinds are `IntEnum` values, so they are descriptive while remaining
 compatible with numeric Gmsh IDs:
 
 ```python
-from gmshparser.api import ElementType
+from gmshparser import ElementType
 
 triangles = mesh.elements.by_type(ElementType.TRIANGLE)
 assert ElementType.TRIANGLE == 2
@@ -107,7 +127,8 @@ surface_quads = mesh.elements.where(
     element_type=ElementType.QUADRANGLE,
     dimension=2,
 )
-entity_elements = mesh.elements.where(entity=(2, 7))
+entity_elements = mesh.elements.by_entity(dimension=2, tag=7)
+physical_elements = mesh.elements.where(physical_tag=10)
 print(mesh.element_types)
 ```
 
@@ -117,34 +138,84 @@ Filtered collections support the same iteration and tag lookup as
 ## Unified entities
 
 The modern API combines legacy node and element blocks into one entity view.
-Entities are indexed by `(dimension, tag)`:
+Entities remain indexable by `(dimension, tag)`, but normal code can avoid tuple
+keys:
 
 ```python
-surface = mesh.entities[(2, 7)]
+surface = mesh.entity(dimension=2, tag=7)
 
 for node in surface.nodes:
     print(node.tag)
 
 for element in surface.elements:
-    print(element.tag, element.type)
+    print(element.tag, element.element_type)
 
 print(surface.element_types)
+print(surface.physical_tags)
 ```
 
-Filter entities by their contents:
+Dimension-specific views are available directly:
 
 ```python
-surfaces = mesh.entities.where(dimension=2)
+print(mesh.points)
+print(mesh.curves)
+print(mesh.surfaces)
+print(mesh.volumes)
+```
+
+Collections can also be filtered explicitly:
+
+```python
+surfaces = mesh.entities.by_dimension(2)
 triangle_entities = mesh.entities.where(element_type=ElementType.TRIANGLE)
 entities_with_nodes = mesh.entities.where(has_nodes=True)
+physical_entities = mesh.entities.where(physical_tag=10)
 ```
 
 The separate node-entity and element-entity collections remain only in the
 compatibility API.
 
+## Physical groups
+
+Physical group declarations and assignments are preserved from:
+
+- MSH 1.x element region fields
+- MSH 2.x element tags and `$PhysicalNames`
+- MSH 4.x `$Entities` and `$PhysicalNames`
+
+Look up a group by an unambiguous name or by `(dimension, tag)`:
+
+```python
+walls = mesh.physical_groups["Walls"]
+domain = mesh.physical_groups[(3, 2)]
+```
+
+Each group resolves its entities, elements, and participating nodes:
+
+```python
+print(walls.dimension, walls.tag, walls.name)
+print(walls.entities)
+print(walls.elements)
+print(walls.nodes)
+```
+
+The mesh convenience method accepts either a name or a numeric tag:
+
+```python
+walls = mesh.physical_group("Walls")
+domain = mesh.physical_group(2, dimension=3)
+```
+
+A numeric tag can be used without `dimension=` only when it identifies exactly
+one group. Names that occur in more than one dimension must be addressed by their
+`(dimension, tag)` key.
+
+Physical group node collections follow the original mesh node order. This keeps
+array and connectivity conversion deterministic.
+
 ## Read from a text stream
 
-`read()` accepts open text streams in addition to paths:
+Both modern entry points accept open text streams in addition to paths:
 
 ```python
 from io import StringIO
@@ -176,5 +247,6 @@ for entity in legacy_mesh.get_node_entities():
         print(node.get_tag(), node.get_coordinates())
 ```
 
-`parse()` and the mutable parser-oriented classes are retained. New applications
-should prefer `read()` and the classes in `gmshparser.api`.
+Top-level `parse()` and the mutable parser-oriented classes are retained. New
+applications should prefer `read()` or the explicit `gmshparser.api.parse()`
+alias and the classes in `gmshparser.api`.
