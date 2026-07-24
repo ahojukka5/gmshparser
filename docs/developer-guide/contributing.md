@@ -21,7 +21,7 @@ git clone https://github.com/YOUR_USERNAME/gmshparser.git
 cd gmshparser
 ```
 
-Install the default development groups, which contain testing and linting tools:
+Install the default development groups, which contain testing and quality tools:
 
 ```bash
 uv sync
@@ -48,15 +48,16 @@ git checkout -b feature/your-feature-name
 Run the complete local quality checks:
 
 ```bash
-uv run black gmshparser tests examples --check
-uv run flake8 gmshparser tests
+uv run ruff format --check gmshparser tests examples
+uv run ruff check gmshparser tests examples
 uv run pytest
 ```
 
-Apply formatting when necessary:
+Apply formatting and safe automatic lint fixes when necessary:
 
 ```bash
-uv run black gmshparser tests examples
+uv run ruff check --fix gmshparser tests examples
+uv run ruff format gmshparser tests examples
 ```
 
 Run an individual test:
@@ -78,7 +79,7 @@ The groups in `pyproject.toml` have distinct purposes:
 | Group | Purpose |
 | --- | --- |
 | `test` | pytest and coverage tooling |
-| `lint` | formatting and static checks |
+| `lint` | Ruff formatting and linting |
 | `docs` | MkDocs documentation toolchain |
 | `visualization` | matplotlib examples |
 | `dev` | the default combination of `test` and `lint` |
@@ -97,8 +98,8 @@ Remove the generated `uv.lock` before committing if `uv` creates it locally.
 ## Coding standards
 
 - Follow PEP 8.
-- Use Black for formatting.
-- Keep flake8 clean.
+- Use Ruff for formatting and linting.
+- Keep all configured Ruff rules clean.
 - Add type hints where they improve clarity.
 - Write tests for new behavior and bug fixes.
 - Document public APIs and user-visible changes.
@@ -118,17 +119,27 @@ Serve it locally:
 uv run mkdocs serve
 ```
 
+## Continuous integration
+
+GitHub Actions separates validation into three jobs:
+
+- `quality` runs Ruff once on Python 3.12
+- `test` runs pytest on Python 3.12, 3.13, and 3.14
+- `package` builds and smoke-tests the wheel and source distribution after the
+  quality and test jobs succeed
+
+Documentation is built on pull requests. Pushes to `master` additionally upload
+and deploy the generated site with GitHub's official Pages actions.
+
 ## Pull requests
 
 Before submitting a pull request, verify that:
 
 - all tests pass
-- Black reports no changes
-- flake8 reports no warnings
+- `ruff format --check` reports no changes
+- `ruff check` reports no violations
 - documentation is updated when behavior changes
 - the pull request explains what changed, why, and how it was tested
-
-GitHub Actions repeats the checks on Python 3.12, 3.13, and 3.14.
 
 ## Release process
 
@@ -138,9 +149,19 @@ For maintainers:
 2. Update the changelog.
 3. Build locally with `uv build --no-sources`.
 4. Create and publish the GitHub release.
-5. The release workflow builds, smoke-tests, and publishes the distributions with `uv`.
+5. The release workflow builds and smoke-tests both distributions.
+6. `uv publish` obtains a short-lived PyPI credential through GitHub OIDC.
 
-A manual publication can be performed with:
+The PyPI project must have a trusted publisher matching:
+
+- owner: `ahojukka5`
+- repository: `gmshparser`
+- workflow: `python-publish.yml`
+- environment: `pypi`
+
+No PyPI token is stored in GitHub after trusted publishing is configured.
+
+A manual publication can still be performed from an authorized local environment:
 
 ```bash
 uv build --no-sources
