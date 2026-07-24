@@ -41,6 +41,18 @@ jobs:
       - name: Test with pytest
         run: uv run --no-sync pytest --cov=gmshparser --cov-report=xml --cov-report=term
 
+      - name: Build distributions
+        if: matrix.python-version == '3.12'
+        run: uv build --no-sources
+
+      - name: Smoke test wheel
+        if: matrix.python-version == '3.12'
+        run: uv run --isolated --no-project --with dist/*.whl python -c "import gmshparser"
+
+      - name: Smoke test source distribution
+        if: matrix.python-version == '3.12'
+        run: uv run --isolated --no-project --with dist/*.tar.gz python -c "import gmshparser"
+
       - name: Upload coverage to Codecov
         if: matrix.python-version == '3.12'
         uses: codecov/codecov-action@v7
