@@ -4,7 +4,6 @@ import os
 
 import pytest
 
-
 __content__ = """
 $MeshFormat
 4.1 0 8
