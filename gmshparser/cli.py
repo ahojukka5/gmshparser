@@ -37,7 +37,9 @@ def main(argv=None, file=sys.stdout) -> None:
     """Run the gmshparser command-line interface."""
     parser = argparse.ArgumentParser(description="Inspect an ASCII Gmsh MSH file.")
     parser.add_argument(
-        "--version", action="version", version=f"%(prog)s {__version__}"
+        "--version",
+        action="version",
+        version=f"%(prog)s {__version__}",
     )
     choices = {"info": info, "nodes": nodes, "elements": elements}
     parser.add_argument("filename")
