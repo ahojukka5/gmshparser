@@ -1,13 +1,15 @@
 from . import api, helpers
-from .api import read
+from .api import ElementType, Version, read
 from .main_parser import MainParser
 from .mesh import Mesh
 from .version_manager import MshFormatVersion, VersionManager
 
 __all__ = [
+    "ElementType",
     "MainParser",
     "Mesh",
     "MshFormatVersion",
+    "Version",
     "VersionManager",
     "api",
     "helpers",
