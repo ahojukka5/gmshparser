@@ -10,7 +10,7 @@ The modern API is available through `gmshparser.read()` and the value objects in
       show_source: true
       heading_level: 3
 
-## Mesh
+## Mesh and metadata
 
 ::: gmshparser.api.Mesh
     options:
@@ -18,13 +18,19 @@ The modern API is available through `gmshparser.read()` and the value objects in
       heading_level: 3
       members: true
 
-## Collections
-
-::: gmshparser.api.TaggedCollection
+::: gmshparser.api.Version
     options:
       show_source: true
       heading_level: 3
       members: true
+
+::: gmshparser.api.ElementType
+    options:
+      show_source: true
+      heading_level: 3
+      members: true
+
+## Collections
 
 ::: gmshparser.api.NodeCollection
     options:
@@ -58,13 +64,7 @@ The modern API is available through `gmshparser.read()` and the value objects in
       heading_level: 3
       members: true
 
-::: gmshparser.api.NodeEntity
-    options:
-      show_source: true
-      heading_level: 3
-      members: true
-
-::: gmshparser.api.ElementEntity
+::: gmshparser.api.Entity
     options:
       show_source: true
       heading_level: 3
