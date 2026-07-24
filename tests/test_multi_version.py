@@ -1,8 +1,9 @@
 """Tests for multi-version support."""
 
-import gmshparser
 import os
 import tempfile
+
+import gmshparser
 
 
 def test_parse_msh_41():
@@ -85,14 +86,14 @@ $EndElements
         # Check nodes are accessible
         node_count = 0
         for entity in mesh.get_node_entities():
-            for node in entity.get_nodes():
+            for _node in entity.get_nodes():
                 node_count += 1
         assert node_count == 6
 
         # Check elements are accessible
         element_count = 0
         for entity in mesh.get_element_entities():
-            for element in entity.get_elements():
+            for _element in entity.get_elements():
                 element_count += 1
         assert element_count == 2
 
@@ -219,7 +220,7 @@ $EndMeshFormat
     try:
         try:
             gmshparser.parse(filename)
-            assert False, "Should have raised ValueError"
+            raise AssertionError("Should have raised ValueError")
         except ValueError as e:
             assert "Unrecognized" in str(e) or "not supported" in str(e)
     finally:
@@ -240,7 +241,7 @@ $EndMeshFormat
     try:
         try:
             gmshparser.parse(filename)
-            assert False, "Should have raised ValueError"
+            raise AssertionError("Should have raised ValueError")
         except ValueError as e:
             assert "Unrecognized" in str(e)
     finally:

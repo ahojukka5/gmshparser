@@ -1,4 +1,5 @@
 import pytest
+
 from gmshparser.abstract_parser import AbstractParser
 
 

@@ -1,10 +1,11 @@
 """Parser for Nodes section in MSH format version 2.x."""
 
 from typing import TextIO
-from .node_entity import NodeEntity
-from .node import Node
+
 from .abstract_parser import AbstractParser
 from .mesh import Mesh
+from .node import Node
+from .node_entity import NodeEntity
 
 
 class NodesParserV2(AbstractParser):
@@ -54,7 +55,7 @@ class NodesParserV2(AbstractParser):
         min_tag = float("inf")
         max_tag = 0
 
-        for i in range(num_nodes):
+        for _i in range(num_nodes):
             line = io.readline().strip().split()
             node_tag = int(line[0])
             x = float(line[1])

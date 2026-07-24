@@ -4,7 +4,6 @@ This module provides functionality to detect, validate, and manage
 different versions of the Gmsh MSH file format.
 """
 
-from typing import Tuple, List
 from enum import Enum
 
 
@@ -58,7 +57,7 @@ class VersionManager:
     ]
 
     @staticmethod
-    def parse_version(version_str: str) -> Tuple[int, int]:
+    def parse_version(version_str: str) -> tuple[int, int]:
         """Parse version string to major and minor version numbers.
 
         Parameters
@@ -207,7 +206,7 @@ class VersionManager:
         return version.major == 4
 
     @classmethod
-    def get_supported_versions_list(cls) -> List[str]:
+    def get_supported_versions_list(cls) -> list[str]:
         """Get list of supported version strings.
 
         Returns

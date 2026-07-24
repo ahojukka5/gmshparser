@@ -19,7 +19,7 @@ def nodes(mesh, file) -> None:
         for node in entity.get_nodes():
             nid = node.get_tag()
             x, y, z = node.get_coordinates()
-            print("%d %f %f %f" % (nid, x, y, z), file=file)
+            print(f"{nid:d} {x:f} {y:f} {z:f}", file=file)
 
 
 def elements(mesh, file) -> None:
@@ -30,7 +30,7 @@ def elements(mesh, file) -> None:
         for element in entity.get_elements():
             elid = element.get_tag()
             elcon = " ".join(map(str, element.get_connectivity()))
-            print("%s %s %s" % (elid, eltype, elcon), file=file)
+            print(f"{elid} {eltype} {elcon}", file=file)
 
 
 def main(argv=None, file=sys.stdout) -> None:

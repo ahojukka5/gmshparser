@@ -1,6 +1,7 @@
-from gmshparser.mesh_format_parser import MeshFormatParser
-from gmshparser.mesh import Mesh
 import io
+
+from gmshparser.mesh import Mesh
+from gmshparser.mesh_format_parser import MeshFormatParser
 
 
 def test_mesh_format_parser():

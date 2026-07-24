@@ -5,10 +5,11 @@ The format is simpler with no entity-based organization.
 """
 
 from typing import TextIO
+
 from .abstract_parser import AbstractParser
 from .mesh import Mesh
-from .node_entity import NodeEntity
 from .node import Node
+from .node_entity import NodeEntity
 
 
 class NodesParserV1(AbstractParser):

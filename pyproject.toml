@@ -66,6 +66,9 @@ select = [
     "E7",
     "E9",
     "F",
+    "B",
+    "I",
+    "UP",
 ]
 
 [tool.ruff.format]

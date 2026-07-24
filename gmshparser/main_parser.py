@@ -1,13 +1,14 @@
-from typing import TextIO, List, Type
+from typing import TextIO
+
+from .abstract_parser import AbstractParser
+from .elements_parser import ElementsParser
+from .elements_parser_v1 import ElementsParserV1
+from .elements_parser_v2 import ElementsParserV2
 from .mesh import Mesh
 from .mesh_format_parser import MeshFormatParser
 from .nodes_parser import NodesParser
 from .nodes_parser_v1 import NodesParserV1
 from .nodes_parser_v2 import NodesParserV2
-from .elements_parser import ElementsParser
-from .elements_parser_v1 import ElementsParserV1
-from .elements_parser_v2 import ElementsParserV2
-from .abstract_parser import AbstractParser
 
 # Default parsers for MSH 4.x format
 DEFAULT_PARSERS_V4 = [
@@ -87,7 +88,7 @@ class MainParser(AbstractParser):
                 try:
                     NodesParserV1.parse(mesh, io)
                 except Exception:
-                    print("Unable to parse section %s from mesh!" % line)
+                    print(f"Unable to parse section {line} from mesh!")
                     raise
                 continue
 
@@ -102,7 +103,7 @@ class MainParser(AbstractParser):
                         self.parsers = self._get_parsers_for_version(mesh)
 
                 except Exception:
-                    print("Unable to parse section %s from mesh!" % line)
+                    print(f"Unable to parse section {line} from mesh!")
                     raise
                 continue
 
@@ -113,11 +114,11 @@ class MainParser(AbstractParser):
                         try:
                             parser.parse(mesh, io)
                         except Exception:
-                            print("Unable to parse section %s from mesh!" % line)
+                            print(f"Unable to parse section {line} from mesh!")
                             raise
                         break
 
-    def _get_parsers_for_version(self, mesh: Mesh) -> List[Type[AbstractParser]]:
+    def _get_parsers_for_version(self, mesh: Mesh) -> list[type[AbstractParser]]:
         """Get the appropriate parsers for the detected mesh version.
 
         Parameters

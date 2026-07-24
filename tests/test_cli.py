@@ -1,8 +1,9 @@
-from gmshparser.cli import main
-from io import StringIO
 import os
+from io import StringIO
 
 import pytest
+
+from gmshparser.cli import main
 
 __content__ = """
 $MeshFormat

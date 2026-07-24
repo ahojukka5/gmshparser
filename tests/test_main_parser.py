@@ -1,7 +1,9 @@
+from io import StringIO
+
+from pytest import raises
+
 from gmshparser import MainParser
 from gmshparser.mesh import Mesh
-from io import StringIO
-from pytest import raises
 
 __content__ = """
 $MeshFormat
@@ -11,7 +13,6 @@ $Unknown
 my custom data
 $EndUnknown
 """
-
 
 __bad_content__ = """
 $MeshFormat
@@ -34,5 +35,5 @@ def test_mainparser():
 def test_parse_io_bad_content():
     parser = MainParser()
     mesh = Mesh()
-    with raises(Exception):
+    with raises(ValueError):
         parser.parse(mesh, StringIO(__bad_content__))

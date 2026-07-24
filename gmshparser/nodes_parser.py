@@ -1,9 +1,10 @@
 from typing import TextIO
-from .node_entity import NodeEntity
-from .node import Node
+
 from .abstract_parser import AbstractParser
+from .helpers import parse_floats, parse_ints
 from .mesh import Mesh
-from .helpers import parse_ints, parse_floats
+from .node import Node
+from .node_entity import NodeEntity
 
 
 class NodesParser(AbstractParser):
@@ -24,7 +25,7 @@ class NodesParser(AbstractParser):
         mesh.set_number_of_nodes(meta[1])
         mesh.set_min_node_tag(meta[2])
         mesh.set_max_node_tag(meta[3])
-        for i in range(mesh.get_number_of_node_entities()):
+        for _i in range(mesh.get_number_of_node_entities()):
             emeta = parse_ints(io)
             entity = NodeEntity()
             entity.set_dimension(emeta[0])
@@ -32,7 +33,7 @@ class NodesParser(AbstractParser):
             entity.set_number_of_parametric_coordinates(emeta[2])
             entity.set_number_of_nodes(emeta[3])
             node_tags = []
-            for j in range(entity.get_number_of_nodes()):
+            for _j in range(entity.get_number_of_nodes()):
                 tag = int(io.readline())
                 node = Node()
                 node.set_tag(tag)

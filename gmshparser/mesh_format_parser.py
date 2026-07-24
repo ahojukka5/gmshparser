@@ -1,4 +1,5 @@
 from typing import TextIO
+
 from .abstract_parser import AbstractParser
 from .mesh import Mesh
 from .version_manager import VersionManager

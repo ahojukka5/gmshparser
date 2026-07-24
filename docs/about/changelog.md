@@ -23,6 +23,8 @@ semantic versioning.
 - replaced stale exact test-count and coverage claims with links to CI and
   Codecov as the authoritative status
 - replaced Black and flake8 with Ruff for formatting and linting
+- enabled Ruff bugbear, import-sorting, and pyupgrade checks and modernized
+  imports, type annotations, string formatting, and loop variables accordingly
 - separated CI into quality, test-matrix, and package jobs
 - replaced the third-party Pages branch publisher with GitHub's official Pages
   artifact and deployment actions

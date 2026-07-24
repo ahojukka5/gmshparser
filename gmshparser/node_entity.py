@@ -1,8 +1,7 @@
-from typing import List
 from .node import Node
 
 
-class NodeEntity(object):
+class NodeEntity:
     """NodeEntity class holds nodes for one block."""
 
     def __init__(self):
@@ -52,6 +51,6 @@ class NodeEntity(object):
         """Get node from entity by its tag."""
         return self.nodes_[tag]
 
-    def get_nodes(self) -> List[Node]:
+    def get_nodes(self) -> list[Node]:
         """Get all nodes in this entity."""
         return self.nodes_.values()

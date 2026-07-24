@@ -1,7 +1,4 @@
-from typing import Tuple
-
-
-class Node(object):
+class Node:
     """Node."""
 
     def __init__(self):
@@ -16,10 +13,10 @@ class Node(object):
         """Get node tag (node id)."""
         return self.tag_
 
-    def set_coordinates(self, coordinates: Tuple[float, float, float]):
+    def set_coordinates(self, coordinates: tuple[float, float, float]):
         """Set the coordinates of the node."""
         self.coordinates_ = coordinates
 
-    def get_coordinates(self) -> Tuple[float, float, float]:
+    def get_coordinates(self) -> tuple[float, float, float]:
         """Get the coordinates of the node."""
         return self.coordinates_
