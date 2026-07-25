@@ -34,6 +34,27 @@ $Elements
 $EndElements
 """
 
+MESH_40 = """$MeshFormat
+4.0 0 8
+$EndMeshFormat
+$Nodes
+1 6
+1 2 0 6
+1 0.0 0.0 0.0
+2 1.0 0.0 0.0
+3 1.0 1.0 0.0
+4 0.0 1.0 0.0
+5 2.0 0.0 0.0
+6 2.0 1.0 0.0
+$EndNodes
+$Elements
+1 2
+1 2 3 2
+1 1 2 3 4
+2 2 5 6 3
+$EndElements
+"""
+
 MSH_1 = """$NOD
 6
 1 0.0 0.0 0.0
@@ -132,7 +153,7 @@ def test_read_stream_exposes_flat_pythonic_collections():
         (Version(2, 0), _msh_2("2.0")),
         (Version(2, 1), _msh_2("2.1")),
         (Version(2, 2), _msh_2("2.2")),
-        (Version(4, 0), MESH.replace("4.1 0 8", "4.0 0 8", 1)),
+        (Version(4, 0), MESH_40),
         (Version(4, 1), MESH),
     ],
 )
