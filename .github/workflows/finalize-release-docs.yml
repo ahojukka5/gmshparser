@@ -1,0 +1,28 @@
+name: Finalize release documentation
+
+on:
+  pull_request:
+    branches: [master]
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    if: github.head_ref == 'release/0.4.0'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.head_ref }}
+
+      - name: Update release documentation
+        run: python3 .github/scripts/finalize_release_docs.py
+
+      - name: Commit documentation
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add README.md docs
+          git commit -m "Document 0.4 typing and release checks"
+          git push origin HEAD:${{ github.head_ref }}
