@@ -4,28 +4,22 @@ from .mesh import Mesh
 
 
 class AbstractParser:
-    """AbstractParser is a superclass of all other parsers.
+    """AbstractParser is a superclass of section parsers.
 
-    All other parsers must inheric ``AbstractParser`` and implement their own
-    static methods ``parse`` and ``get_section_name``.
+    Section parsers inherit ``AbstractParser`` and implement the static methods
+    ``parse`` and ``get_section_name``.
 
-    The first argument of the ``parse`` is a mutable ``mesh`` object, which
-    parser modifies in-place. The second argument is ``io``, where parser reads
-    the text file line by line using `readline()`. Parser must stop reading the
-    file to the section end mark, e.g. ``$EndNodes`` in the case of parser
-    which is responsible to parse nodes, starting from a section start mark
-    ``$Nodes``.
-
-    Another must-to-implement static method is ``get_section_name()``, which
-    must return the name of the line where this parser should activate. For
-    example, if the section name is ``$Nodes``, then ``get_section_name()``
-    must return string ``$Nodes``.
+    The first argument of ``parse`` is a mutable mesh object that the parser
+    modifies in place. The second argument is the text stream. A section parser
+    consumes input through its matching end marker, such as ``$EndNodes``.
     """
 
     @staticmethod
-    def get_section_name():
+    def get_section_name() -> str:
+        """Return the MSH section header handled by this parser."""
         raise NotImplementedError("Not implemented.")
 
     @staticmethod
     def parse(mesh: Mesh, io: TextIO) -> None:
+        """Parse one section into the mutable target mesh."""
         raise NotImplementedError("Not implemented.")
