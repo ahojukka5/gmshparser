@@ -28,16 +28,8 @@ jobs:
       - name: Install quality dependencies
         run: uv sync --no-default-groups --group lint
 
-      - name: Format sources
-        run: uv run --no-sync ruff format gmshparser tests examples benchmarks
-
-      - name: Upload formatted sources
-        uses: actions/upload-artifact@v4
-        with:
-          name: ruff-formatted-sources
-          path: |
-            gmshparser/entities_parser.py
-            tests/test_entities_validation.py
+      - name: Check formatting
+        run: uv run --no-sync ruff format --check gmshparser tests examples benchmarks
 
       - name: Lint
         run: uv run --no-sync ruff check gmshparser tests examples benchmarks
