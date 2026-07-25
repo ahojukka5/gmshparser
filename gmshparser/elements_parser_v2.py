@@ -13,7 +13,7 @@ class ElementsParserV2(AbstractParser):
     """Parse flat MSH 2.x element records."""
 
     @staticmethod
-    def get_section_name():
+    def get_section_name() -> str:
         return "$Elements"
 
     @staticmethod

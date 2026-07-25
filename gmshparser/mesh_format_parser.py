@@ -15,7 +15,7 @@ class MeshFormatParser(AbstractParser):
     """Parse and validate the ``$MeshFormat`` section."""
 
     @staticmethod
-    def get_section_name():
+    def get_section_name() -> str:
         return "$MeshFormat"
 
     @staticmethod

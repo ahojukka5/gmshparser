@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from collections.abc import Iterable
 from typing import TYPE_CHECKING
 
 from .element_types import ElementType
@@ -17,12 +18,21 @@ type RawNode = tuple[int, tuple[float, ...]]
 type RawNodeBlock = tuple[int, int, list[RawNode]]
 type RawElement = tuple[int, list[int], tuple[int, ...]]
 type RawElementBlock = tuple[int, int, int, list[RawElement]]
+type NodePair = tuple[int, int]
+type PeriodicLinkValue = tuple[int, tuple[float, ...], tuple[NodePair, ...]]
+type PeriodicLinkRecord = tuple[
+    int,
+    int,
+    int,
+    tuple[float, ...],
+    tuple[NodePair, ...],
+]
 
 
 class ModernMeshBuilder:
     """Parser target that builds the immutable API without a legacy mesh."""
 
-    def __init__(self, name: str = "New Mesh"):
+    def __init__(self, name: str = "New Mesh") -> None:
         self._name = name
         self._version: float | None = None
         self._version_major: int | None = None
@@ -134,7 +144,7 @@ class ModernMeshBuilder:
         dimension: int,
         entity_tag: int,
         parametric_coordinate_count: int,
-        nodes,
+        nodes: Iterable[RawNode],
     ) -> None:
         """Store one parsed node block as compact raw records."""
         del parametric_coordinate_count
@@ -163,7 +173,7 @@ class ModernMeshBuilder:
         dimension: int,
         entity_tag: int,
         element_type: int,
-        elements,
+        elements: Iterable[RawElement],
     ) -> None:
         """Store one parsed element block without compatibility objects."""
         records = elements if isinstance(elements, list) else list(elements)
@@ -197,7 +207,7 @@ class ModernMeshBuilder:
         self,
         dimension: int,
         tag: int,
-        physical_tags,
+        physical_tags: Iterable[int],
     ) -> None:
         self._entity_physical_tags[(dimension, tag)] = self._normalize_tags(
             physical_tags
@@ -207,7 +217,7 @@ class ModernMeshBuilder:
         self,
         dimension: int,
         tag: int,
-        physical_tags,
+        physical_tags: Iterable[int],
     ) -> None:
         key = dimension, tag
         existing = self._entity_physical_tags.get(key, ())
@@ -222,7 +232,11 @@ class ModernMeshBuilder:
     ) -> tuple[int, ...]:
         return self._entity_physical_tags.get((dimension, tag), ())
 
-    def set_element_physical_tags(self, element_tag: int, physical_tags) -> None:
+    def set_element_physical_tags(
+        self,
+        element_tag: int,
+        physical_tags: Iterable[int],
+    ) -> None:
         self._element_physical_tags[element_tag] = self._normalize_tags(physical_tags)
 
     def get_element_physical_tags(self, element_tag: int) -> tuple[int, ...]:
@@ -236,8 +250,8 @@ class ModernMeshBuilder:
         dimension: int,
         entity_tag: int,
         master_entity_tag: int,
-        affine_transform,
-        node_pairs,
+        affine_transform: Iterable[float],
+        node_pairs: Iterable[NodePair],
     ) -> None:
         key = int(dimension), int(entity_tag)
         if key in self._periodic_links:
@@ -248,10 +262,14 @@ class ModernMeshBuilder:
             tuple((int(slave), int(master)) for slave, master in node_pairs),
         )
 
-    def get_periodic_link(self, dimension: int, entity_tag: int):
+    def get_periodic_link(
+        self,
+        dimension: int,
+        entity_tag: int,
+    ) -> PeriodicLinkValue:
         return self._periodic_links[(dimension, entity_tag)]
 
-    def get_periodic_links(self):
+    def get_periodic_links(self) -> tuple[PeriodicLinkRecord, ...]:
         return tuple(
             (dimension, entity_tag, master_tag, affine_transform, node_pairs)
             for (dimension, entity_tag), (
@@ -464,7 +482,7 @@ class ModernMeshBuilder:
         )
 
     @staticmethod
-    def _normalize_tags(tags) -> tuple[int, ...]:
+    def _normalize_tags(tags: Iterable[int]) -> tuple[int, ...]:
         normalized: list[int] = []
         for tag in tags:
             value = int(tag)

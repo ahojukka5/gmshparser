@@ -11,7 +11,7 @@ class EntitiesParser(AbstractParser):
     """Parse MSH 4.0 and 4.1 entity records and physical assignments."""
 
     @staticmethod
-    def get_section_name():
+    def get_section_name() -> str:
         return "$Entities"
 
     @staticmethod

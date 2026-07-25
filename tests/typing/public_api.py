@@ -42,7 +42,10 @@ def verify_public_api(path: Path) -> None:
     assert_type(modern.periodic_links.by_dimension(2), PeriodicLinkCollection)
     assert_type(modern.surfaces, EntityCollection)
     assert_type(modern.dimension, int | None)
-    assert_type(modern.bounds, tuple[tuple[float, float, float], tuple[float, float, float]] | None)
+    assert_type(
+        modern.bounds,
+        tuple[tuple[float, float, float], tuple[float, float, float]] | None,
+    )
 
     compatibility = gmshparser.parse(str(path))
     assert_type(compatibility, gmshparser.Mesh)

@@ -6,7 +6,6 @@ from gmshparser.element_entity import ElementEntity
 from gmshparser.node import Node
 from gmshparser.node_entity import NodeEntity
 
-
 type EntityKey = tuple[int, int]
 type ElementEntityKey = tuple[int, int, int]
 type RawNodeRecord = tuple[int, Sequence[float]]

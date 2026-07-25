@@ -17,7 +17,6 @@ from .parsing import SourceTextIO, contextualize_error
 from .periodic_parser import PeriodicParser
 from .physical_names_parser import PhysicalNamesParser
 
-
 type ParserClass = type[AbstractParser]
 
 

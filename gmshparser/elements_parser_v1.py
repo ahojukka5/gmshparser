@@ -16,7 +16,7 @@ class ElementsParserV1(AbstractParser):
     """Parse the legacy MSH 1.0 ``$ELM`` section."""
 
     @staticmethod
-    def get_section_name():
+    def get_section_name() -> str:
         return "$ELM"
 
     @staticmethod

@@ -11,7 +11,7 @@ class NodesParser(AbstractParser):
     """Parse entity-block nodes from MSH 4.0 and 4.1 files."""
 
     @staticmethod
-    def get_section_name():
+    def get_section_name() -> str:
         return "$Nodes"
 
     @staticmethod

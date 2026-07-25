@@ -12,7 +12,7 @@ class NodesParserV1(AbstractParser):
     """Parse the legacy MSH 1.0 ``$NOD`` section."""
 
     @staticmethod
-    def get_section_name():
+    def get_section_name() -> str:
         return "$NOD"
 
     @staticmethod
