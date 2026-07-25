@@ -1,0 +1,90 @@
+name: Apply physical group get fix
+
+on:
+  push:
+    branches: [fix-physical-group-get]
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: fix-physical-group-get
+      - name: Apply focused fix
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          api_path = Path("gmshparser/api.py")
+          api = api_path.read_text()
+          old = '''    def get(
+              self,
+              key: PhysicalGroupKey | str,
+              default: PhysicalGroup | None = None,
+          ) -> PhysicalGroup | None:
+              """Return a physical group by key or unambiguous name."""
+              try:
+                  return self[key]
+              except KeyError:
+                  return default
+          '''
+          new = '''    def get(
+              self,
+              key: PhysicalGroupKey | str,
+              default: PhysicalGroup | None = None,
+          ) -> PhysicalGroup | None:
+              """Return a physical group, or *default* only when the key is absent.
+
+              Ambiguous names still raise :class:`KeyError`; callers must use the
+              explicit ``(dimension, tag)`` key in that case.
+              """
+              if isinstance(key, str):
+                  matches = self._by_name.get(key, ())
+                  if len(matches) == 1:
+                      return matches[0]
+                  if not matches:
+                      return default
+                  raise KeyError(
+                      f"Physical group name {key!r} is ambiguous; "
+                      "use (dimension, tag)"
+                  )
+              return self._by_key.get(key, default)
+          '''
+          if old not in api:
+              raise SystemExit("PhysicalGroupCollection.get target not found")
+          api_path.write_text(api.replace(old, new, 1))
+
+          changelog_path = Path("docs/about/changelog.md")
+          changelog = changelog_path.read_text()
+          marker = '''### Fixed
+
+          - preserved multiple element-type blocks on the same MSH 1.x or 2.x entity
+          '''
+          replacement = '''### Fixed
+
+          - made `PhysicalGroupCollection.get()` return its default only for missing
+            keys while preserving `KeyError` for ambiguous physical-group names
+          - preserved multiple element-type blocks on the same MSH 1.x or 2.x entity
+          '''
+          if marker not in changelog:
+              raise SystemExit("Changelog target not found")
+          changelog_path.write_text(changelog.replace(marker, replacement, 1))
+          PY
+      - uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9
+        with:
+          version: "0.11.32"
+          python-version: "3.12"
+      - run: uv sync --no-default-groups --group lint
+      - run: uv run --no-sync ruff format gmshparser tests
+      - name: Commit changes
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add gmshparser/api.py docs/about/changelog.md tests/test_physical_group_collection.py
+          git commit -m "Fix ambiguous physical group get"
+          git push origin HEAD:fix-physical-group-get
