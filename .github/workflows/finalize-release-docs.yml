@@ -16,6 +16,9 @@ jobs:
         with:
           ref: ${{ github.head_ref }}
 
+      - name: Patch documentation transformation
+        run: python3 .github/scripts/patch_release_docs_finalizer.py
+
       - name: Update release documentation
         shell: bash
         run: |
