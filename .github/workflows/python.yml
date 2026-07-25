@@ -136,6 +136,8 @@ jobs:
       - name: Format and lint generated sources
         run: |
           uv run --no-sync ruff format gmshparser tests
+          uv run --no-sync ruff check --fix gmshparser tests
+          uv run --no-sync ruff format gmshparser tests
           uv run --no-sync ruff check gmshparser tests
 
       - name: Test generated implementation
