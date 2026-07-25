@@ -7,7 +7,7 @@ on:
     branches: [master]
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   quality:
@@ -140,6 +140,27 @@ jobs:
           PY
           python /tmp/apply_periodic.py
 
+      - name: Repair embedded newline in generated test
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path("tests/test_periodic_links.py")
+          lines = path.read_text().splitlines()
+          for index, line in enumerate(lines):
+              if line.strip() == '"16 1 0 0 1 0 1 0 0':
+                  if lines[index + 1].strip() != '0 0 1 0 0 0 0 1",':
+                      raise SystemExit("Unexpected affine continuation line")
+                  lines[index] = (
+                      '        "16 1 0 0 1 0 1 0 0\\n0 0 1 0 0 0 0 1",'
+                  )
+                  del lines[index + 1]
+                  break
+          else:
+              raise SystemExit("Generated affine test string was not found")
+          path.write_text("\n".join(lines) + "\n")
+          PY
+
       - name: Install uv and Python
         uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
         with:
@@ -150,7 +171,6 @@ jobs:
         run: uv sync --no-default-groups --group test --group lint --group docs
 
       - name: Format and lint generated sources
-        continue-on-error: true
         run: |
           uv run --no-sync ruff format gmshparser tests
           uv run --no-sync ruff check --fix gmshparser tests
@@ -158,15 +178,31 @@ jobs:
           uv run --no-sync ruff check gmshparser tests
 
       - name: Test generated implementation
-        continue-on-error: true
         run: uv run --no-sync pytest
 
       - name: Build generated documentation
-        continue-on-error: true
         run: uv run --no-sync mkdocs build --strict
 
+      - name: Commit generated implementation
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add \
+            gmshparser/__init__.py \
+            gmshparser/api.py \
+            gmshparser/main_parser.py \
+            gmshparser/mesh.py \
+            gmshparser/modern_builder.py \
+            gmshparser/periodic_parser.py \
+            tests/test_periodic_links.py \
+            README.md \
+            docs/api/modern.md \
+            docs/user-guide/pythonic-api.md \
+            docs/about/changelog.md
+          git commit -m "Add periodic mesh relationships"
+          git push origin HEAD:add-periodic-links
+
       - name: Upload prepared files
-        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: periodic-links-files
