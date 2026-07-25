@@ -17,7 +17,18 @@ jobs:
           ref: ${{ github.head_ref }}
 
       - name: Update release documentation
-        run: python3 .github/scripts/finalize_release_docs.py
+        shell: bash
+        run: |
+          set -o pipefail
+          python3 .github/scripts/finalize_release_docs.py 2>&1 | tee release-docs.txt
+
+      - name: Upload documentation diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-documentation-diagnostics
+          path: release-docs.txt
+          if-no-files-found: ignore
 
       - name: Commit documentation
         run: |
