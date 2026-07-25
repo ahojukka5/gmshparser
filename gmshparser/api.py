@@ -460,11 +460,21 @@ class PhysicalGroupCollection:
         key: PhysicalGroupKey | str,
         default: PhysicalGroup | None = None,
     ) -> PhysicalGroup | None:
-        """Return a physical group by key or unambiguous name."""
-        try:
-            return self[key]
-        except KeyError:
-            return default
+        """Return a physical group, or *default* only when the key is absent.
+
+        Ambiguous names still raise :class:`KeyError`; callers must use the
+        explicit ``(dimension, tag)`` key in that case.
+        """
+        if isinstance(key, str):
+            matches = self._by_name.get(key, ())
+            if len(matches) == 1:
+                return matches[0]
+            if not matches:
+                return default
+            raise KeyError(
+                f"Physical group name {key!r} is ambiguous; use (dimension, tag)"
+            )
+        return self._by_key.get(key, default)
 
     def where(self, *, dimension: int | None = None) -> PhysicalGroupCollection:
         """Return physical groups of the selected dimension."""
