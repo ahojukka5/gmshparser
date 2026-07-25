@@ -1,3 +1,4 @@
+from math import isfinite
 from typing import TextIO
 
 from .abstract_parser import AbstractParser
@@ -33,6 +34,7 @@ class EntitiesParser(AbstractParser):
             raise InvalidSectionError("$Entities counts cannot be negative")
 
         is_v40 = mesh.get_version_major() == 4 and mesh.get_version_minor() == 0
+        seen_entity_tags: list[set[int]] = [set() for _ in counts]
 
         for dimension, count in enumerate(counts):
             geometry_count = 6 if is_v40 or dimension > 0 else 3
@@ -50,7 +52,9 @@ class EntitiesParser(AbstractParser):
 
                 try:
                     tag = int(parts[0])
-                    _ = tuple(float(value) for value in parts[1:physical_count_index])
+                    geometry = tuple(
+                        float(value) for value in parts[1:physical_count_index]
+                    )
                     number_of_physical_tags = int(parts[physical_count_index])
                 except ValueError as error:
                     raise InvalidSectionError(
@@ -60,6 +64,21 @@ class EntitiesParser(AbstractParser):
 
                 if tag <= 0:
                     raise InvalidSectionError("Entity tags must be positive")
+                if tag in seen_entity_tags[dimension]:
+                    raise InvalidSectionError(
+                        f"Duplicate dimension-{dimension} entity tag {tag}"
+                    )
+                if any(not isfinite(value) for value in geometry):
+                    raise InvalidSectionError(
+                        f"Entity {tag} contains non-finite geometry values"
+                    )
+                if geometry_count == 6:
+                    minimum = geometry[:3]
+                    maximum = geometry[3:]
+                    if any(lower > upper for lower, upper in zip(minimum, maximum)):
+                        raise InvalidSectionError(
+                            f"Entity {tag} has an inverted bounding box"
+                        )
                 if number_of_physical_tags < 0:
                     raise InvalidSectionError(
                         "Entity physical-group counts cannot be negative"
@@ -82,6 +101,10 @@ class EntitiesParser(AbstractParser):
                     raise InvalidSectionError(
                         "Entity physical-group tags must be integers"
                     ) from error
+                if any(physical_tag <= 0 for physical_tag in physical_tags):
+                    raise InvalidSectionError(
+                        "Entity physical-group tags must be positive integers"
+                    )
 
                 if dimension == 0:
                     if len(parts) != physical_stop:
@@ -125,6 +148,16 @@ class EntitiesParser(AbstractParser):
                             "Entity boundary tags must be non-zero signed integers"
                         )
 
+                    known_boundary_tags = seen_entity_tags[dimension - 1]
+                    for boundary_tag in boundary_tags:
+                        referenced_tag = abs(boundary_tag)
+                        if referenced_tag not in known_boundary_tags:
+                            raise InvalidSectionError(
+                                f"Entity {tag} references unknown dimension-"
+                                f"{dimension - 1} boundary entity {referenced_tag}"
+                            )
+
+                seen_entity_tags[dimension].add(tag)
                 mesh.set_entity_physical_tags(dimension, tag, physical_tags)
 
         expect_end_marker(io, "$EndEntities")
