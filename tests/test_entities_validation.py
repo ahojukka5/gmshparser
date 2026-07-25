@@ -32,11 +32,14 @@ def test_entities_accept_signed_references_to_declared_boundaries():
 
 
 def test_entities_accept_boundaries_declared_in_a_repeated_section():
-    source = _msh41("1 0 0 0\n1 0 0 0 0") + """$Entities
+    source = (
+        _msh41("1 0 0 0\n1 0 0 0 0")
+        + """$Entities
 0 1 0 0
 7 0 0 0 1 0 0 0 1 1
 $EndEntities
 """
+    )
 
     mesh = gmshparser.read(StringIO(source), name="repeated-entities.msh")
 
