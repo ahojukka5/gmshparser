@@ -15,7 +15,7 @@ type EntityKey = tuple[int, int]
 type PhysicalGroupKey = tuple[int, int]
 type RawNode = tuple[int, tuple[float, ...]]
 type RawNodeBlock = tuple[int, int, list[RawNode]]
-type RawElement = tuple[int, list[int]]
+type RawElement = tuple[int, list[int], tuple[int, ...]]
 type RawElementBlock = tuple[int, int, int, list[RawElement]]
 
 
@@ -175,7 +175,11 @@ class ModernMeshBuilder:
             element_entity.get_tag(),
             element_entity.get_element_type(),
             [
-                (element.get_tag(), tuple(element.get_connectivity()))
+                (
+                    element.get_tag(),
+                    list(element.get_connectivity()),
+                    self.get_element_physical_tags(element.get_tag()),
+                )
                 for element in element_entity.get_elements()
             ],
         )
@@ -275,7 +279,7 @@ class ModernMeshBuilder:
             element_type = ElementType(type_id)
             entity_physical_tags = self.get_entity_physical_tags(*key)
 
-            for element_tag, node_tags in raw_elements:
+            for element_tag, node_tags, record_physical_tags in raw_elements:
                 if element_tag in element_tags:
                     raise InvalidMeshError(f"Duplicate element tag {element_tag}")
                 try:
@@ -286,7 +290,9 @@ class ModernMeshBuilder:
                         f"Element {element_tag} references unknown node {missing_tag}"
                     ) from error
 
-                physical_tags = self.get_element_physical_tags(element_tag)
+                physical_tags = record_physical_tags
+                if not physical_tags:
+                    physical_tags = self.get_element_physical_tags(element_tag)
                 if not physical_tags:
                     physical_tags = entity_physical_tags
 
