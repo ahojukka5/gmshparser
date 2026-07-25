@@ -3,6 +3,9 @@ name: Prepare periodic links implementation
 on:
   push:
     branches: [add-periodic-links]
+  pull_request:
+    branches: [master]
+    types: [opened, synchronize, reopened]
 
 permissions:
   contents: read
@@ -651,7 +654,7 @@ def test_unknown_periodic_master_node_is_rejected_by_modern_builder():
 
 
 def test_negative_corresponding_node_count_is_rejected():
-    invalid = MSH4.replace("1 4 3\n16", "1 4 3\n16", 1).replace(
+    invalid = MSH4.replace(
         f"16 {AFFINE}\n1\n4 2", f"16 {AFFINE}\n-1"
     )
 
@@ -729,7 +732,6 @@ The compatibility model exposes the same records through
               "### Changed\n\n",
               "### Changed\n\n- added MSH 2.x and 4.x `$Periodic` parsing with immutable modern periodic-link\n  values and compatibility-model accessors\n",
           )
-
           PY
       - name: Install dependencies
         run: uv sync --no-default-groups --group test --group lint --group docs
