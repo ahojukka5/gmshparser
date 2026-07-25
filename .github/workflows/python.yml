@@ -7,7 +7,7 @@ on:
     branches: [master]
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   quality:
@@ -105,6 +105,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v7
+        with:
+          ref: add-periodic-links
 
       - name: Extract and run preparation script
         run: |
@@ -116,11 +118,25 @@ jobs:
           start = workflow.index(marker) + len(marker)
           end = workflow.index("\n          PY\n", start)
           block = workflow[start:end]
-          script = "\n".join(
-              line[10:] if line.startswith("          ") else line
-              for line in block.splitlines()
-          )
-          Path("/tmp/apply_periodic.py").write_text(script + "\n")
+
+          output: list[str] = []
+          in_literal = False
+          for line in block.splitlines():
+              if in_literal:
+                  if "'''" in line:
+                      normalized = line[10:] if line.startswith("          ") else line
+                      output.append(normalized)
+                      in_literal = False
+                  else:
+                      output.append(line)
+                  continue
+
+              normalized = line[10:] if line.startswith("          ") else line
+              output.append(normalized)
+              if normalized.count("'''") % 2:
+                  in_literal = True
+
+          Path("/tmp/apply_periodic.py").write_text("\n".join(output) + "\n")
           PY
           python /tmp/apply_periodic.py
 
@@ -134,7 +150,6 @@ jobs:
         run: uv sync --no-default-groups --group test --group lint --group docs
 
       - name: Format and lint generated sources
-        continue-on-error: true
         run: |
           uv run --no-sync ruff format gmshparser tests
           uv run --no-sync ruff check --fix gmshparser tests
@@ -142,15 +157,31 @@ jobs:
           uv run --no-sync ruff check gmshparser tests
 
       - name: Test generated implementation
-        continue-on-error: true
         run: uv run --no-sync pytest
 
       - name: Build generated documentation
-        continue-on-error: true
         run: uv run --no-sync mkdocs build --strict
 
+      - name: Commit generated implementation
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add \
+            gmshparser/__init__.py \
+            gmshparser/api.py \
+            gmshparser/main_parser.py \
+            gmshparser/mesh.py \
+            gmshparser/modern_builder.py \
+            gmshparser/periodic_parser.py \
+            tests/test_periodic_links.py \
+            README.md \
+            docs/api/modern.md \
+            docs/user-guide/pythonic-api.md \
+            docs/about/changelog.md
+          git commit -m "Add periodic mesh relationships"
+          git push origin HEAD:add-periodic-links
+
       - name: Upload prepared files
-        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: periodic-links-files
