@@ -1,9 +1,8 @@
-# Modern API Reference
+# Modern API
 
-The modern API is available through `gmshparser.read()` and the value objects in
-`gmshparser.api`. The equivalent `gmshparser.api.parse()` name is provided inside
-the explicit modern namespace. Top-level `gmshparser.parse()` continues to
-return the original compatibility model.
+The modern API is available through `gmshparser.read()` and `gmshparser.api`. It is immutable, tag-addressable, and intended for application code.
+
+Top-level `gmshparser.parse()` continues to return the compatibility model. `gmshparser.api.parse()` is the modern alias.
 
 ## Entry points
 
@@ -17,6 +16,18 @@ return the original compatibility model.
       show_source: true
       heading_level: 3
 
+## Key types
+
+The module defines these tuple aliases:
+
+```python
+type EntityKey = tuple[int, int]
+type PhysicalGroupKey = tuple[int, int]
+type PeriodicLinkKey = tuple[int, int]
+```
+
+Each key is `(dimension, tag)`.
+
 ## Mesh and metadata
 
 ::: gmshparser.api.Mesh
@@ -24,6 +35,8 @@ return the original compatibility model.
       show_source: true
       heading_level: 3
       members: true
+
+`Mesh.from_legacy()` explicitly converts an existing compatibility mesh. Normal new code should call `read()` directly.
 
 ::: gmshparser.api.Version
     options:
@@ -51,7 +64,11 @@ return the original compatibility model.
       heading_level: 3
       members: true
 
+`ElementType` is an `IntEnum`: known Gmsh IDs have descriptive names, while unknown numeric IDs remain representable as `TYPE_<id>` pseudo-members. Topology metadata is `None` for unknown values.
+
 ## Collections
+
+All modern collections preserve parser order. Node and element collections index by original Gmsh tag. Entity, physical-group, and periodic-link collections use `(dimension, tag)` keys.
 
 ::: gmshparser.api.NodeCollection
     options:
@@ -71,13 +88,13 @@ return the original compatibility model.
       heading_level: 3
       members: true
 
-::: gmshparser.api.PeriodicLinkCollection
+::: gmshparser.api.PhysicalGroupCollection
     options:
       show_source: true
       heading_level: 3
       members: true
 
-::: gmshparser.api.PhysicalGroupCollection
+::: gmshparser.api.PeriodicLinkCollection
     options:
       show_source: true
       heading_level: 3
@@ -103,14 +120,20 @@ return the original compatibility model.
       heading_level: 3
       members: true
 
+::: gmshparser.api.PhysicalGroup
+    options:
+      show_source: true
+      heading_level: 3
+      members: true
+
 ::: gmshparser.api.PeriodicLink
     options:
       show_source: true
       heading_level: 3
       members: true
 
-::: gmshparser.api.PhysicalGroup
-    options:
-      show_source: true
-      heading_level: 3
-      members: true
+## Related guides
+
+- [Modern Data Model](../user-guide/pythonic-api.md)
+- [Working with Meshes](../user-guide/basic-usage.md)
+- [Physical Groups and Periodicity](../user-guide/physical-groups.md)
