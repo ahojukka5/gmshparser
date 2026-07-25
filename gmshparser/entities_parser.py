@@ -151,15 +151,6 @@ class EntitiesParser(AbstractParser):
                             "Entity boundary tags must be non-zero signed integers"
                         )
 
-                    known_boundary_tags = seen_entity_tags[dimension - 1]
-                    for boundary_tag in boundary_tags:
-                        referenced_tag = abs(boundary_tag)
-                        if referenced_tag not in known_boundary_tags:
-                            raise InvalidSectionError(
-                                f"Entity {tag} references unknown dimension-"
-                                f"{dimension - 1} boundary entity {referenced_tag}"
-                            )
-
                 seen_entity_tags[dimension].add(tag)
                 mesh.set_entity_physical_tags(dimension, tag, physical_tags)
 
