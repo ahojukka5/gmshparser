@@ -7,7 +7,7 @@ from .parsing import expect_end_marker, read_required_line
 
 
 class EntitiesParser(AbstractParser):
-    """Parse MSH 4.x entity-to-physical-group assignments."""
+    """Parse MSH 4.0 and 4.1 entity records and physical assignments."""
 
     @staticmethod
     def get_section_name():
@@ -32,8 +32,12 @@ class EntitiesParser(AbstractParser):
         if any(count < 0 for count in counts):
             raise InvalidSectionError("$Entities counts cannot be negative")
 
+        is_v40 = mesh.get_version_major() == 4 and mesh.get_version_minor() == 0
+
         for dimension, count in enumerate(counts):
-            physical_count_index = 4 if dimension == 0 else 7
+            geometry_count = 6 if is_v40 or dimension > 0 else 3
+            physical_count_index = 1 + geometry_count
+
             for _ in range(count):
                 record = read_required_line(io, "an entity record")
                 parts = record.split()
@@ -46,30 +50,81 @@ class EntitiesParser(AbstractParser):
 
                 try:
                     tag = int(parts[0])
+                    tuple(float(value) for value in parts[1:physical_count_index])
                     number_of_physical_tags = int(parts[physical_count_index])
                 except ValueError as error:
                     raise InvalidSectionError(
-                        "Entity tags and physical-group counts must be integers"
+                        "Entity tags and counts must be integers and entity geometry "
+                        "values must be numbers"
                     ) from error
+
+                if tag <= 0:
+                    raise InvalidSectionError("Entity tags must be positive")
                 if number_of_physical_tags < 0:
                     raise InvalidSectionError(
                         "Entity physical-group counts cannot be negative"
                     )
 
-                start = physical_count_index + 1
-                stop = start + number_of_physical_tags
-                if len(parts) < stop:
+                physical_start = physical_count_index + 1
+                physical_stop = physical_start + number_of_physical_tags
+                if len(parts) < physical_stop:
                     raise InvalidSectionError(
                         f"Entity {tag} declares {number_of_physical_tags} physical "
-                        f"tags, but the record contains {max(0, len(parts) - start)}"
+                        f"tags, but the record contains "
+                        f"{max(0, len(parts) - physical_start)}"
                     )
 
                 try:
-                    physical_tags = tuple(int(value) for value in parts[start:stop])
+                    physical_tags = tuple(
+                        int(value) for value in parts[physical_start:physical_stop]
+                    )
                 except ValueError as error:
                     raise InvalidSectionError(
                         "Entity physical-group tags must be integers"
                     ) from error
+
+                if dimension == 0:
+                    if len(parts) != physical_stop:
+                        raise InvalidSectionError(
+                            f"Point entity {tag} contains unexpected trailing fields"
+                        )
+                else:
+                    if len(parts) < physical_stop + 1:
+                        raise InvalidSectionError(
+                            f"Entity {tag} is missing its boundary-entity count"
+                        )
+                    try:
+                        boundary_count = int(parts[physical_stop])
+                    except ValueError as error:
+                        raise InvalidSectionError(
+                            "Entity boundary counts must be integers"
+                        ) from error
+                    if boundary_count < 0:
+                        raise InvalidSectionError(
+                            "Entity boundary counts cannot be negative"
+                        )
+
+                    boundary_start = physical_stop + 1
+                    boundary_stop = boundary_start + boundary_count
+                    if len(parts) != boundary_stop:
+                        available = max(0, len(parts) - boundary_start)
+                        raise InvalidSectionError(
+                            f"Entity {tag} declares {boundary_count} boundary tags, "
+                            f"but the record contains {available}"
+                        )
+                    try:
+                        boundary_tags = tuple(
+                            int(value) for value in parts[boundary_start:boundary_stop]
+                        )
+                    except ValueError as error:
+                        raise InvalidSectionError(
+                            "Entity boundary tags must be integers"
+                        ) from error
+                    if any(boundary_tag == 0 for boundary_tag in boundary_tags):
+                        raise InvalidSectionError(
+                            "Entity boundary tags must be non-zero signed integers"
+                        )
+
                 mesh.set_entity_physical_tags(dimension, tag, physical_tags)
 
         expect_end_marker(io, "$EndEntities")
