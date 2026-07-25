@@ -1,5 +1,7 @@
 # Helpers API
 
+`gmshparser.helpers` contains two groups of functions: visualization adapters for 2D meshes and low-level line parsers used by section parsers.
+
 ## `get_triangles()`
 
 ::: gmshparser.helpers.get_triangles
@@ -7,8 +9,7 @@
       show_source: true
       heading_level: 3
 
-Returns `(X, Y, triangles)`. Triangle connectivity contains zero-based indices
-into `X` and `Y`.
+Returns `(X, Y, triangles)`. Triangle connectivity contains zero-based indices into `X` and `Y`.
 
 ```python
 import matplotlib.pyplot as plt
@@ -27,8 +28,7 @@ Only two-dimensional Gmsh type-2 elements are included.
       show_source: true
       heading_level: 3
 
-Returns `(X, Y, quads)`. Quad connectivity contains zero-based indices into `X`
-and `Y`.
+Returns `(X, Y, quads)`. Quad connectivity contains zero-based indices into `X` and `Y`.
 
 ```python
 from matplotlib.patches import Polygon
@@ -66,22 +66,24 @@ node_ids = data["node_ids"]
 - `triangles` and `quads` preserve original node tags in their connectivity.
 - `node_ids` is the sorted list of referenced node tags.
 
-Do not unpack this helper as `(X, Y, triangles, quads)` and do not apply a
-`-1` offset to its node tags.
+Do not unpack this helper as `(X, Y, triangles, quads)` and do not apply a `-1` offset to its node tags.
 
 ## Line parsers
 
-### `parse_ints()`
+::: gmshparser.helpers.parse_ints
+    options:
+      show_source: true
+      heading_level: 3
 
-Reads one line from a text stream and returns its space-separated values as
-integers.
+::: gmshparser.helpers.parse_floats
+    options:
+      show_source: true
+      heading_level: 3
 
-### `parse_floats()`
-
-Reads one line from a text stream and returns its space-separated values as
-floating-point numbers.
+These functions read one line from a text stream and convert its space-separated values. They are primarily parser-development utilities rather than application-level mesh APIs.
 
 ## See also
 
 - [Visualization](../user-guide/visualization.md)
-- [Basic Usage](../user-guide/basic-usage.md)
+- [Working with Meshes](../user-guide/basic-usage.md)
+- [Parser Internals](../developer-guide/parser-internals.md)
