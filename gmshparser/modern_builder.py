@@ -353,7 +353,9 @@ class ModernMeshBuilder:
             )
 
         elements = ElementCollection(all_elements)
-        entity_keys = dict.fromkeys([*nodes_by_entity, *elements_by_entity])
+        entity_keys = dict.fromkeys(
+            [*self._entity_physical_tags, *nodes_by_entity, *elements_by_entity]
+        )
         entity_values: list[Entity] = []
 
         for dimension, tag in entity_keys:

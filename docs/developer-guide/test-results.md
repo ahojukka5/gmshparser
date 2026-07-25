@@ -11,8 +11,8 @@ The quality job runs once on Python 3.12:
 
 ```bash
 uv sync --no-default-groups --group lint
-uv run --no-sync ruff format --check gmshparser tests examples
-uv run --no-sync ruff check gmshparser tests examples
+uv run --no-sync ruff format --check gmshparser tests examples benchmarks
+uv run --no-sync ruff check gmshparser tests examples benchmarks
 ```
 
 The test matrix runs on Python 3.12, 3.13, and 3.14:
@@ -47,9 +47,9 @@ Fixtures and parser tests cover:
 - MSH 4.0 and 4.1 entity-block node and element layouts
 - unsupported-version and version-management behavior
 
-The current data model does not expose complete physical-name or physical-tag
-metadata, so the presence of such tags in a fixture should not be described as
-full physical-group support.
+Physical-name and physical-tag coverage includes named and anonymous groups,
+entity assignments, element assignments, and resolution to participating nodes.
+Declared MSH 4 entities are also tested when they have no node or element blocks.
 
 ## Element and helper coverage
 
