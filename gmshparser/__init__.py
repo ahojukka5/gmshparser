@@ -1,3 +1,5 @@
+from importlib.metadata import version as _distribution_version
+
 from . import api, helpers
 from .api import (
     Element,
@@ -73,7 +75,7 @@ __all__ = [
     "read",
 ]
 
-__version__ = "0.3.1"
+__version__ = _distribution_version("gmshparser")
 __author__ = "Jukka Aho <ahojukka5@gmail.com>"
 
 

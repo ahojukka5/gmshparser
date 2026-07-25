@@ -3,6 +3,7 @@ from io import StringIO
 
 import pytest
 
+import gmshparser
 from gmshparser.cli import main
 
 __content__ = """
@@ -73,4 +74,4 @@ def test_version(capsys):
         main(["--version"])
 
     assert error.value.code == 0
-    assert capsys.readouterr().out.strip() == "gmshparser 0.3.1"
+    assert capsys.readouterr().out.strip() == f"gmshparser {gmshparser.__version__}"

@@ -47,6 +47,11 @@ semantic versioning.
 
 ### Changed
 
+- made `[project].version` in `pyproject.toml` the single writable source
+  for package, runtime, and CLI version reporting
+- made the release workflow reject Git tags that do not match the package
+  version
+- added explicit MIT license metadata to built distributions
 - added MSH 2.x and 4.x `$Periodic` parsing with immutable modern periodic-link
   values and compatibility-model accessors
 - made `gmshparser.read()` build immutable modern values through a dedicated
@@ -85,6 +90,9 @@ semantic versioning.
 
 ### Fixed
 
+- retained MSH 4 entities and their physical groups even when they have no
+  node or element blocks in both direct and legacy-conversion paths
+- corrected stale physical-group and quality-command documentation
 - implemented the actual MSH 4.0 `$Entities`, `$Nodes`, `$Elements`, and
   `$Periodic` layouts instead of interpreting those sections as MSH 4.1
 - rejected duplicate MSH 4 entity tags, non-finite or inverted geometry, and

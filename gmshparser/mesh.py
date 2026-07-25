@@ -290,6 +290,12 @@ class Mesh:
         """Return physical tags assigned to one elementary entity."""
         return self.entity_physical_tags_.get((dimension, tag), ())
 
+    def get_entity_physical_assignments(
+        self,
+    ) -> dict[tuple[int, int], tuple[int, ...]]:
+        """Return all declared elementary-entity physical assignments."""
+        return dict(self.entity_physical_tags_)
+
     def set_element_physical_tags(self, element_tag: int, physical_tags):
         """Store physical tags carried directly by one legacy element record."""
         self.element_physical_tags_[element_tag] = self._normalize_tags(physical_tags)

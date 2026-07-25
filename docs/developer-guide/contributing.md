@@ -160,12 +160,17 @@ Before submitting a pull request, verify that:
 
 For maintainers:
 
-1. Update the version in `pyproject.toml` and `gmshparser/__init__.py`.
-2. Update the changelog.
+1. Update only `[project].version` in `pyproject.toml`.
+2. Move the changelog entries from `[Unreleased]` to the dated release section.
 3. Build locally with `uv build --no-sources`.
-4. Create and publish the GitHub release.
-5. The release workflow builds and smoke-tests both distributions.
-6. `uv publish` obtains a short-lived PyPI credential through GitHub OIDC.
+4. Create and publish a GitHub release tagged `v<project-version>`.
+5. The release workflow verifies that the tag matches the project version.
+6. The workflow builds and smoke-tests both distributions.
+7. `uv publish` obtains a short-lived PyPI credential through GitHub OIDC.
+
+`gmshparser.__version__` and the CLI version are read from installed distribution
+metadata, which is generated from `pyproject.toml`; they must not be edited
+separately.
 
 The PyPI project must have a trusted publisher matching:
 

@@ -81,9 +81,9 @@ coordinates. MSH 4.1 adds minimum and maximum tag fields, places the dimension
 first, and separates node tags from coordinate records. Point entities and
 periodic affine records also use their version-specific forms.
 
-Entity physical assignments are retained. Bounding boxes and boundary-entity
-records are validated while reading `$Entities`, but they are not yet exposed in
-the public model.
+Entity declarations and physical assignments are retained even when an entity has
+no node or element block. Bounding boxes and boundary-entity records are validated
+while reading `$Entities`, but they are not yet exposed in the public model.
 
 ## Physical group access
 
