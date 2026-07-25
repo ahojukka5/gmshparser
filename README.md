@@ -139,6 +139,21 @@ domain = mesh.physical_group(2, dimension=3)
 [Pythonic API guide](https://ahojukka5.github.io/gmshparser/user-guide/pythonic-api/)
 for the complete model.
 
+## Periodic meshes
+
+Periodic entity relations from MSH 2.x and 4.x are available through the modern
+model:
+
+```python
+link = mesh.periodic_links[(2, 7)]
+print(link.master_entity_tag, link.affine_transform)
+for slave_node_tag, master_node_tag in link.node_pairs:
+    print(slave_node_tag, master_node_tag)
+```
+
+The compatibility model exposes the same records through
+`get_periodic_link()` and `get_periodic_links()`.
+
 ## NumPy interoperability
 
 NumPy support is optional:

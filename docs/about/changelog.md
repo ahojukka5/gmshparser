@@ -47,6 +47,8 @@ semantic versioning.
 
 ### Changed
 
+- added MSH 2.x and 4.x `$Periodic` parsing with immutable modern periodic-link
+  values and compatibility-model accessors
 - made `gmshparser.read()` build immutable modern values through a dedicated
   `ModernMeshBuilder` without constructing a compatibility `Mesh`
 - made version-specific node and element parsers emit raw blocks through a shared

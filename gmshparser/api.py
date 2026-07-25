@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import os
 from collections.abc import Iterable, Iterator
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import TextIO, cast
 
 from .element_types import ElementFamily, ElementType, ElementTypeInfo
@@ -21,6 +21,9 @@ __all__ = [
     "Mesh",
     "Node",
     "NodeCollection",
+    "PeriodicLink",
+    "PeriodicLinkCollection",
+    "PeriodicLinkKey",
     "PhysicalGroup",
     "PhysicalGroupCollection",
     "PhysicalGroupKey",
@@ -32,6 +35,7 @@ __all__ = [
 
 type EntityKey = tuple[int, int]
 type PhysicalGroupKey = tuple[int, int]
+type PeriodicLinkKey = tuple[int, int]
 
 
 @dataclass(frozen=True, order=True, slots=True)
@@ -395,6 +399,90 @@ class EntityCollection:
 
 
 @dataclass(frozen=True, slots=True)
+class PeriodicLink:
+    """A periodic slave entity and its master-node correspondence."""
+
+    dimension: int
+    entity_tag: int
+    master_entity_tag: int
+    affine_transform: tuple[float, ...] = ()
+    node_pairs: tuple[tuple[int, int], ...] = ()
+
+    @property
+    def key(self) -> PeriodicLinkKey:
+        """Slave entity key as ``(dimension, tag)``."""
+        return self.dimension, self.entity_tag
+
+    @property
+    def slave_node_tags(self) -> tuple[int, ...]:
+        """Slave node tags in file order."""
+        return tuple(slave for slave, _ in self.node_pairs)
+
+    @property
+    def master_node_tags(self) -> tuple[int, ...]:
+        """Master node tags in file order."""
+        return tuple(master for _, master in self.node_pairs)
+
+
+class PeriodicLinkCollection:
+    """Immutable periodic links keyed by their slave ``(dimension, tag)``."""
+
+    __slots__ = ("_items", "_by_key")
+
+    def __init__(self, items: Iterable[PeriodicLink]):
+        self._items = tuple(items)
+        self._by_key = {link.key: link for link in self._items}
+        if len(self._by_key) != len(self._items):
+            raise ValueError("Periodic link keys must be unique")
+
+    def __iter__(self) -> Iterator[PeriodicLink]:
+        return iter(self._items)
+
+    def __len__(self) -> int:
+        return len(self._items)
+
+    def __getitem__(self, key: PeriodicLinkKey) -> PeriodicLink:
+        return self._by_key[key]
+
+    def __contains__(self, value: object) -> bool:
+        if isinstance(value, tuple) and len(value) == 2:
+            return value in self._by_key
+        return value in self._items
+
+    def __repr__(self) -> str:
+        return f"PeriodicLinkCollection({list(self._items)!r})"
+
+    def __eq__(self, other: object) -> bool:
+        return isinstance(other, PeriodicLinkCollection) and self._items == other._items
+
+    def __hash__(self) -> int:
+        return hash(self._items)
+
+    def get(
+        self,
+        key: PeriodicLinkKey,
+        default: PeriodicLink | None = None,
+    ) -> PeriodicLink | None:
+        """Return a periodic link by slave entity key."""
+        return self._by_key.get(key, default)
+
+    def where(self, *, dimension: int | None = None) -> PeriodicLinkCollection:
+        """Return links for one topological dimension."""
+        return PeriodicLinkCollection(
+            link for link in self if dimension is None or link.dimension == dimension
+        )
+
+    def by_dimension(self, dimension: int) -> PeriodicLinkCollection:
+        """Return links for one topological dimension."""
+        return self.where(dimension=dimension)
+
+    @property
+    def keys(self) -> tuple[PeriodicLinkKey, ...]:
+        """Slave entity keys in parser order."""
+        return tuple(self._by_key)
+
+
+@dataclass(frozen=True, slots=True)
 class PhysicalGroup:
     """A named or anonymous physical group and its resolved mesh contents."""
 
@@ -509,6 +597,9 @@ class Mesh:
     elements: ElementCollection
     entities: EntityCollection
     physical_groups: PhysicalGroupCollection
+    periodic_links: PeriodicLinkCollection = field(
+        default_factory=lambda: PeriodicLinkCollection(())
+    )
 
     @classmethod
     def from_legacy(cls, mesh: LegacyMesh) -> Mesh:
@@ -642,6 +733,23 @@ class Mesh:
 
         physical_groups = PhysicalGroupCollection(physical_group_values)
 
+        periodic_links = PeriodicLinkCollection(
+            PeriodicLink(
+                dimension=dimension,
+                entity_tag=entity_tag,
+                master_entity_tag=master_entity_tag,
+                affine_transform=affine_transform,
+                node_pairs=node_pairs,
+            )
+            for (
+                dimension,
+                entity_tag,
+                master_entity_tag,
+                affine_transform,
+                node_pairs,
+            ) in mesh.get_periodic_links()
+        )
+
         major = mesh.get_version_major()
         minor = mesh.get_version_minor()
         version = None if major is None or minor is None else Version(major, minor)
@@ -655,6 +763,7 @@ class Mesh:
             elements=elements,
             entities=entities,
             physical_groups=physical_groups,
+            periodic_links=periodic_links,
         )
 
     def entity(self, dimension: int, tag: int) -> Entity:
@@ -683,6 +792,10 @@ class Mesh:
                 "provide dimension="
             )
         return self.physical_groups[(dimension, name_or_tag)]
+
+    def periodic_link(self, dimension: int, tag: int) -> PeriodicLink:
+        """Return the periodic relation for one slave entity."""
+        return self.periodic_links[(dimension, tag)]
 
     @property
     def points(self) -> EntityCollection:
@@ -736,7 +849,8 @@ class Mesh:
         return (
             f"Mesh(name={self.name!r}, version={version!r}, "
             f"nodes={len(self.nodes)}, elements={len(self.elements)}, "
-            f"physical_groups={len(self.physical_groups)})"
+            f"physical_groups={len(self.physical_groups)}, "
+            f"periodic_links={len(self.periodic_links)})"
         )
 
     __str__ = __repr__
