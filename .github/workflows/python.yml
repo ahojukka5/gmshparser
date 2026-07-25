@@ -7,7 +7,7 @@ on:
     branches: [master]
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   quality:
@@ -98,104 +98,3 @@ jobs:
         run: |
           uv run --isolated --no-project --with dist/*.tar.gz python -c "import gmshparser"
           uv run --isolated --no-project --with dist/*.tar.gz gmshparser --version
-
-  prepare-periodic:
-    name: Prepare periodic source files
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v7
-        with:
-          ref: add-periodic-links
-
-      - name: Extract and run preparation script
-        run: |
-          python - <<'PY'
-          from pathlib import Path
-
-          workflow = Path(".github/workflows/apply-periodic-links.yml").read_text()
-          marker = "          python - <<'PY'\n"
-          start = workflow.index(marker) + len(marker)
-          end = workflow.index("\n          PY\n", start)
-          block = workflow[start:end]
-
-          output: list[str] = []
-          in_literal = False
-          for line in block.splitlines():
-              if in_literal:
-                  if "'''" in line:
-                      normalized = line[10:] if line.startswith("          ") else line
-                      output.append(normalized)
-                      in_literal = False
-                  else:
-                      output.append(line)
-                  continue
-
-              normalized = line[10:] if line.startswith("          ") else line
-              output.append(normalized)
-              if normalized.count("'''") % 2:
-                  in_literal = True
-
-          Path("/tmp/apply_periodic.py").write_text("\n".join(output) + "\n")
-          PY
-          python /tmp/apply_periodic.py
-          git checkout HEAD -- tests/test_periodic_links.py
-
-      - name: Install uv and Python
-        uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
-        with:
-          version: "0.11.32"
-          python-version: "3.12"
-
-      - name: Install validation dependencies
-        run: uv sync --no-default-groups --group test --group lint --group docs
-
-      - name: Format and lint generated sources
-        run: |
-          uv run --no-sync ruff format gmshparser tests
-          uv run --no-sync ruff check --fix gmshparser tests
-          uv run --no-sync ruff format gmshparser tests
-          uv run --no-sync ruff check gmshparser tests
-
-      - name: Test generated implementation
-        run: uv run --no-sync pytest
-
-      - name: Build generated documentation
-        run: uv run --no-sync mkdocs build
-
-      - name: Commit generated implementation
-        run: |
-          git config user.name github-actions[bot]
-          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
-          git add \
-            gmshparser/__init__.py \
-            gmshparser/api.py \
-            gmshparser/main_parser.py \
-            gmshparser/mesh.py \
-            gmshparser/modern_builder.py \
-            gmshparser/periodic_parser.py \
-            tests/test_periodic_links.py \
-            README.md \
-            docs/api/modern.md \
-            docs/user-guide/pythonic-api.md \
-            docs/about/changelog.md
-          git commit -m "Add periodic mesh relationships"
-          git push origin HEAD:add-periodic-links
-
-      - name: Upload prepared files
-        uses: actions/upload-artifact@v4
-        with:
-          name: periodic-links-files
-          path: |
-            gmshparser/__init__.py
-            gmshparser/api.py
-            gmshparser/main_parser.py
-            gmshparser/mesh.py
-            gmshparser/modern_builder.py
-            gmshparser/periodic_parser.py
-            tests/test_periodic_links.py
-            README.md
-            docs/api/modern.md
-            docs/user-guide/pythonic-api.md
-            docs/about/changelog.md
-          if-no-files-found: error
