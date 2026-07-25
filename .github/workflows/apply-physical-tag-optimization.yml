@@ -22,76 +22,72 @@ jobs:
 
           mesh_path = Path("gmshparser/mesh.py")
           mesh = mesh_path.read_text()
-          old = '''        for element_tag, connectivity in elements:
-              element = Element()
-              element.set_tag(element_tag)
-              element.set_connectivity(list(connectivity))
-              entity.add_element(element)
-          self.add_element_entity(entity)
-          '''
-          new = '''        for element_tag, connectivity, physical_tags in elements:
-              if physical_tags:
-                  self.set_element_physical_tags(element_tag, physical_tags)
-              element = Element()
-              element.set_tag(element_tag)
-              element.set_connectivity(list(connectivity))
-              entity.add_element(element)
-          self.add_element_entity(entity)
-          '''
-          if old not in mesh:
-              raise SystemExit("Mesh add_element_block snippet not found")
-          mesh_path.write_text(mesh.replace(old, new))
+          mesh_old = """        for element_tag, connectivity in elements:
+                      element = Element()
+                      element.set_tag(element_tag)
+                      element.set_connectivity(list(connectivity))
+                      entity.add_element(element)
+                  self.add_element_entity(entity)
+          """
+          mesh_new = """        for element_tag, connectivity, physical_tags in elements:
+                      if physical_tags:
+                          self.set_element_physical_tags(element_tag, physical_tags)
+                      element = Element()
+                      element.set_tag(element_tag)
+                      element.set_connectivity(list(connectivity))
+                      entity.add_element(element)
+                  self.add_element_entity(entity)
+          """
+          if mesh_old not in mesh:
+              raise SystemExit("mesh.py target snippet not found")
+          mesh_path.write_text(mesh.replace(mesh_old, mesh_new, 1))
 
           builder_path = Path("gmshparser/modern_builder.py")
           builder = builder_path.read_text()
-          replacements = [
+          pairs = [
               (
-                  'type RawElement = tuple[int, list[int]]\n',
-                  'type RawElement = tuple[int, list[int], tuple[int, ...]]\n',
+                  "type RawElement = tuple[int, list[int]]\n",
+                  "type RawElement = tuple[int, list[int], tuple[int, ...]]\n",
               ),
               (
-                  '''            [
-                      (element.get_tag(), tuple(element.get_connectivity()))
-                      for element in element_entity.get_elements()
-                  ],
-              )
-              ''',
-                  '''            [
-                      (
-                          element.get_tag(),
-                          list(element.get_connectivity()),
-                          self.get_element_physical_tags(element.get_tag()),
+                  """            [
+                              (element.get_tag(), tuple(element.get_connectivity()))
+                              for element in element_entity.get_elements()
+                          ],
                       )
-                      for element in element_entity.get_elements()
-                  ],
-              )
-              ''',
+          """,
+                  """            [
+                              (
+                                  element.get_tag(),
+                                  list(element.get_connectivity()),
+                                  self.get_element_physical_tags(element.get_tag()),
+                              )
+                              for element in element_entity.get_elements()
+                          ],
+                      )
+          """,
               ),
               (
-                  '''            for element_tag, node_tags in raw_elements:
-                  if element_tag in element_tags:
-              ''',
-                  '''            for element_tag, node_tags, record_physical_tags in raw_elements:
-                  if element_tag in element_tags:
-              ''',
+                  "            for element_tag, node_tags in raw_elements:\n",
+                  "            for element_tag, node_tags, record_physical_tags in raw_elements:\n",
               ),
               (
-                  '''                physical_tags = self.get_element_physical_tags(element_tag)
-                  if not physical_tags:
-                      physical_tags = entity_physical_tags
-              ''',
-                  '''                physical_tags = record_physical_tags
-                  if not physical_tags:
-                      physical_tags = self.get_element_physical_tags(element_tag)
-                  if not physical_tags:
-                      physical_tags = entity_physical_tags
-              ''',
+                  """                physical_tags = self.get_element_physical_tags(element_tag)
+                          if not physical_tags:
+                              physical_tags = entity_physical_tags
+          """,
+                  """                physical_tags = record_physical_tags
+                          if not physical_tags:
+                              physical_tags = self.get_element_physical_tags(element_tag)
+                          if not physical_tags:
+                              physical_tags = entity_physical_tags
+          """,
               ),
           ]
-          for old, new in replacements:
+          for old, new in pairs:
               if old not in builder:
-                  raise SystemExit(f"Builder snippet not found:\n{old}")
-              builder = builder.replace(old, new)
+                  raise SystemExit(f"modern_builder.py target not found:\n{old}")
+              builder = builder.replace(old, new, 1)
           builder_path.write_text(builder)
           PY
       - uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9
