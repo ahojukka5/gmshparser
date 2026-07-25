@@ -53,7 +53,7 @@ $PhysicalNames
 $EndPhysicalNames
 $Entities
 0 0 1 0
-1 0 0 0 2 1 0 1 99
+1 0 0 0 2 1 0 1 99 0
 $EndEntities
 $Nodes
 1 5 1 5
@@ -158,7 +158,6 @@ def test_read_does_not_call_mesh_from_legacy(monkeypatch):
         raise AssertionError("read() must not build through the compatibility mesh")
 
     monkeypatch.setattr(ModernMesh, "from_legacy", classmethod(fail_from_legacy))
-
     mesh = gmshparser.read(StringIO(MSH_2), name="direct.msh")
 
     assert mesh.name == "direct.msh"
