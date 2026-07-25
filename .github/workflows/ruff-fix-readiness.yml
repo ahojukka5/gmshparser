@@ -1,0 +1,41 @@
+name: Apply Ruff fixes
+
+on:
+  pull_request:
+    branches: [master]
+
+permissions:
+  contents: write
+
+jobs:
+  fix:
+    if: github.head_ref == 'agent/0.4-readiness'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.head_ref }}
+
+      - name: Install uv and Python
+        uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9
+        with:
+          version: "0.11.32"
+          python-version: "3.12"
+
+      - name: Install lint dependencies
+        run: uv sync --no-default-groups --group lint
+
+      - name: Apply Ruff fixes
+        run: uv run --no-sync ruff check --fix gmshparser tests examples benchmarks
+
+      - name: Commit fixes
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add gmshparser tests examples benchmarks
+          if git diff --cached --quiet; then
+            echo "No Ruff changes required"
+          else
+            git commit -m "Apply Ruff lint fixes"
+            git push origin HEAD:${{ github.head_ref }}
+          fi
