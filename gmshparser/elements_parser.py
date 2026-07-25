@@ -13,7 +13,7 @@ from .parsing import expect_end_marker, read_required_line
 
 
 class ElementsParser(AbstractParser):
-    """Parse entity-block elements from MSH 4.x files."""
+    """Parse entity-block elements from MSH 4.0 and 4.1 files."""
 
     @staticmethod
     def get_section_name():
@@ -31,10 +31,21 @@ class ElementsParser(AbstractParser):
             raise InvalidElementError(
                 "$Elements header must contain integers"
             ) from error
-        if len(metadata) != 4:
-            raise InvalidElementError("$Elements header must contain four integers")
 
-        number_of_entities, number_of_elements, min_tag, max_tag = metadata
+        is_v40 = mesh.get_version_major() == 4 and mesh.get_version_minor() == 0
+        expected_header_fields = 2 if is_v40 else 4
+        if len(metadata) != expected_header_fields:
+            raise InvalidElementError(
+                f"$Elements header for MSH {'4.0' if is_v40 else '4.1'} must "
+                f"contain {expected_header_fields} integers"
+            )
+
+        if is_v40:
+            number_of_entities, number_of_elements = metadata
+            min_tag = max_tag = 0
+        else:
+            number_of_entities, number_of_elements, min_tag, max_tag = metadata
+
         if number_of_entities < 0 or number_of_elements < 0:
             raise InvalidElementError("$Elements counts cannot be negative")
 
@@ -44,6 +55,7 @@ class ElementsParser(AbstractParser):
         mesh.set_max_element_tag(max_tag)
 
         parsed_elements = 0
+        parsed_tags: list[int] = []
         for _ in range(number_of_entities):
             block_metadata = parse_ints(io)
             if len(block_metadata) != 4:
@@ -51,7 +63,11 @@ class ElementsParser(AbstractParser):
                     "An $Elements block header must contain four integers"
                 )
 
-            dimension, entity_tag, type_id, block_count = block_metadata
+            if is_v40:
+                entity_tag, dimension, type_id, block_count = block_metadata
+            else:
+                dimension, entity_tag, type_id, block_count = block_metadata
+
             if dimension not in {0, 1, 2, 3}:
                 raise InvalidElementError(
                     f"Element entity {entity_tag} has invalid dimension {dimension}"
@@ -77,6 +93,7 @@ class ElementsParser(AbstractParser):
                         element_tag=element_tag,
                     )
                 records.append((element_tag, node_tags, ()))
+                parsed_tags.append(element_tag)
 
             parsed_elements += block_count
             mesh.add_element_block(
@@ -91,4 +108,9 @@ class ElementsParser(AbstractParser):
                 f"$Elements declares {number_of_elements} elements, "
                 f"parsed {parsed_elements}"
             )
+
+        if is_v40:
+            mesh.set_min_element_tag(min(parsed_tags, default=0))
+            mesh.set_max_element_tag(max(parsed_tags, default=0))
+
         expect_end_marker(io, "$EndElements")

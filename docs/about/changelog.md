@@ -85,6 +85,8 @@ semantic versioning.
 
 ### Fixed
 
+- implemented the actual MSH 4.0 `$Entities`, `$Nodes`, `$Elements`, and
+  `$Periodic` layouts instead of interpreting those sections as MSH 4.1
 - made `PhysicalGroupCollection.get()` return its default only for missing
   keys while preserving `KeyError` for ambiguous physical-group names
 - preserved multiple element-type blocks on the same MSH 1.x or 2.x entity

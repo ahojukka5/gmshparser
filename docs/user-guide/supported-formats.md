@@ -16,9 +16,9 @@ gmshparser reads mesh topology and physical group metadata from selected
 | MSH 4.1 | entity-block `$Nodes` and `$Elements` sections | `$Entities` and `$PhysicalNames` | supported |
 
 “Supported” means that core topology—node coordinates, element connectivity,
-entity grouping, counts, tag ranges, and physical group assignments—can be read.
-It does not mean that every optional MSH section or every geometry relationship
-is retained.
+entity grouping, counts, tag ranges, physical group assignments, and periodic
+node correspondences—can be read. It does not mean that every optional MSH
+section or every geometry relationship is retained.
 
 ## ASCII only
 
@@ -57,6 +57,7 @@ For MSH 2.0, 2.1, and 2.2, gmshparser parses:
 - `$PhysicalNames`, when present
 - `$Nodes`
 - `$Elements`
+- `$Periodic`, when present
 
 The first element tag is retained as the physical group tag and the second as
 the elementary entity tag. Additional optional element tags, such as partition
@@ -71,10 +72,18 @@ For MSH 4.0 and 4.1, gmshparser parses:
 - physical tag assignments from `$Entities`
 - entity-block `$Nodes`
 - entity-block `$Elements`
+- `$Periodic`, when present
 
-The physical assignments are retained, but other `$Entities` information such as
-bounding boxes, boundary topology, and geometry parametrization is not yet part
-of the public model.
+The two 4.x revisions are parsed with their distinct layouts. MSH 4.0 uses
+two-value node and element section headers, places the entity tag before its
+dimension in block headers, and stores each node tag together with its
+coordinates. MSH 4.1 adds minimum and maximum tag fields, places the dimension
+first, and separates node tags from coordinate records. Point entities and
+periodic affine records also use their version-specific forms.
+
+Entity physical assignments are retained. Bounding boxes and boundary-entity
+records are validated while reading `$Entities`, but they are not yet exposed in
+the public model.
 
 ## Physical group access
 
@@ -94,6 +103,21 @@ print(walls.nodes)
 
 Anonymous groups remain available by `(dimension, tag)`.
 
+## Periodic mesh access
+
+MSH 2.x and 4.x periodic entity relationships are available from the modern
+model:
+
+```python
+link = mesh.periodic_links[(2, 7)]
+print(link.master_entity_tag)
+print(link.affine_transform)
+print(link.node_pairs)
+```
+
+The compatibility model exposes the same data through
+`get_periodic_link()` and `get_periodic_links()`.
+
 ## Common limitations
 
 The current reader does not provide:
@@ -104,8 +128,7 @@ The current reader does not provide:
 - preservation of every optional MSH section
 - post-processing datasets such as `$NodeData`, `$ElementData`, or
   `$ElementNodeData`
-- periodic-entity metadata
-- MSH 4 entity bounding boxes and boundary topology
+- public MSH 4 entity bounding boxes and boundary topology
 - the complete list of auxiliary MSH 2.x element tags
 
 Unknown sections are skipped by the main parsing loop unless a parser for that

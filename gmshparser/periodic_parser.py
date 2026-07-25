@@ -22,6 +22,9 @@ class PeriodicParser(AbstractParser):
             line = read_required_line(io, "$Periodic count")
         link_count = _parse_count(line, "$Periodic link count")
 
+        major = mesh.get_version_major()
+        is_v40 = major == 4 and mesh.get_version_minor() == 0
+
         for _ in range(link_count):
             relation = _parse_int_fields(
                 read_required_line(io, "a periodic entity relation"),
@@ -41,10 +44,12 @@ class PeriodicParser(AbstractParser):
                 )
 
             next_line = read_required_line(io, "periodic affine data or node count")
-            if mesh.get_version_major() == 2:
-                affine_transform, node_count_line = _parse_v2_affine(io, next_line)
+            if major == 2 or is_v40:
+                affine_transform, node_count_line = _parse_optional_affine(
+                    io, next_line
+                )
             else:
-                affine_transform = _parse_v4_affine(io, next_line)
+                affine_transform = _parse_counted_affine(io, next_line)
                 node_count_line = read_required_line(
                     io, "periodic corresponding-node count"
                 )
@@ -80,7 +85,8 @@ class PeriodicParser(AbstractParser):
         expect_end_marker(io, "$EndPeriodic")
 
 
-def _parse_v2_affine(io: TextIO, line: str) -> tuple[tuple[float, ...], str]:
+def _parse_optional_affine(io: TextIO, line: str) -> tuple[tuple[float, ...], str]:
+    """Parse the optional ``Affine ...`` record used by MSH 2.x and 4.0."""
     fields = line.strip().split()
     if not fields or fields[0] != "Affine":
         return (), line
@@ -91,7 +97,8 @@ def _parse_v2_affine(io: TextIO, line: str) -> tuple[tuple[float, ...], str]:
     return values, read_required_line(io, "periodic corresponding-node count")
 
 
-def _parse_v4_affine(io: TextIO, line: str) -> tuple[float, ...]:
+def _parse_counted_affine(io: TextIO, line: str) -> tuple[float, ...]:
+    """Parse the count-prefixed affine record introduced in MSH 4.1."""
     fields = line.strip().split()
     if not fields:
         raise InvalidSectionError("Periodic affine record cannot be empty")
