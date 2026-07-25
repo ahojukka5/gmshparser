@@ -1,9 +1,15 @@
+from typing import cast
+
+
 class Node:
     """Node."""
 
     def __init__(self) -> None:
         self.tag_ = -1
-        self.coordinates_: tuple[float, float, float] = (0.0, 0.0, 0.0)
+        self.coordinates_ = cast(
+            tuple[float, float, float],
+            (None, None, None),
+        )
 
     def set_tag(self, tag: int) -> None:
         """Set node tag (node id)."""
