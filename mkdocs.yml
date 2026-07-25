@@ -5,6 +5,12 @@ site_url: https://ahojukka5.github.io/gmshparser/
 repo_url: https://github.com/ahojukka5/gmshparser
 repo_name: ahojukka5/gmshparser
 
+watch:
+  - README.md
+
+hooks:
+  - docs_hooks.py
+
 theme:
   name: material
   palette:
