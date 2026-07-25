@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TextIO
+from typing import Protocol, TextIO, cast
 
 from .abstract_parser import AbstractParser
 from .elements_parser import ElementsParser
@@ -17,8 +17,22 @@ from .parsing import SourceTextIO, contextualize_error
 from .periodic_parser import PeriodicParser
 from .physical_names_parser import PhysicalNamesParser
 
-# Default parsers for MSH 4.x format
-DEFAULT_PARSERS_V4 = [
+type ParserClass = type[AbstractParser]
+
+
+class ParserTarget(Protocol):
+    """Mutable target populated by the version-specific section parsers."""
+
+    def get_name(self) -> str: ...
+
+    def set_version(self, version: float) -> None: ...
+
+    def get_version(self) -> float | None: ...
+
+    def get_version_major(self) -> int | None: ...
+
+
+DEFAULT_PARSERS_V4: list[ParserClass] = [
     MeshFormatParser,
     PhysicalNamesParser,
     EntitiesParser,
@@ -27,8 +41,7 @@ DEFAULT_PARSERS_V4 = [
     PeriodicParser,
 ]
 
-# Default parsers for MSH 2.x format
-DEFAULT_PARSERS_V2 = [
+DEFAULT_PARSERS_V2: list[ParserClass] = [
     MeshFormatParser,
     PhysicalNamesParser,
     NodesParserV2,
@@ -36,21 +49,20 @@ DEFAULT_PARSERS_V2 = [
     PeriodicParser,
 ]
 
-# Parsers for MSH 1.0 format (no MeshFormatParser needed)
-DEFAULT_PARSERS_V1 = [
+DEFAULT_PARSERS_V1: list[ParserClass] = [
     NodesParserV1,
     ElementsParserV1,
 ]
 
 
-class MainParser(AbstractParser):
+class MainParser:
     """Route MSH sections to version-specific parsers with source context."""
 
-    def __init__(self, parsers=None):
+    def __init__(self, parsers: list[ParserClass] | None = None) -> None:
         self.parsers = parsers
         self.version_detected = False
 
-    def parse(self, mesh: Mesh, io: TextIO) -> None:
+    def parse(self, mesh: ParserTarget, io: TextIO) -> None:
         """Parse an MSH stream and populate *mesh*.
 
         All section failures are exposed as structured ``ParseError`` subclasses
@@ -98,15 +110,15 @@ class MainParser(AbstractParser):
 
     @staticmethod
     def _parse_section(
-        parser: type[AbstractParser],
-        mesh: Mesh,
+        parser: ParserClass,
+        mesh: ParserTarget,
         source: SourceTextIO,
         section: str,
     ) -> None:
         context = source.context
         context.section = section
         try:
-            parser.parse(mesh, source)
+            parser.parse(cast(Mesh, mesh), cast(TextIO, source))
         except Exception as error:
             contextual = contextualize_error(error, context)
             if contextual is error:
@@ -115,7 +127,7 @@ class MainParser(AbstractParser):
         finally:
             context.section = None
 
-    def _get_parsers_for_version(self, mesh: Mesh) -> list[type[AbstractParser]]:
+    def _get_parsers_for_version(self, mesh: ParserTarget) -> list[ParserClass]:
         """Return the parser set for the detected major MSH version."""
         version = mesh.get_version()
         if version is None:

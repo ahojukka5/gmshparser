@@ -1,3 +1,4 @@
+from collections.abc import Iterable, Sequence, ValuesView
 from io import StringIO
 
 from gmshparser.element import Element
@@ -5,33 +6,47 @@ from gmshparser.element_entity import ElementEntity
 from gmshparser.node import Node
 from gmshparser.node_entity import NodeEntity
 
+type EntityKey = tuple[int, int]
+type ElementEntityKey = tuple[int, int, int]
+type RawNodeRecord = tuple[int, Sequence[float]]
+type RawElementRecord = tuple[int, Sequence[int], Iterable[int]]
+type NodePair = tuple[int, int]
+type PeriodicLinkValue = tuple[int, tuple[float, ...], tuple[NodePair, ...]]
+type PeriodicLinkRecord = tuple[
+    int,
+    int,
+    int,
+    tuple[float, ...],
+    tuple[NodePair, ...],
+]
+
 
 class Mesh:
-    """Mesh is the main class of the package."""
+    """Mesh is the main compatibility class of the package."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.name_ = "New Mesh"
-        self.version_ = None  # Will be set when parsing MeshFormat
-        self.version_major_ = None
-        self.version_minor_ = None
+        self.version_: float | None = None
+        self.version_major_: int | None = None
+        self.version_minor_: int | None = None
         self.ascii_ = True
-        self.precision_ = 8  # t_size
+        self.precision_ = 8
         self.number_of_node_entities_ = 0
         self.number_of_nodes_ = 0
         self.min_node_tag_ = 0
         self.max_node_tag_ = 0
-        self.node_entities_ = {}
+        self.node_entities_: dict[EntityKey, NodeEntity] = {}
         self.number_of_element_entities_ = 0
         self.number_of_elements_ = 0
         self.min_element_tag_ = 0
         self.max_element_tag_ = 0
-        self.element_entities_ = {}
-        self.physical_names_ = {}
-        self.entity_physical_tags_ = {}
-        self.element_physical_tags_ = {}
-        self.periodic_links_ = {}
+        self.element_entities_: dict[ElementEntityKey, ElementEntity] = {}
+        self.physical_names_: dict[EntityKey, str] = {}
+        self.entity_physical_tags_: dict[EntityKey, tuple[int, ...]] = {}
+        self.element_physical_tags_: dict[int, tuple[int, ...]] = {}
+        self.periodic_links_: dict[EntityKey, PeriodicLinkValue] = {}
 
-    def set_name(self, name: str):
+    def set_name(self, name: str) -> None:
         """Set the name of the mesh."""
         self.name_ = name
 
@@ -39,8 +54,8 @@ class Mesh:
         """Get the name of the mesh."""
         return self.name_
 
-    def set_version(self, version: float):
-        """Set the version of the Mesh object"""
+    def set_version(self, version: float) -> None:
+        """Set the MSH format version."""
         self.version_ = version
         major = int(version)
         minor = int(round((version - major) * 10))
@@ -48,7 +63,7 @@ class Mesh:
         self.version_minor_ = minor
 
     def get_version(self) -> float | None:
-        """Get the version of the Mesh object"""
+        """Get the MSH format version."""
         return self.version_
 
     def get_version_major(self) -> int | None:
@@ -59,56 +74,56 @@ class Mesh:
         """Get the minor version number."""
         return self.version_minor_
 
-    def set_ascii(self, is_ascii: bool):
-        """Set a boolean flag whether this mesh is ASCII or binary"""
+    def set_ascii(self, is_ascii: bool) -> None:
+        """Set whether the mesh uses the ASCII representation."""
         self.ascii_ = is_ascii
 
     def get_ascii(self) -> bool:
-        """Get a boolean flag whether this mesh is ASCII of binary"""
+        """Return whether the mesh uses the ASCII representation."""
         return self.ascii_
 
-    def set_precision(self, precision: int):
-        """Set the precision of the mesh (8)"""
+    def set_precision(self, precision: int) -> None:
+        """Set the MSH data-size field."""
         self.precision_ = precision
 
     def get_precision(self) -> int:
-        """Get the precision of the mesh"""
+        """Get the MSH data-size field."""
         return self.precision_
 
-    def set_number_of_node_entities(self, number_of_node_entities: int):
-        """Set number of node entities."""
+    def set_number_of_node_entities(self, number_of_node_entities: int) -> None:
+        """Set the number of node entities."""
         self.number_of_node_entities_ = number_of_node_entities
 
     def get_number_of_node_entities(self) -> int:
-        """Get number of node entities."""
+        """Get the number of node entities."""
         return self.number_of_node_entities_
 
-    def set_number_of_nodes(self, number_of_nodes: int):
-        """Set number of nodes."""
+    def set_number_of_nodes(self, number_of_nodes: int) -> None:
+        """Set the number of nodes."""
         self.number_of_nodes_ = number_of_nodes
 
     def get_number_of_nodes(self) -> int:
-        """Get number of nodes."""
+        """Get the number of nodes."""
         return self.number_of_nodes_
 
-    def set_min_node_tag(self, min_node_tag: int):
-        """Set node minimum tag."""
+    def set_min_node_tag(self, min_node_tag: int) -> None:
+        """Set the minimum node tag."""
         self.min_node_tag_ = min_node_tag
 
     def get_min_node_tag(self) -> int:
-        """Get node minimum tag."""
+        """Get the minimum node tag."""
         return self.min_node_tag_
 
-    def set_max_node_tag(self, max_node_tag: int):
-        """Set node maximum tag."""
+    def set_max_node_tag(self, max_node_tag: int) -> None:
+        """Set the maximum node tag."""
         self.max_node_tag_ = max_node_tag
 
     def get_max_node_tag(self) -> int:
-        """Get node maximum tag."""
+        """Get the maximum node tag."""
         return self.max_node_tag_
 
     def has_node_entity(self, dim: int, tag: int) -> bool:
-        """Test does mesh have node entity of dimension `dim` and tag `tag`."""
+        """Return whether a node entity exists for ``(dim, tag)``."""
         return (dim, tag) in self.node_entities_
 
     def add_node_block(
@@ -116,7 +131,7 @@ class Mesh:
         dimension: int,
         entity_tag: int,
         parametric_coordinate_count: int,
-        nodes,
+        nodes: Sequence[RawNodeRecord],
     ) -> None:
         """Build and store one compatibility node block from raw records."""
         entity = NodeEntity()
@@ -131,50 +146,53 @@ class Mesh:
             entity.add_node(node)
         self.add_node_entity(entity)
 
-    def add_node_entity(self, node_entity: NodeEntity):
-        """Add node entity to mesh."""
+    def add_node_entity(self, node_entity: NodeEntity) -> None:
+        """Add a node entity to the mesh."""
         dim = node_entity.get_dimension()
         tag = node_entity.get_tag()
         self.node_entities_[(dim, tag)] = node_entity
 
-    def get_node_entity(self, dim: int, tag: int):
-        """Get node entity based on dimension and tag."""
+    def get_node_entity(self, dim: int, tag: int) -> NodeEntity:
+        """Get a node entity by dimension and tag."""
         return self.node_entities_[(dim, tag)]
 
-    def get_node_entities(self) -> list[NodeEntity]:
-        """Get all node entities of mesh."""
+    def get_node_entities(self) -> ValuesView[NodeEntity]:
+        """Get all node entities in parser order."""
         return self.node_entities_.values()
 
-    def set_number_of_element_entities(self, number_of_element_entities: int):
-        """Set number of element entities."""
+    def set_number_of_element_entities(
+        self,
+        number_of_element_entities: int,
+    ) -> None:
+        """Set the number of element entities."""
         self.number_of_element_entities_ = number_of_element_entities
 
     def get_number_of_element_entities(self) -> int:
-        """Get number of element entities."""
+        """Get the number of element entities."""
         return self.number_of_element_entities_
 
-    def set_number_of_elements(self, number_of_elements: int):
-        """Set number of elements."""
+    def set_number_of_elements(self, number_of_elements: int) -> None:
+        """Set the number of elements."""
         self.number_of_elements_ = number_of_elements
 
     def get_number_of_elements(self) -> int:
-        """Get number of elements."""
+        """Get the number of elements."""
         return self.number_of_elements_
 
-    def set_min_element_tag(self, min_element_tag: int):
-        """Set element minimum tag."""
+    def set_min_element_tag(self, min_element_tag: int) -> None:
+        """Set the minimum element tag."""
         self.min_element_tag_ = min_element_tag
 
     def get_min_element_tag(self) -> int:
-        """Get element minimum tag."""
+        """Get the minimum element tag."""
         return self.min_element_tag_
 
-    def set_max_element_tag(self, max_element_tag: int):
-        """Set element maximum tag."""
+    def set_max_element_tag(self, max_element_tag: int) -> None:
+        """Set the maximum element tag."""
         self.max_element_tag_ = max_element_tag
 
     def get_max_element_tag(self) -> int:
-        """Get element maximum tag."""
+        """Get the maximum element tag."""
         return self.max_element_tag_
 
     def has_element_entity(
@@ -200,7 +218,7 @@ class Mesh:
         dimension: int,
         entity_tag: int,
         element_type: int,
-        elements,
+        elements: Sequence[RawElementRecord],
     ) -> None:
         """Build and store one compatibility element block from raw records."""
         entity = ElementEntity()
@@ -209,15 +227,19 @@ class Mesh:
         entity.set_element_type(int(element_type))
         entity.set_number_of_elements(len(elements))
         for element_tag, connectivity, physical_tags in elements:
-            if physical_tags:
-                self.set_element_physical_tags(element_tag, physical_tags)
+            normalized_physical_tags = tuple(physical_tags)
+            if normalized_physical_tags:
+                self.set_element_physical_tags(
+                    element_tag,
+                    normalized_physical_tags,
+                )
             element = Element()
             element.set_tag(element_tag)
             element.set_connectivity(list(connectivity))
             entity.add_element(element)
         self.add_element_entity(entity)
 
-    def add_element_entity(self, element_entity: ElementEntity):
+    def add_element_entity(self, element_entity: ElementEntity) -> None:
         """Add an element block without overwriting other element types."""
         dim = element_entity.get_dimension()
         tag = element_entity.get_tag()
@@ -257,11 +279,11 @@ class Mesh:
             f"Available element types: {available_types}"
         )
 
-    def get_element_entities(self) -> list[ElementEntity]:
+    def get_element_entities(self) -> ValuesView[ElementEntity]:
         """Get all element blocks in parser order."""
         return self.element_entities_.values()
 
-    def set_physical_name(self, dimension: int, tag: int, name: str):
+    def set_physical_name(self, dimension: int, tag: int, name: str) -> None:
         """Store a physical group name without changing the legacy object model."""
         self.physical_names_[(dimension, tag)] = name
 
@@ -269,17 +291,27 @@ class Mesh:
         """Return a physical group name when one was declared."""
         return self.physical_names_.get((dimension, tag))
 
-    def get_physical_names(self) -> dict[tuple[int, int], str]:
+    def get_physical_names(self) -> dict[EntityKey, str]:
         """Return declared physical group names keyed by ``(dimension, tag)``."""
         return dict(self.physical_names_)
 
-    def set_entity_physical_tags(self, dimension: int, tag: int, physical_tags):
+    def set_entity_physical_tags(
+        self,
+        dimension: int,
+        tag: int,
+        physical_tags: Iterable[int],
+    ) -> None:
         """Replace physical tags assigned to one elementary entity."""
         self.entity_physical_tags_[(dimension, tag)] = self._normalize_tags(
             physical_tags
         )
 
-    def add_entity_physical_tags(self, dimension: int, tag: int, physical_tags):
+    def add_entity_physical_tags(
+        self,
+        dimension: int,
+        tag: int,
+        physical_tags: Iterable[int],
+    ) -> None:
         """Add physical tags assigned to one elementary entity."""
         existing = self.entity_physical_tags_.get((dimension, tag), ())
         self.entity_physical_tags_[(dimension, tag)] = self._normalize_tags(
@@ -290,13 +322,15 @@ class Mesh:
         """Return physical tags assigned to one elementary entity."""
         return self.entity_physical_tags_.get((dimension, tag), ())
 
-    def get_entity_physical_assignments(
-        self,
-    ) -> dict[tuple[int, int], tuple[int, ...]]:
+    def get_entity_physical_assignments(self) -> dict[EntityKey, tuple[int, ...]]:
         """Return all declared elementary-entity physical assignments."""
         return dict(self.entity_physical_tags_)
 
-    def set_element_physical_tags(self, element_tag: int, physical_tags):
+    def set_element_physical_tags(
+        self,
+        element_tag: int,
+        physical_tags: Iterable[int],
+    ) -> None:
         """Store physical tags carried directly by one legacy element record."""
         self.element_physical_tags_[element_tag] = self._normalize_tags(physical_tags)
 
@@ -313,8 +347,8 @@ class Mesh:
         dimension: int,
         entity_tag: int,
         master_entity_tag: int,
-        affine_transform,
-        node_pairs,
+        affine_transform: Iterable[float],
+        node_pairs: Iterable[NodePair],
     ) -> None:
         """Store one periodic slave-to-master entity relation."""
         key = int(dimension), int(entity_tag)
@@ -326,11 +360,15 @@ class Mesh:
             tuple((int(slave), int(master)) for slave, master in node_pairs),
         )
 
-    def get_periodic_link(self, dimension: int, entity_tag: int):
+    def get_periodic_link(
+        self,
+        dimension: int,
+        entity_tag: int,
+    ) -> PeriodicLinkValue:
         """Return ``(master_tag, affine_transform, node_pairs)`` for an entity."""
         return self.periodic_links_[(dimension, entity_tag)]
 
-    def get_periodic_links(self):
+    def get_periodic_links(self) -> tuple[PeriodicLinkRecord, ...]:
         """Return periodic relations in parser order."""
         return tuple(
             (dimension, entity_tag, master_tag, affine_transform, node_pairs)
@@ -342,15 +380,15 @@ class Mesh:
         )
 
     @staticmethod
-    def _normalize_tags(tags) -> tuple[int, ...]:
-        normalized = []
+    def _normalize_tags(tags: Iterable[int]) -> tuple[int, ...]:
+        normalized: list[int] = []
         for tag in tags:
             value = int(tag)
             if value > 0 and value not in normalized:
                 normalized.append(value)
         return tuple(normalized)
 
-    def __str__(self):
+    def __str__(self) -> str:
         io = StringIO()
         io.write(f"Mesh name: {self.get_name()}\n")
         io.write(f"Mesh version: {self.get_version()}\n")

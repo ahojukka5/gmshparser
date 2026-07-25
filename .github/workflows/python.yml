@@ -34,6 +34,30 @@ jobs:
       - name: Lint
         run: uv run --no-sync ruff check gmshparser tests examples benchmarks
 
+  typing:
+    name: Static typing
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Install uv and Python
+        uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
+        with:
+          version: "0.11.32"
+          python-version: "3.12"
+          enable-cache: true
+          cache-dependency-glob: pyproject.toml
+          cache-suffix: typing
+
+      - name: Install typing dependencies
+        run: uv sync --no-default-groups --group typing
+
+      - name: Check package typing
+        run: uv run --no-sync mypy gmshparser
+
+      - name: Check downstream public API typing
+        run: uv run --no-sync mypy --strict tests/typing/public_api.py
+
   test:
     name: Test Python ${{ matrix.python-version }}
     runs-on: ubuntu-latest
@@ -72,7 +96,7 @@ jobs:
   package:
     name: Build and smoke-test distributions
     runs-on: ubuntu-latest
-    needs: [quality, test]
+    needs: [quality, typing, test]
 
     steps:
       - uses: actions/checkout@v7
@@ -92,9 +116,19 @@ jobs:
       - name: Smoke test wheel
         run: |
           uv run --isolated --no-project --with dist/*.whl python -c "import gmshparser"
+          uv run --isolated --no-project --with dist/*.whl python -c "from importlib.resources import files; assert files('gmshparser').joinpath('py.typed').is_file()"
           uv run --isolated --no-project --with dist/*.whl gmshparser --version
+
+      - name: Type-check the installed wheel
+        run: |
+          uv venv /tmp/gmshparser-wheel-typing --python 3.12
+          uv pip install --python /tmp/gmshparser-wheel-typing/bin/python dist/*.whl "mypy>=2.3,<3"
+          cp tests/typing/public_api.py /tmp/gmshparser-wheel-typing/public_api.py
+          cd /tmp/gmshparser-wheel-typing
+          bin/mypy --strict public_api.py
 
       - name: Smoke test source distribution
         run: |
           uv run --isolated --no-project --with dist/*.tar.gz python -c "import gmshparser"
+          uv run --isolated --no-project --with dist/*.tar.gz python -c "from importlib.resources import files; assert files('gmshparser').joinpath('py.typed').is_file()"
           uv run --isolated --no-project --with dist/*.tar.gz gmshparser --version

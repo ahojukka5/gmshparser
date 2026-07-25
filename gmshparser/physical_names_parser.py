@@ -11,7 +11,7 @@ class PhysicalNamesParser(AbstractParser):
     """Parse optional ``$PhysicalNames`` declarations."""
 
     @staticmethod
-    def get_section_name():
+    def get_section_name() -> str:
         return "$PhysicalNames"
 
     @staticmethod

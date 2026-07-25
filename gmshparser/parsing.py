@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from collections.abc import Iterator
-from typing import TextIO
+from typing import Any, TextIO
 
 from .errors import (
     InvalidElementError,
@@ -46,7 +46,7 @@ class SourceTextIO:
             raise StopIteration
         return line
 
-    def __getattr__(self, name: str):
+    def __getattr__(self, name: str) -> Any:
         return getattr(self._stream, name)
 
 

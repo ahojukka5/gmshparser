@@ -2,27 +2,31 @@
 
 import argparse
 import sys
+from collections.abc import Callable, Sequence
+from typing import TextIO, cast
 
 from . import __version__, parse
+from .mesh import Mesh
 
 
-def info(mesh, file) -> None:
+def info(mesh: Mesh, file: TextIO) -> None:
     """Print the mesh summary."""
     print("---- MESH SUMMARY ----", file=file)
     print(mesh, file=file)
 
 
-def nodes(mesh, file) -> None:
+def nodes(mesh: Mesh, file: TextIO) -> None:
     """Print all nodes in a simple line-oriented format."""
     print(mesh.get_number_of_nodes(), file=file)
     for entity in mesh.get_node_entities():
         for node in entity.get_nodes():
             nid = node.get_tag()
-            x, y, z = node.get_coordinates()
+            coordinates = node.get_coordinates()
+            x, y, z = coordinates[0], coordinates[1], coordinates[2]
             print(f"{nid:d} {x:f} {y:f} {z:f}", file=file)
 
 
-def elements(mesh, file) -> None:
+def elements(mesh: Mesh, file: TextIO) -> None:
     """Print all elements in a simple line-oriented format."""
     print(mesh.get_number_of_elements(), file=file)
     for entity in mesh.get_element_entities():
@@ -33,7 +37,10 @@ def elements(mesh, file) -> None:
             print(f"{elid} {eltype} {elcon}", file=file)
 
 
-def main(argv=None, file=sys.stdout) -> None:
+def main(
+    argv: Sequence[str] | None = None,
+    file: TextIO = sys.stdout,
+) -> None:
     """Run the gmshparser command-line interface."""
     parser = argparse.ArgumentParser(
         prog="gmshparser",
@@ -44,9 +51,15 @@ def main(argv=None, file=sys.stdout) -> None:
         action="version",
         version=f"%(prog)s {__version__}",
     )
-    choices = {"info": info, "nodes": nodes, "elements": elements}
+    choices: dict[str, Callable[[Mesh, TextIO], None]] = {
+        "info": info,
+        "nodes": nodes,
+        "elements": elements,
+    }
     parser.add_argument("filename")
     parser.add_argument("action", choices=list(choices))
     args = parser.parse_args(sys.argv[1:] if argv is None else argv)
-    mesh = parse(args.filename)
-    choices[args.action](mesh, file)
+    filename = cast(str, args.filename)
+    action = cast(str, args.action)
+    mesh = parse(filename)
+    choices[action](mesh, file)

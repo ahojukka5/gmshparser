@@ -11,7 +11,7 @@ class NodesParser(AbstractParser):
     """Parse entity-block nodes from MSH 4.0 and 4.1 files."""
 
     @staticmethod
-    def get_section_name():
+    def get_section_name() -> str:
         return "$Nodes"
 
     @staticmethod
@@ -111,13 +111,13 @@ class NodesParser(AbstractParser):
                     parsed_tags.append(tag)
 
                 for tag in node_tags:
-                    coordinates = parse_floats(io)
-                    if len(coordinates) != expected_coordinates:
+                    coordinate_values = parse_floats(io)
+                    if len(coordinate_values) != expected_coordinates:
                         raise InvalidNodeError(
                             f"Node {tag} requires {expected_coordinates} coordinate values, "
-                            f"got {len(coordinates)}"
+                            f"got {len(coordinate_values)}"
                         )
-                    records.append((tag, tuple(coordinates)))
+                    records.append((tag, tuple(coordinate_values)))
 
             parsed_nodes += entity_node_count
             mesh.add_node_block(
