@@ -14,6 +14,7 @@ from .nodes_parser import NodesParser
 from .nodes_parser_v1 import NodesParserV1
 from .nodes_parser_v2 import NodesParserV2
 from .parsing import SourceTextIO, contextualize_error
+from .periodic_parser import PeriodicParser
 from .physical_names_parser import PhysicalNamesParser
 
 # Default parsers for MSH 4.x format
@@ -23,6 +24,7 @@ DEFAULT_PARSERS_V4 = [
     EntitiesParser,
     NodesParser,
     ElementsParser,
+    PeriodicParser,
 ]
 
 # Default parsers for MSH 2.x format
@@ -31,6 +33,7 @@ DEFAULT_PARSERS_V2 = [
     PhysicalNamesParser,
     NodesParserV2,
     ElementsParserV2,
+    PeriodicParser,
 ]
 
 # Parsers for MSH 1.0 format (no MeshFormatParser needed)

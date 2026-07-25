@@ -29,6 +29,7 @@ class Mesh:
         self.physical_names_ = {}
         self.entity_physical_tags_ = {}
         self.element_physical_tags_ = {}
+        self.periodic_links_ = {}
 
     def set_name(self, name: str):
         """Set the name of the mesh."""
@@ -296,6 +297,43 @@ class Mesh:
     def get_element_physical_tags(self, element_tag: int) -> tuple[int, ...]:
         """Return physical tags carried directly by one element."""
         return self.element_physical_tags_.get(element_tag, ())
+
+    def has_periodic_link(self, dimension: int, entity_tag: int) -> bool:
+        """Return whether a periodic relation exists for one slave entity."""
+        return (dimension, entity_tag) in self.periodic_links_
+
+    def add_periodic_link(
+        self,
+        dimension: int,
+        entity_tag: int,
+        master_entity_tag: int,
+        affine_transform,
+        node_pairs,
+    ) -> None:
+        """Store one periodic slave-to-master entity relation."""
+        key = int(dimension), int(entity_tag)
+        if key in self.periodic_links_:
+            raise ValueError(f"Duplicate periodic link for entity {key}")
+        self.periodic_links_[key] = (
+            int(master_entity_tag),
+            tuple(float(value) for value in affine_transform),
+            tuple((int(slave), int(master)) for slave, master in node_pairs),
+        )
+
+    def get_periodic_link(self, dimension: int, entity_tag: int):
+        """Return ``(master_tag, affine_transform, node_pairs)`` for an entity."""
+        return self.periodic_links_[(dimension, entity_tag)]
+
+    def get_periodic_links(self):
+        """Return periodic relations in parser order."""
+        return tuple(
+            (dimension, entity_tag, master_tag, affine_transform, node_pairs)
+            for (dimension, entity_tag), (
+                master_tag,
+                affine_transform,
+                node_pairs,
+            ) in self.periodic_links_.items()
+        )
 
     @staticmethod
     def _normalize_tags(tags) -> tuple[int, ...]:

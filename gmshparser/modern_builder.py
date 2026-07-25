@@ -44,6 +44,9 @@ class ModernMeshBuilder:
         self._physical_names: dict[PhysicalGroupKey, str] = {}
         self._entity_physical_tags: dict[EntityKey, tuple[int, ...]] = {}
         self._element_physical_tags: dict[int, tuple[int, ...]] = {}
+        self._periodic_links: dict[
+            EntityKey, tuple[int, tuple[float, ...], tuple[tuple[int, int], ...]]
+        ] = {}
 
     def set_name(self, name: str) -> None:
         self._name = name
@@ -225,6 +228,39 @@ class ModernMeshBuilder:
     def get_element_physical_tags(self, element_tag: int) -> tuple[int, ...]:
         return self._element_physical_tags.get(element_tag, ())
 
+    def has_periodic_link(self, dimension: int, entity_tag: int) -> bool:
+        return (dimension, entity_tag) in self._periodic_links
+
+    def add_periodic_link(
+        self,
+        dimension: int,
+        entity_tag: int,
+        master_entity_tag: int,
+        affine_transform,
+        node_pairs,
+    ) -> None:
+        key = int(dimension), int(entity_tag)
+        if key in self._periodic_links:
+            raise InvalidMeshError(f"Duplicate periodic link for entity {key}")
+        self._periodic_links[key] = (
+            int(master_entity_tag),
+            tuple(float(value) for value in affine_transform),
+            tuple((int(slave), int(master)) for slave, master in node_pairs),
+        )
+
+    def get_periodic_link(self, dimension: int, entity_tag: int):
+        return self._periodic_links[(dimension, entity_tag)]
+
+    def get_periodic_links(self):
+        return tuple(
+            (dimension, entity_tag, master_tag, affine_transform, node_pairs)
+            for (dimension, entity_tag), (
+                master_tag,
+                affine_transform,
+                node_pairs,
+            ) in self._periodic_links.items()
+        )
+
     def build(self) -> Mesh:
         """Resolve raw parser records into the immutable modern mesh model."""
         from .api import (
@@ -235,6 +271,8 @@ class ModernMeshBuilder:
             Mesh,
             Node,
             NodeCollection,
+            PeriodicLink,
+            PeriodicLinkCollection,
             PhysicalGroup,
             PhysicalGroupCollection,
             Version,
@@ -377,6 +415,35 @@ class ModernMeshBuilder:
                 )
             )
 
+        periodic_link_values: list[PeriodicLink] = []
+        for (
+            dimension,
+            entity_tag,
+            master_entity_tag,
+            affine_transform,
+            node_pairs,
+        ) in self.get_periodic_links():
+            for slave_tag, master_tag in node_pairs:
+                if slave_tag not in nodes_by_tag:
+                    raise InvalidMeshError(
+                        f"Periodic entity ({dimension}, {entity_tag}) references "
+                        f"unknown slave node {slave_tag}"
+                    )
+                if master_tag not in nodes_by_tag:
+                    raise InvalidMeshError(
+                        f"Periodic entity ({dimension}, {entity_tag}) references "
+                        f"unknown master node {master_tag}"
+                    )
+            periodic_link_values.append(
+                PeriodicLink(
+                    dimension=dimension,
+                    entity_tag=entity_tag,
+                    master_entity_tag=master_entity_tag,
+                    affine_transform=affine_transform,
+                    node_pairs=node_pairs,
+                )
+            )
+
         version = (
             None
             if self._version_major is None or self._version_minor is None
@@ -391,6 +458,7 @@ class ModernMeshBuilder:
             elements=elements,
             entities=entities,
             physical_groups=PhysicalGroupCollection(physical_group_values),
+            periodic_links=PeriodicLinkCollection(periodic_link_values),
         )
 
     @staticmethod

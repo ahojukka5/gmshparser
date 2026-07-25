@@ -71,6 +71,12 @@ return the original compatibility model.
       heading_level: 3
       members: true
 
+::: gmshparser.api.PeriodicLinkCollection
+    options:
+      show_source: true
+      heading_level: 3
+      members: true
+
 ::: gmshparser.api.PhysicalGroupCollection
     options:
       show_source: true
@@ -92,6 +98,12 @@ return the original compatibility model.
       members: true
 
 ::: gmshparser.api.Entity
+    options:
+      show_source: true
+      heading_level: 3
+      members: true
+
+::: gmshparser.api.PeriodicLink
     options:
       show_source: true
       heading_level: 3

@@ -47,6 +47,7 @@ print(len(mesh.nodes))
 print(len(mesh.elements))
 print(len(mesh.entities))
 print(len(mesh.physical_groups))
+print(len(mesh.periodic_links))
 ```
 
 ## Nodes
@@ -234,6 +235,26 @@ one group. Names that occur in more than one dimension must be addressed by thei
 
 Physical group node collections follow the original mesh node order. This keeps
 array and connectivity conversion deterministic.
+
+## Periodic links
+
+MSH 2.x and 4.x `$Periodic` sections are represented as immutable slave-to-master
+entity relations:
+
+```python
+link = mesh.periodic_links[(2, 7)]
+link = mesh.periodic_link(dimension=2, tag=7)
+
+print(link.master_entity_tag)
+print(link.affine_transform)
+for slave_node_tag, master_node_tag in link.node_pairs:
+    print(slave_node_tag, master_node_tag)
+```
+
+Collections preserve file order and can be filtered with
+`mesh.periodic_links.by_dimension(2)`. Empty affine transformations remain empty;
+MSH 4.x affine values and legacy MSH 2.x `Affine` records are retained verbatim as
+floating-point tuples.
 
 ## Read from a text stream
 
