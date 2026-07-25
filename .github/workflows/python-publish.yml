@@ -23,6 +23,25 @@ jobs:
           version: "0.11.32"
           python-version: "3.12"
 
+      - name: Verify release tag matches package version
+        env:
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+        run: |
+          python - <<'PY'
+          import os
+          import tomllib
+
+          with open("pyproject.toml", "rb") as project_file:
+              package_version = tomllib.load(project_file)["project"]["version"]
+
+          release_tag = os.environ["RELEASE_TAG"]
+          expected_tag = f"v{package_version}"
+          if release_tag != expected_tag:
+              raise SystemExit(
+                  f"Release tag {release_tag!r} does not match {expected_tag!r}"
+              )
+          PY
+
       - name: Build distributions
         run: uv build --no-sources
 
