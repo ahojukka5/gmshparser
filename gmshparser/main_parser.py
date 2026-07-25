@@ -17,6 +17,7 @@ from .parsing import SourceTextIO, contextualize_error
 from .periodic_parser import PeriodicParser
 from .physical_names_parser import PhysicalNamesParser
 
+
 class ParserTarget(Protocol):
     """Mutable target populated by the version-specific section parsers."""
 

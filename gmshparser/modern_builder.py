@@ -295,7 +295,7 @@ class ModernMeshBuilder:
                     dimension=dimension,
                     entity_tag=entity_tag,
                     parametric_coordinates=coordinates[3:],
-                    physical_tags=resolved_physical_tags,
+                    physical_tags=physical_tags,
                 )
                 nodes_by_tag[node_tag] = node
                 entity_nodes.append(node)
@@ -340,7 +340,7 @@ class ModernMeshBuilder:
                     nodes=element_nodes,
                     dimension=dimension,
                     entity_tag=entity_tag,
-                    physical_tags=physical_tags,
+                    physical_tags=resolved_physical_tags,
                 )
                 element_tags.add(element_tag)
                 entity_element_values.append(element)

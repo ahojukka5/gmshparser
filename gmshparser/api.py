@@ -53,7 +53,8 @@ class Version:
 
 
 class _Tagged(Protocol):
-    tag: int
+    @property
+    def tag(self) -> int: ...
 
 
 class _TaggedCollection[T: _Tagged]:

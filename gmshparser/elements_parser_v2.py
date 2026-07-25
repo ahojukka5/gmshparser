@@ -98,7 +98,10 @@ class ElementsParserV2(AbstractParser):
             mesh.set_max_element_tag(max_tag)
         mesh.set_number_of_element_entities(len(element_groups))
 
-        for (dimension, entity_tag), entity_physical_tags in physical_tags_by_entity.items():
+        for (
+            dimension,
+            entity_tag,
+        ), entity_physical_tags in physical_tags_by_entity.items():
             mesh.add_entity_physical_tags(
                 dimension,
                 entity_tag,
