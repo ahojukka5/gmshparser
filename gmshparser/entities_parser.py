@@ -50,7 +50,9 @@ class EntitiesParser(AbstractParser):
 
                 try:
                     tag = int(parts[0])
-                    tuple(float(value) for value in parts[1:physical_count_index])
+                    _ = tuple(
+                        float(value) for value in parts[1:physical_count_index]
+                    )
                     number_of_physical_tags = int(parts[physical_count_index])
                 except ValueError as error:
                     raise InvalidSectionError(
