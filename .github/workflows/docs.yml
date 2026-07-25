@@ -33,18 +33,7 @@ jobs:
         run: uv sync --no-default-groups --group docs
 
       - name: Build documentation
-        shell: bash
-        run: |
-          set -o pipefail
-          uv run --no-sync mkdocs build --strict 2>&1 | tee mkdocs-build.txt
-
-      - name: Upload documentation diagnostics
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: documentation-diagnostics
-          path: mkdocs-build.txt
-          if-no-files-found: ignore
+        run: uv run --no-sync mkdocs build --strict
 
       - name: Configure GitHub Pages
         if: github.event_name == 'push' && github.ref == 'refs/heads/master'
