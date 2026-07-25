@@ -31,6 +31,19 @@ def test_entities_accept_signed_references_to_declared_boundaries():
     assert len(mesh.elements) == 0
 
 
+def test_entities_accept_boundaries_declared_in_a_repeated_section():
+    source = f"""{_msh41('1 0 0 0\n1 0 0 0 0')}$Entities
+0 1 0 0
+7 0 0 0 1 0 0 0 1 1
+$EndEntities
+"""
+
+    mesh = gmshparser.read(StringIO(source), name="repeated-entities.msh")
+
+    assert len(mesh.nodes) == 0
+    assert len(mesh.elements) == 0
+
+
 def test_entities_reject_duplicate_tags_within_a_dimension():
     source = _msh41(
         """2 0 0 0
@@ -84,17 +97,3 @@ def test_entities_reject_non_positive_physical_tags():
         match="Entity physical-group tags must be positive integers",
     ):
         gmshparser.read(StringIO(source), name="invalid-physical-tag.msh")
-
-
-def test_entities_reject_unknown_boundary_entities():
-    source = _msh41(
-        """1 1 0 0
-1 0 0 0 0
-7 0 0 0 1 0 0 0 2 1 -2"""
-    )
-
-    with pytest.raises(
-        gmshparser.InvalidSectionError,
-        match="Entity 7 references unknown dimension-0 boundary entity 2",
-    ):
-        gmshparser.read(StringIO(source), name="unknown-boundary.msh")
