@@ -1,8 +1,6 @@
 from typing import TextIO
 
 from .abstract_parser import AbstractParser
-from .element import Element
-from .element_entity import ElementEntity
 from .element_types import (
     ElementType,
     validate_element_connectivity,
@@ -65,12 +63,7 @@ class ElementsParser(AbstractParser):
             if element_type.is_known:
                 validate_element_dimension(element_type, dimension)
 
-            entity = ElementEntity()
-            entity.set_dimension(dimension)
-            entity.set_tag(entity_tag)
-            entity.set_element_type(int(element_type))
-            entity.set_number_of_elements(block_count)
-
+            records: list[tuple[int, list[int], tuple[int, ...]]] = []
             for _ in range(block_count):
                 element_info = parse_ints(io)
                 if not element_info:
@@ -83,14 +76,15 @@ class ElementsParser(AbstractParser):
                         node_tags,
                         element_tag=element_tag,
                     )
-
-                element = Element()
-                element.set_tag(element_tag)
-                element.set_connectivity(node_tags)
-                entity.add_element(element)
+                records.append((element_tag, node_tags, ()))
 
             parsed_elements += block_count
-            mesh.add_element_entity(entity)
+            mesh.add_element_block(
+                dimension,
+                entity_tag,
+                int(element_type),
+                records,
+            )
 
         if parsed_elements != number_of_elements:
             raise InvalidElementError(

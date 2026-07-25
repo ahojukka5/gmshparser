@@ -3,8 +3,6 @@
 from typing import TextIO
 
 from .abstract_parser import AbstractParser
-from .element import Element
-from .element_entity import ElementEntity
 from .element_types import validate_element_connectivity
 from .errors import InvalidElementError
 from .mesh import Mesh
@@ -34,7 +32,11 @@ class ElementsParserV2(AbstractParser):
             raise InvalidElementError("$Elements element count cannot be negative")
 
         mesh.set_number_of_elements(number_of_elements)
-        element_groups: dict[tuple[int, int, int], list[tuple[int, list[int]]]] = {}
+        element_groups: dict[
+            tuple[int, int, int],
+            list[tuple[int, list[int], tuple[int, ...]]],
+        ] = {}
+        physical_tags_by_entity: dict[tuple[int, int], list[int]] = {}
         min_tag: int | None = None
         max_tag: int | None = None
 
@@ -75,34 +77,30 @@ class ElementsParserV2(AbstractParser):
             dimension = element_type.dimension
             assert dimension is not None
 
-            physical_tags = (tags[0],) if tags and tags[0] > 0 else ()
+            physical_tag = tags[0] if tags and tags[0] > 0 else 0
+            physical_tags = (physical_tag,) if physical_tag else ()
             entity_tag = tags[1] if len(tags) > 1 else 1
-            mesh.set_element_physical_tags(element_tag, physical_tags)
-            mesh.add_entity_physical_tags(dimension, entity_tag, physical_tags)
+            entity_key = dimension, entity_tag
+            if physical_tag:
+                entity_tags = physical_tags_by_entity.setdefault(entity_key, [])
+                if physical_tag not in entity_tags:
+                    entity_tags.append(physical_tag)
 
             min_tag = element_tag if min_tag is None else min(min_tag, element_tag)
             max_tag = element_tag if max_tag is None else max(max_tag, element_tag)
-            key = (dimension, entity_tag, int(element_type))
-            element_groups.setdefault(key, []).append((element_tag, node_tags))
+            block_key = (dimension, entity_tag, int(element_type))
+            element_groups.setdefault(block_key, []).append(
+                (element_tag, node_tags, physical_tags)
+            )
 
         if min_tag is not None and max_tag is not None:
             mesh.set_min_element_tag(min_tag)
             mesh.set_max_element_tag(max_tag)
         mesh.set_number_of_element_entities(len(element_groups))
 
+        for (dimension, entity_tag), physical_tags in physical_tags_by_entity.items():
+            mesh.add_entity_physical_tags(dimension, entity_tag, physical_tags)
         for (dimension, entity_tag, element_type), elements in element_groups.items():
-            entity = ElementEntity()
-            entity.set_dimension(dimension)
-            entity.set_tag(entity_tag)
-            entity.set_element_type(element_type)
-            entity.set_number_of_elements(len(elements))
-
-            for element_tag, node_tags in elements:
-                element = Element()
-                element.set_tag(element_tag)
-                element.set_connectivity(node_tags)
-                entity.add_element(element)
-
-            mesh.add_element_entity(entity)
+            mesh.add_element_block(dimension, entity_tag, element_type, elements)
 
         expect_end_marker(io, "$EndElements")

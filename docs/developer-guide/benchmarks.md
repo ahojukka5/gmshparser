@@ -116,10 +116,29 @@ elements:
 - At 50,176 elements, MSH 4.1 completes `read()` about 30% faster than MSH 2.2.
 - Legacy-to-modern conversion accounts for about 34% of MSH 2.2 `read()` time
   and 45% of MSH 4.1 `read()` time at the largest size.
-- The current complete `read()` path reaches approximately 188 MiB peak RSS for
+- The original complete `read()` path reaches approximately 188 MiB peak RSS for
   MSH 2.2 and 168 MiB for MSH 4.1 at roughly 50,000 elements.
 
 These values define the comparison point for replacing the legacy intermediate
-model in the modern `read()` path. A successful direct builder should reduce
-`read()` elapsed time and peak RSS without changing the compatibility
-`gmshparser.parse()` path or public mesh contents.
+model in the modern `read()` path.
+
+## Direct modern builder result
+
+GitHub Actions run `30135605746` measured the final direct-builder implementation
+on the same Python version, runner class, mesh sizes, repetition count, and
+warm-up count as the stored reference. At 50,176 elements:
+
+| MSH | Original `read` ms | Direct `read` ms | Time change | Original RSS MiB | Direct RSS MiB | RSS change |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| 2.2 | 4,704.81 | 4,498.60 | -4.4% | 187.7 | 180.1 | -4.0% |
+| 4.1 | 3,289.23 | 2,791.24 | -15.1% | 167.8 | 165.7 | -1.3% |
+
+The direct builder removes the complete compatibility object graph and the
+separate `Mesh.from_legacy()` pass from `gmshparser.read()`. The compatibility
+`gmshparser.parse()` path remains available and continues to build the original
+mutable model.
+
+The MSH 2.2 parser also carries per-element physical tags in its raw element
+blocks and aggregates entity tags once per entity instead of performing repeated
+builder dictionary updates for every element. This was necessary to turn the
+initial flat-format regression into a measurable improvement.

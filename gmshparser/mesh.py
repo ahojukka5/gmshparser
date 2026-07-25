@@ -1,6 +1,8 @@
 from io import StringIO
 
+from gmshparser.element import Element
 from gmshparser.element_entity import ElementEntity
+from gmshparser.node import Node
 from gmshparser.node_entity import NodeEntity
 
 
@@ -108,6 +110,26 @@ class Mesh:
         """Test does mesh have node entity of dimension `dim` and tag `tag`."""
         return (dim, tag) in self.node_entities_
 
+    def add_node_block(
+        self,
+        dimension: int,
+        entity_tag: int,
+        parametric_coordinate_count: int,
+        nodes,
+    ) -> None:
+        """Build and store one compatibility node block from raw records."""
+        entity = NodeEntity()
+        entity.set_dimension(dimension)
+        entity.set_tag(entity_tag)
+        entity.set_number_of_parametric_coordinates(parametric_coordinate_count)
+        entity.set_number_of_nodes(len(nodes))
+        for node_tag, coordinates in nodes:
+            node = Node()
+            node.set_tag(node_tag)
+            node.set_coordinates(tuple(coordinates))
+            entity.add_node(node)
+        self.add_node_entity(entity)
+
     def add_node_entity(self, node_entity: NodeEntity):
         """Add node entity to mesh."""
         dim = node_entity.get_dimension()
@@ -171,6 +193,28 @@ class Mesh:
             entity_dim == dim and entity_tag == tag
             for entity_dim, entity_tag, _ in self.element_entities_
         )
+
+    def add_element_block(
+        self,
+        dimension: int,
+        entity_tag: int,
+        element_type: int,
+        elements,
+    ) -> None:
+        """Build and store one compatibility element block from raw records."""
+        entity = ElementEntity()
+        entity.set_dimension(dimension)
+        entity.set_tag(entity_tag)
+        entity.set_element_type(int(element_type))
+        entity.set_number_of_elements(len(elements))
+        for element_tag, connectivity, physical_tags in elements:
+            if physical_tags:
+                self.set_element_physical_tags(element_tag, physical_tags)
+            element = Element()
+            element.set_tag(element_tag)
+            element.set_connectivity(list(connectivity))
+            entity.add_element(element)
+        self.add_element_entity(entity)
 
     def add_element_entity(self, element_entity: ElementEntity):
         """Add an element block without overwriting other element types."""

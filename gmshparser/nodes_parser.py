@@ -4,8 +4,6 @@ from .abstract_parser import AbstractParser
 from .errors import InvalidNodeError
 from .helpers import parse_floats, parse_ints
 from .mesh import Mesh
-from .node import Node
-from .node_entity import NodeEntity
 from .parsing import expect_end_marker, read_required_line
 
 
@@ -58,12 +56,6 @@ class NodesParser(AbstractParser):
             if entity_node_count < 0:
                 raise InvalidNodeError("Node entity counts cannot be negative")
 
-            entity = NodeEntity()
-            entity.set_dimension(dimension)
-            entity.set_tag(entity_tag)
-            entity.set_number_of_parametric_coordinates(dimension if parametric else 0)
-            entity.set_number_of_nodes(entity_node_count)
-
             node_tags: list[int] = []
             for _ in range(entity_node_count):
                 tag_line = read_required_line(io, "a node tag")
@@ -73,15 +65,12 @@ class NodesParser(AbstractParser):
                         "Each MSH 4 node tag must be on its own line"
                     )
                 try:
-                    tag = int(fields[0])
+                    node_tags.append(int(fields[0]))
                 except ValueError as error:
                     raise InvalidNodeError("Node tags must be integers") from error
-                node = Node()
-                node.set_tag(tag)
-                node_tags.append(tag)
-                entity.add_node(node)
 
             expected_coordinates = 3 + (dimension if parametric else 0)
+            records: list[tuple[int, tuple[float, ...]]] = []
             for tag in node_tags:
                 coordinates = parse_floats(io)
                 if len(coordinates) != expected_coordinates:
@@ -89,10 +78,15 @@ class NodesParser(AbstractParser):
                         f"Node {tag} requires {expected_coordinates} coordinate values, "
                         f"got {len(coordinates)}"
                     )
-                entity.get_node(tag).set_coordinates(tuple(coordinates))
+                records.append((tag, tuple(coordinates)))
 
             parsed_nodes += entity_node_count
-            mesh.add_node_entity(entity)
+            mesh.add_node_block(
+                dimension,
+                entity_tag,
+                dimension if parametric else 0,
+                records,
+            )
 
         if parsed_nodes != number_of_nodes:
             raise InvalidNodeError(

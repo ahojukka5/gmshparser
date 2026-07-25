@@ -763,7 +763,8 @@ def parse(
 
 
 def _read_stream(stream: TextIO, name: str) -> Mesh:
-    legacy_mesh = LegacyMesh()
-    legacy_mesh.set_name(name)
-    MainParser().parse(legacy_mesh, stream)
-    return Mesh.from_legacy(legacy_mesh)
+    from .modern_builder import ModernMeshBuilder
+
+    builder = ModernMeshBuilder(name)
+    MainParser().parse(builder, stream)
+    return builder.build()

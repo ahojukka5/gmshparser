@@ -1,12 +1,10 @@
 # Architecture
 
-gmshparser separates parsing from the recommended public data model. Section
-parsers continue to populate the original mutable compatibility model, and the
-modern API converts that result into immutable application-facing value objects.
+gmshparser separates version-specific text parsing from its two public data
+models. The same section parsers target either the original mutable compatibility
+mesh or a direct builder for the immutable modern API.
 
 ## Parsing flow
-
-Both public entry points use the same section parsers:
 
 ```text
 ASCII MSH stream
@@ -14,19 +12,18 @@ ASCII MSH stream
       ▼
 MainParser + version-specific section parsers
       │
-      ▼
-mutable compatibility Mesh
-      ├──────────────► gmshparser.parse()
+      ├────────► compatibility Mesh ────────► gmshparser.parse()
       │
-      └─ conversion ─► gmshparser.read() / gmshparser.api.Mesh
+      └────────► ModernMeshBuilder ─────────► gmshparser.read()
+                         │
+                         └─ immutable api.Mesh
 ```
 
-`gmshparser.parse(filename)` returns the mutable compatibility model directly.
-`gmshparser.read(source)` accepts a path or open text stream, runs the same
-parsers, and converts the populated model into the immutable modern model.
+`gmshparser.parse(filename)` retains the historical mutable model and behavior.
+`gmshparser.read(source)` accepts a path or open text stream and builds the
+immutable model directly without first allocating a compatibility `Mesh`.
 
-Because inputs are read in text mode, the implementation supports ASCII MSH
-files only.
+Because inputs are read in text mode, both paths support ASCII MSH files only.
 
 ## Version routing
 
@@ -34,8 +31,14 @@ files only.
 
 ```python
 DEFAULT_PARSERS_V1 = [NodesParserV1, ElementsParserV1]
-DEFAULT_PARSERS_V2 = [MeshFormatParser, NodesParserV2, ElementsParserV2]
-DEFAULT_PARSERS_V4 = [MeshFormatParser, NodesParser, ElementsParser]
+DEFAULT_PARSERS_V2 = [MeshFormatParser, PhysicalNamesParser, NodesParserV2, ElementsParserV2]
+DEFAULT_PARSERS_V4 = [
+    MeshFormatParser,
+    PhysicalNamesParser,
+    EntitiesParser,
+    NodesParser,
+    ElementsParser,
+]
 ```
 
 A leading `$NOD` selects MSH 1.0. `$MeshFormat` is parsed and validated for MSH
@@ -44,6 +47,23 @@ the V4 parsers.
 
 The main loop dispatches registered section headers to their parser. Optional
 sections without a registered parser are not retained.
+
+## Shared parser-target protocol
+
+Section parsers use a small mutable, duck-typed target protocol. It covers:
+
+- mesh format metadata
+- declared node and element counts and tag ranges
+- node and element entity blocks
+- physical names
+- entity and element physical tags
+
+The compatibility `mesh.Mesh` and `ModernMeshBuilder` both implement this
+protocol. Section parsers therefore contain no public-model branching and retain
+identical validation and structured error behavior on both entry points.
+
+The type annotation on older parser methods still names the compatibility
+`Mesh`, but parser execution relies only on the shared method protocol.
 
 ## Compatibility model
 
@@ -56,9 +76,35 @@ mesh.Mesh
 ```
 
 This mutable model closely follows parser and MSH block structure. It stores
-aggregate counts, tag ranges, and uses explicit `get_*` and `set_*` methods. It
-is retained to avoid breaking existing applications and remains the target that
-section parsers populate.
+aggregate counts, tag ranges, and explicit `get_*` and `set_*` methods. It is
+retained for existing applications and remains the direct target of
+`gmshparser.parse()`.
+
+Element blocks are internally distinguished by dimension, elementary entity tag,
+and element type, so mixed element types on one entity do not overwrite one
+another.
+
+## Direct modern builder
+
+`ModernMeshBuilder` receives the temporary node and element blocks produced by
+the existing section parsers. It immediately flattens them into compact raw
+records rather than retaining the mutable compatibility object graph.
+
+After parsing, one final indexed build pass:
+
+1. creates immutable `Node` values and a tag-to-node lookup
+2. resolves element connectivity directly to those node objects
+3. combines node and element blocks into unified `Entity` values
+4. indexes entities, elements, and participating nodes by physical group
+5. creates the final immutable `api.Mesh`
+
+The builder delays final value creation until all sections have been read. This
+is necessary because flat MSH 1.x and 2.x element records can add physical-group
+metadata after node records have already been parsed.
+
+The old `api.Mesh.from_legacy()` conversion remains public and supported for
+applications that explicitly need to convert a compatibility mesh. It is no
+longer part of the normal `read()` path.
 
 ## Modern public model
 
@@ -67,19 +113,20 @@ api.Mesh
   ├─ version: Version
   ├─ nodes: NodeCollection
   ├─ elements: ElementCollection
-  └─ entities: EntityCollection
-         └─ Entity(nodes, elements)
+  ├─ entities: EntityCollection
+  │      └─ Entity(nodes, elements)
+  └─ physical_groups: PhysicalGroupCollection
 ```
 
-The conversion in `api.Mesh.from_legacy()` deliberately removes parser-oriented
-structure:
+Both the direct builder and `Mesh.from_legacy()` apply the same public-model
+rules:
 
 - node and element blocks with the same `(dimension, tag)` become one `Entity`
-- each `Element` stores direct references to its immutable `Node` objects
+- each `Element` stores direct references to immutable `Node` objects
 - numeric element IDs become `ElementType` integer-enum values
 - Cartesian and parametric node coordinates are separated
 - MSH versions become a `Version(major, minor)` value
-- counts are derived from collections instead of duplicated metadata
+- counts are derived from collections instead of duplicated public metadata
 
 Flat node and element collections are the default access path. Entity context is
 retained on each value and through `mesh.entities` when the original grouping
@@ -93,8 +140,8 @@ Collection conventions are intentional:
 - filtering returns a new immutable collection
 - elements iterate over their `Node` objects
 
-The compatibility and modern models are separate so parser mutation cannot leak
-into application-facing values.
+The compatibility and modern models remain separate so parser mutation cannot
+leak into application-facing values.
 
 ## Version management
 
@@ -118,18 +165,22 @@ class AbstractParser:
 ```
 
 The stream is positioned immediately after the section header when `parse()` is
-called.
+called. `MainParser` wraps it in `SourceTextIO`, which tracks filename, section,
+line number, and offending line for structured parser errors.
 
 ## Adding section support
 
-A new section normally requires:
+A new retained section normally requires:
 
 1. an `AbstractParser` implementation
-2. compatibility-model changes for parser storage
-3. conversion changes in `api.Mesh.from_legacy()` for modern exposure
-4. registration in each applicable version-specific parser list
-5. a small fixture and focused tests for both public entry points
-6. updated user and API documentation
+2. target-protocol methods or metadata storage in both `mesh.Mesh` and
+   `ModernMeshBuilder`
+3. conversion support in `api.Mesh.from_legacy()` when the compatibility model
+   exposes the new data
+4. finalization support in `ModernMeshBuilder.build()`
+5. registration in each applicable version-specific parser list
+6. a small fixture and parity tests for both public entry points
+7. updated user and API documentation
 
 ## Helpers
 
@@ -140,10 +191,11 @@ accept both public mesh models.
 ## Constraints
 
 - the complete mesh is loaded into memory
-- the modern API performs an eager conversion after parsing
+- modern values are built eagerly after all supported sections are parsed
 - lazy loading and streaming iteration are not implemented
 - the library reads but does not write meshes
 - binary data and many optional MSH sections are not represented
 
-See [Writing Parsers](writing-parsers.md), [Testing](testing.md), and the
+See [Writing Parsers](writing-parsers.md), [Testing](testing.md),
+[Performance benchmarks](benchmarks.md), and the
 [API Reference](../api/overview.md).
