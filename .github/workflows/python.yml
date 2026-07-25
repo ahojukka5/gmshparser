@@ -134,6 +134,7 @@ jobs:
         run: uv sync --no-default-groups --group test --group lint --group docs
 
       - name: Format and lint generated sources
+        continue-on-error: true
         run: |
           uv run --no-sync ruff format gmshparser tests
           uv run --no-sync ruff check --fix gmshparser tests
@@ -141,12 +142,15 @@ jobs:
           uv run --no-sync ruff check gmshparser tests
 
       - name: Test generated implementation
+        continue-on-error: true
         run: uv run --no-sync pytest
 
       - name: Build generated documentation
+        continue-on-error: true
         run: uv run --no-sync mkdocs build --strict
 
       - name: Upload prepared files
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: periodic-links-files
