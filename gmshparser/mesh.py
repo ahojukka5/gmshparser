@@ -207,7 +207,9 @@ class Mesh:
         entity.set_tag(entity_tag)
         entity.set_element_type(int(element_type))
         entity.set_number_of_elements(len(elements))
-        for element_tag, connectivity in elements:
+        for element_tag, connectivity, physical_tags in elements:
+            if physical_tags:
+                self.set_element_physical_tags(element_tag, physical_tags)
             element = Element()
             element.set_tag(element_tag)
             element.set_connectivity(list(connectivity))
