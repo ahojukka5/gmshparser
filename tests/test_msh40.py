@@ -101,7 +101,13 @@ def test_msh40_layout_is_preserved_in_modern_and_legacy_models(tmp_path):
     assert legacy.get_max_node_tag() == 4
     assert legacy.get_min_element_tag() == 1
     assert legacy.get_max_element_tag() == 2
-    assert converted == modern
+
+    assert converted.nodes == modern.nodes
+    assert converted.elements == modern.elements
+    assert converted.entities == modern.entities
+    assert converted.physical_groups.keys == modern.physical_groups.keys
+    for key in modern.physical_groups.keys:
+        assert converted.physical_groups[key] == modern.physical_groups[key]
 
 
 def test_msh40_periodic_uses_optional_affine_record():
