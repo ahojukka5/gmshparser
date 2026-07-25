@@ -75,7 +75,10 @@ class EntitiesParser(AbstractParser):
                 if geometry_count == 6:
                     minimum = geometry[:3]
                     maximum = geometry[3:]
-                    if any(lower > upper for lower, upper in zip(minimum, maximum)):
+                    if any(
+                        lower > upper
+                        for lower, upper in zip(minimum, maximum, strict=True)
+                    ):
                         raise InvalidSectionError(
                             f"Entity {tag} has an inverted bounding box"
                         )
