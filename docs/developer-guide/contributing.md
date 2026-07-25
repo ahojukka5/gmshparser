@@ -99,7 +99,7 @@ The groups in `pyproject.toml` have distinct purposes:
 | `typing` | mypy and dependencies used by typing checks |
 | `docs` | MkDocs documentation toolchain |
 | `visualization` | matplotlib examples |
-| `dev` | the default combination of `test` and `lint` |
+| `dev` | the default combination of `test`, `lint`, and `typing` |
 
 Add dependencies to the narrowest suitable group:
 
@@ -147,7 +147,7 @@ GitHub Actions separates validation into these workflows and jobs:
 - `typing` runs mypy on package sources and a strict downstream API example
 - `test` runs pytest on Python 3.12, 3.13, and 3.14
 - `package` builds and smoke-tests the wheel and source distribution after the
-  quality and test jobs succeed
+  quality, typing, and test jobs succeed
 - **Parser benchmarks** records elapsed-time and memory artifacts for
   benchmark-related pull requests without fixed performance thresholds
 
