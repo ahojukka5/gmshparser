@@ -1,27 +1,34 @@
 from pathlib import Path
 
 
-def replace(path: str, old: str, new: str, *, count: int = -1) -> None:
+def replace(path: str, old: str, new: str) -> None:
     target = Path(path)
     text = target.read_text()
     if old not in text:
         raise RuntimeError(f"Expected text not found in {path}: {old!r}")
-    target.write_text(text.replace(old, new, count))
+    target.write_text(text.replace(old, new, 1))
 
 
 replace(
     "gmshparser/modern_builder.py",
-    "                    physical_tags=resolved_physical_tags,\n",
-    "                    physical_tags=physical_tags,\n",
-    count=1,
+    """                    parametric_coordinates=coordinates[3:],
+                    physical_tags=resolved_physical_tags,
+""",
+    """                    parametric_coordinates=coordinates[3:],
+                    physical_tags=physical_tags,
+""",
 )
 replace(
     "gmshparser/modern_builder.py",
-    "                    physical_tags=physical_tags,\n",
-    "                    physical_tags=resolved_physical_tags,\n",
-    count=1,
+    """                    dimension=dimension,
+                    entity_tag=entity_tag,
+                    physical_tags=physical_tags,
+""",
+    """                    dimension=dimension,
+                    entity_tag=entity_tag,
+                    physical_tags=resolved_physical_tags,
+""",
 )
-
 replace(
     "gmshparser/api.py",
     """class _Tagged(Protocol):
