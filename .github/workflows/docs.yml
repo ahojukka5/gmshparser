@@ -33,7 +33,7 @@ jobs:
         run: uv sync --no-default-groups --group docs
 
       - name: Build documentation
-        run: uv run --no-sync mkdocs build
+        run: uv run --no-sync mkdocs build --strict
 
       - name: Configure GitHub Pages
         if: github.event_name == 'push' && github.ref == 'refs/heads/master'
