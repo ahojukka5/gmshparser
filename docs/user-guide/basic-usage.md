@@ -1,6 +1,8 @@
-# Basic Usage
+# Working with Meshes
 
-## Read a mesh
+This page is task-oriented. For the complete object model and filtering semantics, see [Modern Data Model](pythonic-api.md).
+
+## Read a path
 
 ```python
 import gmshparser
@@ -8,112 +10,116 @@ import gmshparser
 mesh = gmshparser.read("path/to/mesh.msh")
 ```
 
-`read()` detects the supported MSH version automatically and returns the modern,
-immutable `gmshparser.api.Mesh` model.
+`read()` detects the supported MSH version automatically and returns an immutable `gmshparser.api.Mesh`.
 
-## Mesh metadata
+## Read a text stream
+
+```python
+from io import StringIO
+
+mesh = gmshparser.read(StringIO(msh_text), name="generated.msh")
+```
+
+The optional `name` appears in parser errors and `mesh.name`.
+
+## Summarize a mesh
 
 ```python
 print(mesh.name)
 print(mesh.version)
-print(mesh.version.major, mesh.version.minor)
-print(mesh.is_ascii)
-print(mesh.data_size)
 print(mesh.dimension)
 print(mesh.bounds)
 print(len(mesh.nodes), len(mesh.elements), len(mesh.entities))
+print(mesh.element_types)
 ```
 
-## Nodes
+`mesh.bounds` is `((xmin, ymin, zmin), (xmax, ymax, zmax))`. Empty meshes have no geometric dimension or bounds.
 
-The flat node collection iterates over node objects:
-
-```python
-for node in mesh.nodes:
-    print(node.tag, node.coordinates)
-    print(node.x, node.y, node.z)
-```
-
-Index by the original Gmsh tag:
+## Look up nodes by tag
 
 ```python
 node = mesh.nodes[42]
-x, y, z = node
+print(node.coordinates)
+print(node.entity_key)
+print(node.physical_tags)
 ```
 
-Filter by entity metadata:
+Integer indexing always means the original Gmsh tag. It is not a positional array index.
+
+Use `get()` when absence is expected:
+
+```python
+node = mesh.nodes.get(42)
+if node is not None:
+    print(node.x, node.y, node.z)
+```
+
+## Filter nodes
 
 ```python
 surface_nodes = mesh.nodes.where(dimension=2)
-selected_entity = mesh.nodes.where(entity=(2, 7))
+entity_nodes = mesh.nodes.by_entity(dimension=2, tag=7)
 parametric_nodes = mesh.nodes.where(parametric=True)
+physical_nodes = mesh.nodes.where(physical_tag=10)
 ```
 
-## Elements
+Filtered collections retain normal tag lookup and parser order.
 
-Elements carry direct references to their nodes:
+## Inspect elements
 
 ```python
+from gmshparser import ElementType
+
 for element in mesh.elements:
-    print(element.tag, element.type, element.node_tags)
+    print(element.tag, element.element_type, element.node_tags)
     for node in element:
         print(node.coordinates)
+
+triangles = mesh.elements.by_type(ElementType.TRIANGLE)
 ```
 
-Index and filter using collection operations:
+`element.nodes` contains resolved `Node` objects. `element.node_tags` and `element.connectivity` retain the original Gmsh connectivity tags.
+
+## Filter elements
 
 ```python
-from gmshparser.api import ElementType
-
-element = mesh.elements[17]
-triangles = mesh.elements.by_type(ElementType.TRIANGLE)
-quads = mesh.elements.where(
+surface_quads = mesh.elements.where(
     element_type=ElementType.QUADRANGLE,
     dimension=2,
 )
+entity_elements = mesh.elements.by_entity(dimension=2, tag=7)
+physical_elements = mesh.elements.where(physical_tag=10)
 ```
 
-`ElementType` is an integer enum. It gives common Gmsh IDs readable names while
-remaining comparable with the corresponding integer values.
-
-## Entities
-
-Most code can use the flat collections. Unified entities retain the original
-Gmsh grouping when it matters:
+## Work with entities
 
 ```python
-for entity in mesh.entities:
-    print(entity.dimension, entity.tag, entity.element_types)
-    print(len(entity.nodes), len(entity.elements))
+surface = mesh.entity(dimension=2, tag=7)
+
+print(surface.nodes)
+print(surface.elements)
+print(surface.element_types)
+print(surface.physical_tags)
 ```
 
-Look up an entity using `(dimension, tag)`:
+Dimension views are available directly:
 
 ```python
-surface = mesh.entities[(2, 7)]
+print(mesh.points)
+print(mesh.curves)
+print(mesh.surfaces)
+print(mesh.volumes)
 ```
 
-Filter entities by dimension, content, or element type:
+Filter the complete entity collection when several conditions matter:
 
 ```python
-surfaces = mesh.entities.where(dimension=2)
-triangle_entities = mesh.entities.where(element_type=ElementType.TRIANGLE)
-entities_with_elements = mesh.entities.where(has_elements=True)
+triangle_surfaces = mesh.entities.where(
+    dimension=2,
+    element_type=ElementType.TRIANGLE,
+    has_elements=True,
+)
 ```
-
-## Visualization helpers
-
-The helpers accept modern meshes directly:
-
-```python
-X, Y, triangles = gmshparser.helpers.get_triangles(mesh)
-X, Y, quads = gmshparser.helpers.get_quads(mesh)
-mixed = gmshparser.helpers.get_elements_2d(mesh)
-```
-
-`get_triangles()` and `get_quads()` return zero-based connectivity into their
-coordinate arrays. `get_elements_2d()` preserves original node tags in element
-connectivity.
 
 ## Export nodes to CSV
 
@@ -122,17 +128,28 @@ import csv
 
 with open("nodes.csv", "w", newline="") as stream:
     writer = csv.writer(stream)
-    writer.writerow(["id", "x", "y", "z"])
+    writer.writerow(["tag", "x", "y", "z"])
     writer.writerows((node.tag, *node.coordinates) for node in mesh.nodes)
 ```
 
-## Read from an open stream
+## Build an element-to-coordinate table
 
 ```python
-from io import StringIO
-
-mesh = gmshparser.read(StringIO(msh_text), name="generated.msh")
+rows = [
+    (
+        element.tag,
+        element.element_type,
+        tuple(node.coordinates for node in element),
+    )
+    for element in mesh.elements
+]
 ```
+
+For numerical arrays and zero-based connectivity, use [NumPy Interoperability](numpy.md) instead.
+
+## Physical and periodic metadata
+
+Named boundaries, materials, and periodic node relations are covered in [Physical Groups and Periodicity](physical-groups.md).
 
 ## Error handling
 
@@ -141,21 +158,16 @@ try:
     mesh = gmshparser.read("mesh.msh")
 except FileNotFoundError:
     print("Mesh file not found")
-except ValueError as error:
-    print(f"Unsupported or invalid MSH file: {error}")
+except gmshparser.ParseError as error:
+    print(error)
 ```
 
-## Compatibility API
+See [Error Handling](error-handling.md) for the complete hierarchy and source context.
 
-The original parser-oriented model remains available:
+## Existing compatibility applications
 
 ```python
 legacy_mesh = gmshparser.parse("mesh.msh")
-
-for entity in legacy_mesh.get_node_entities():
-    for node in entity.get_nodes():
-        print(node.get_tag(), node.get_coordinates())
 ```
 
-See [Pythonic API](pythonic-api.md) for the complete modern model and migration
-notes.
+See [Migrating from the Compatibility API](migration.md) when moving existing `get_*` code to the modern model.
