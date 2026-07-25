@@ -52,9 +52,7 @@ class EntitiesParser(AbstractParser):
 
                 try:
                     tag = int(parts[0])
-                    geometry = tuple(
-                        float(value) for value in parts[1:physical_count_index]
-                    )
+                    geometry = tuple(float(value) for value in parts[1:physical_count_index])
                     number_of_physical_tags = int(parts[physical_count_index])
                 except ValueError as error:
                     raise InvalidSectionError(
@@ -75,10 +73,7 @@ class EntitiesParser(AbstractParser):
                 if geometry_count == 6:
                     minimum = geometry[:3]
                     maximum = geometry[3:]
-                    if any(
-                        lower > upper
-                        for lower, upper in zip(minimum, maximum, strict=True)
-                    ):
+                    if any(lower > upper for lower, upper in zip(minimum, maximum, strict=True)):
                         raise InvalidSectionError(
                             f"Entity {tag} has an inverted bounding box"
                         )
