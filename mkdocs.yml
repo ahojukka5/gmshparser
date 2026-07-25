@@ -84,6 +84,6 @@ nav:
       - Compatibility Mesh: api/mesh.md
       - Parsers: api/parsers.md
       - Helpers: api/helpers.md
-  - About:
-      - License: about/license.md
-      - Changelog: about/changelog.md
+  - Project:
+      - Changelog: https://github.com/ahojukka5/gmshparser/blob/master/CHANGELOG.md
+      - License: https://github.com/ahojukka5/gmshparser/blob/master/LICENSE
