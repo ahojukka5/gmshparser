@@ -3,7 +3,7 @@ from __future__ import annotations
 import os
 from collections.abc import Iterable, Iterator
 from dataclasses import dataclass, field
-from typing import TextIO, cast
+from typing import Protocol, TextIO, cast
 
 from .element_types import ElementFamily, ElementType, ElementTypeInfo
 from .main_parser import MainParser
@@ -52,7 +52,11 @@ class Version:
         return float(str(self))
 
 
-class _TaggedCollection[T]:
+class _Tagged(Protocol):
+    tag: int
+
+
+class _TaggedCollection[T: _Tagged]:
     """Immutable values that iterate naturally and index by Gmsh tag."""
 
     __slots__ = ("_items", "_by_tag")
@@ -607,11 +611,11 @@ class Mesh:
         nodes_by_entity: dict[EntityKey, list[Node]] = {}
         all_nodes: list[Node] = []
 
-        for legacy_entity in mesh.get_node_entities():
-            key = legacy_entity.get_dimension(), legacy_entity.get_tag()
+        for legacy_node_entity in mesh.get_node_entities():
+            key = legacy_node_entity.get_dimension(), legacy_node_entity.get_tag()
             entity_nodes = nodes_by_entity.setdefault(key, [])
 
-            for legacy_node in legacy_entity.get_nodes():
+            for legacy_node in legacy_node_entity.get_nodes():
                 raw_coordinates = tuple(legacy_node.get_coordinates())
                 if len(raw_coordinates) < 3:
                     raise ValueError(
@@ -636,22 +640,25 @@ class Mesh:
         elements_by_entity: dict[EntityKey, list[Element]] = {}
         all_elements: list[Element] = []
 
-        for legacy_entity in mesh.get_element_entities():
-            key = legacy_entity.get_dimension(), legacy_entity.get_tag()
-            entity_elements = elements_by_entity.setdefault(key, [])
-            element_type = ElementType(legacy_entity.get_element_type())
+        for legacy_element_entity in mesh.get_element_entities():
+            key = (
+                legacy_element_entity.get_dimension(),
+                legacy_element_entity.get_tag(),
+            )
+            entity_element_values = elements_by_entity.setdefault(key, [])
+            element_type = ElementType(legacy_element_entity.get_element_type())
             entity_physical_tags = mesh.get_entity_physical_tags(*key)
 
-            for legacy_element in legacy_entity.get_elements():
+            for legacy_element in legacy_element_entity.get_elements():
                 element_nodes: list[Node] = []
                 for node_tag in legacy_element.get_connectivity():
-                    node = nodes.get(node_tag)
-                    if node is None:
+                    resolved_node = nodes.get(node_tag)
+                    if resolved_node is None:
                         raise ValueError(
                             f"Element {legacy_element.get_tag()} references "
                             f"unknown node {node_tag}"
                         )
-                    element_nodes.append(node)
+                    element_nodes.append(resolved_node)
 
                 element_physical_tags = mesh.get_element_physical_tags(
                     legacy_element.get_tag()
@@ -667,7 +674,7 @@ class Mesh:
                     entity_tag=key[1],
                     physical_tags=element_physical_tags,
                 )
-                entity_elements.append(element)
+                entity_element_values.append(element)
                 all_elements.append(element)
 
         elements = ElementCollection(all_elements)

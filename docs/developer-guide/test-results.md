@@ -79,7 +79,7 @@ uv run pytest --cov=gmshparser --cov-report=html
 ## Authoritative status
 
 Mesh files are stored under `testdata/`; see
-[`testdata/README.md`](../../testdata/README.md).
+[`testdata/README.md`](https://github.com/ahojukka5/gmshparser/blob/master/testdata/README.md).
 
 Exact test counts and coverage percentages change as the project evolves. The
 GitHub Actions result and Codecov report for the current commit are the

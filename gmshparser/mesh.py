@@ -1,3 +1,4 @@
+from collections.abc import ValuesView
 from io import StringIO
 
 from gmshparser.element import Element
@@ -141,7 +142,7 @@ class Mesh:
         """Get node entity based on dimension and tag."""
         return self.node_entities_[(dim, tag)]
 
-    def get_node_entities(self) -> list[NodeEntity]:
+    def get_node_entities(self) -> ValuesView[NodeEntity]:
         """Get all node entities of mesh."""
         return self.node_entities_.values()
 
@@ -257,7 +258,7 @@ class Mesh:
             f"Available element types: {available_types}"
         )
 
-    def get_element_entities(self) -> list[ElementEntity]:
+    def get_element_entities(self) -> ValuesView[ElementEntity]:
         """Get all element blocks in parser order."""
         return self.element_entities_.values()
 

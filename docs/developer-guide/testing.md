@@ -64,7 +64,7 @@ meshes and more complex files collected for regression testing. Tests should
 refer to files that are committed to the repository rather than describing or
 assuming uncommitted benchmark datasets.
 
-See [Test Data](../../testdata/README.md) for the current organization.
+See [Test Data](https://github.com/ahojukka5/gmshparser/blob/master/testdata/README.md) for the current organization.
 
 ## Writing tests
 

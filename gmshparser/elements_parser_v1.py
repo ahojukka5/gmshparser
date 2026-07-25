@@ -95,9 +95,13 @@ class ElementsParserV1(AbstractParser):
             mesh.set_max_element_tag(max_tag)
         mesh.set_number_of_element_entities(len(element_groups))
 
-        for (dimension, entity_tag), physical_tags in physical_tags_by_entity.items():
-            mesh.add_entity_physical_tags(dimension, entity_tag, physical_tags)
-        for (dimension, entity_tag, element_type), elements in element_groups.items():
-            mesh.add_element_block(dimension, entity_tag, element_type, elements)
+        for (dimension, entity_tag), entity_physical_tags in physical_tags_by_entity.items():
+            mesh.add_entity_physical_tags(
+                dimension,
+                entity_tag,
+                entity_physical_tags,
+            )
+        for (dimension, entity_tag, type_id), block_elements in element_groups.items():
+            mesh.add_element_block(dimension, entity_tag, type_id, block_elements)
 
         expect_end_marker(io, "$ENDELM")

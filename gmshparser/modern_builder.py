@@ -295,7 +295,7 @@ class ModernMeshBuilder:
                     dimension=dimension,
                     entity_tag=entity_tag,
                     parametric_coordinates=coordinates[3:],
-                    physical_tags=physical_tags,
+                    physical_tags=resolved_physical_tags,
                 )
                 nodes_by_tag[node_tag] = node
                 entity_nodes.append(node)
@@ -313,7 +313,7 @@ class ModernMeshBuilder:
 
         for dimension, entity_tag, type_id, raw_elements in self._raw_element_blocks:
             key = dimension, entity_tag
-            entity_elements = elements_by_entity.setdefault(key, [])
+            entity_element_values = elements_by_entity.setdefault(key, [])
             element_type = ElementType(type_id)
             entity_physical_tags = self.get_entity_physical_tags(*key)
 
@@ -328,11 +328,11 @@ class ModernMeshBuilder:
                         f"Element {element_tag} references unknown node {missing_tag}"
                     ) from error
 
-                physical_tags = record_physical_tags
-                if not physical_tags:
-                    physical_tags = self.get_element_physical_tags(element_tag)
-                if not physical_tags:
-                    physical_tags = entity_physical_tags
+                resolved_physical_tags = record_physical_tags
+                if not resolved_physical_tags:
+                    resolved_physical_tags = self.get_element_physical_tags(element_tag)
+                if not resolved_physical_tags:
+                    resolved_physical_tags = entity_physical_tags
 
                 element = Element(
                     tag=element_tag,
@@ -343,7 +343,7 @@ class ModernMeshBuilder:
                     physical_tags=physical_tags,
                 )
                 element_tags.add(element_tag)
-                entity_elements.append(element)
+                entity_element_values.append(element)
                 all_elements.append(element)
 
         if len(all_elements) != self._number_of_elements:
@@ -361,18 +361,18 @@ class ModernMeshBuilder:
         for dimension, tag in entity_keys:
             key = dimension, tag
             entity_elements = ElementCollection(elements_by_entity.get(key, ()))
-            physical_tags = list(self.get_entity_physical_tags(*key))
+            entity_physical_tag_values = list(self.get_entity_physical_tags(*key))
             for element in entity_elements:
                 for physical_tag in element.physical_tags:
-                    if physical_tag not in physical_tags:
-                        physical_tags.append(physical_tag)
+                    if physical_tag not in entity_physical_tag_values:
+                        entity_physical_tag_values.append(physical_tag)
             entity_values.append(
                 Entity(
                     dimension=dimension,
                     tag=tag,
                     nodes=NodeCollection(nodes_by_entity.get(key, ())),
                     elements=entity_elements,
-                    physical_tags=tuple(physical_tags),
+                    physical_tags=tuple(entity_physical_tag_values),
                 )
             )
 
