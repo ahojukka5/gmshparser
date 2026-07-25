@@ -1,42 +1,73 @@
-# Compatibility Mesh API
+# Compatibility API
 
-This page documents the original mutable parser-oriented model returned by
-`gmshparser.parse()`. New code should normally use `gmshparser.read()` and the
-[modern API](modern.md).
+This page documents the original mutable parser-oriented model returned by `gmshparser.parse()`. It remains supported for existing applications. New code should normally use `gmshparser.read()` and the [modern API](modern.md).
+
+## Mesh
 
 ::: gmshparser.mesh.Mesh
     options:
       show_source: true
-      heading_level: 2
+      heading_level: 3
+      members: true
 
-## Usage examples
+The compatibility mesh mirrors MSH entity blocks and exposes explicit `get_*`, `set_*`, and `add_*` methods.
 
 ```python
 import gmshparser
 
 mesh = gmshparser.parse("mesh.msh")
 
-version = mesh.get_version()
-is_ascii = mesh.get_ascii()
-num_nodes = mesh.get_number_of_nodes()
-num_elements = mesh.get_number_of_elements()
-node_entities = mesh.get_node_entities()
-element_entities = mesh.get_element_entities()
+print(mesh.get_name())
+print(mesh.get_version())
+print(mesh.get_ascii())
+print(mesh.get_number_of_nodes())
+print(mesh.get_number_of_elements())
 ```
 
-The compatibility API is retained for existing applications and for low-level
-parser development. It remains mutable and mirrors the internal MSH entity-block
-structure.
+## Node blocks and nodes
 
-Element blocks are identified by dimension, elementary entity tag, and element
-type. Existing two-argument lookup remains available when an entity contains one
-element type:
+::: gmshparser.node_entity.NodeEntity
+    options:
+      show_source: true
+      heading_level: 3
+      members: true
+
+::: gmshparser.node.Node
+    options:
+      show_source: true
+      heading_level: 3
+      members: true
+
+```python
+for entity in mesh.get_node_entities():
+    print(entity.get_dimension(), entity.get_tag())
+    for node in entity.get_nodes():
+        print(node.get_tag(), node.get_coordinates())
+```
+
+Legacy node coordinate tuples may contain Cartesian coordinates followed by parametric coordinates.
+
+## Element blocks and elements
+
+::: gmshparser.element_entity.ElementEntity
+    options:
+      show_source: true
+      heading_level: 3
+      members: true
+
+::: gmshparser.element.Element
+    options:
+      show_source: true
+      heading_level: 3
+      members: true
+
+Element blocks are identified by dimension, elementary entity tag, and element type. Existing two-argument lookup remains available when an entity contains one element type:
 
 ```python
 entity = mesh.get_element_entity(2, 1)
 ```
 
-For a mixed entity, provide the numeric type or `ElementType` explicitly:
+For a mixed entity, provide the element type explicitly:
 
 ```python
 from gmshparser import ElementType
@@ -45,18 +76,35 @@ triangles = mesh.get_element_entity(2, 1, ElementType.TRIANGLE)
 quadrangles = mesh.get_element_entity(2, 1, ElementType.QUADRANGLE)
 ```
 
-Calling the two-argument form for a mixed entity raises `KeyError` rather than
-returning an arbitrary block. `has_element_entity()` accepts the same optional
-third argument; without it, the method checks whether any block exists for the
-entity.
+The two-argument form raises `KeyError` for an ambiguous mixed entity rather than returning an arbitrary block.
 
-Equivalent modern access is considerably flatter:
+## Format versions
+
+::: gmshparser.version_manager.MshFormatVersion
+    options:
+      show_source: true
+      heading_level: 3
+      members: true
+
+::: gmshparser.version_manager.VersionManager
+    options:
+      show_source: true
+      heading_level: 3
+      members: true
+
+These classes support parser version detection and validation. The modern application model exposes the smaller immutable `gmshparser.api.Version` value.
+
+## Migration
+
+Equivalent modern access is flatter:
 
 ```python
-mesh = gmshparser.read("mesh.msh")
+modern = gmshparser.read("mesh.msh")
 
-version = mesh.version
-is_ascii = mesh.is_ascii
-num_nodes = len(mesh.nodes)
-num_elements = len(mesh.elements)
+print(modern.name)
+print(modern.version)
+print(len(modern.nodes))
+print(len(modern.elements))
 ```
+
+See [Migrating from the Compatibility API](../user-guide/migration.md) for a method-by-method mapping.
