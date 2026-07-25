@@ -119,6 +119,14 @@ jobs:
           uv run --isolated --no-project --with dist/*.whl python -c "from importlib.resources import files; assert files('gmshparser').joinpath('py.typed').is_file()"
           uv run --isolated --no-project --with dist/*.whl gmshparser --version
 
+      - name: Type-check the installed wheel
+        run: |
+          uv venv /tmp/gmshparser-wheel-typing --python 3.12
+          uv pip install --python /tmp/gmshparser-wheel-typing/bin/python dist/*.whl "mypy>=2.3,<3"
+          cp tests/typing/public_api.py /tmp/gmshparser-wheel-typing/public_api.py
+          cd /tmp/gmshparser-wheel-typing
+          bin/mypy --strict public_api.py
+
       - name: Smoke test source distribution
         run: |
           uv run --isolated --no-project --with dist/*.tar.gz python -c "import gmshparser"
