@@ -75,7 +75,16 @@ jobs:
           python-version: "3.12"
       - run: uv sync --no-default-groups --group lint
       - run: uv run --no-sync ruff format gmshparser tests
+      - uses: actions/upload-artifact@v4
+        with:
+          name: physical-group-get-fix-files
+          path: |
+            gmshparser/api.py
+            docs/about/changelog.md
+            tests/test_physical_group_collection.py
+          if-no-files-found: error
       - name: Commit changes
+        continue-on-error: true
         run: |
           git config user.name github-actions[bot]
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
