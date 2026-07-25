@@ -1,17 +1,19 @@
+from collections.abc import ValuesView
+
 from .node import Node
 
 
 class NodeEntity:
     """NodeEntity class holds nodes for one block."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.dimension_ = -1
         self.tag_ = -1
         self.number_of_parametric_coordinates_ = -1
         self.number_of_nodes_ = -1
-        self.nodes_ = {}
+        self.nodes_: dict[int, Node] = {}
 
-    def set_dimension(self, dimension: int):
+    def set_dimension(self, dimension: int) -> None:
         """Set the dimension of the entity to `dimension`."""
         self.dimension_ = dimension
 
@@ -19,7 +21,7 @@ class NodeEntity:
         """Get the dimension of the entity."""
         return self.dimension_
 
-    def set_tag(self, tag: int):
+    def set_tag(self, tag: int) -> None:
         """Set the tag of the entity."""
         self.tag_ = tag
 
@@ -27,7 +29,7 @@ class NodeEntity:
         """Get the tag of the entity."""
         return self.tag_
 
-    def set_number_of_parametric_coordinates(self, npar: int):
+    def set_number_of_parametric_coordinates(self, npar: int) -> None:
         """Set the number of parametric coordinates of the entity."""
         self.number_of_parametric_coordinates_ = npar
 
@@ -35,7 +37,7 @@ class NodeEntity:
         """Get the number of parametric coordinates of the entity."""
         return self.number_of_parametric_coordinates_
 
-    def set_number_of_nodes(self, number_of_nodes: int):
+    def set_number_of_nodes(self, number_of_nodes: int) -> None:
         """Set the number of nodes of the entity."""
         self.number_of_nodes_ = number_of_nodes
 
@@ -43,7 +45,7 @@ class NodeEntity:
         """Get the number of nodes of the entity."""
         return self.number_of_nodes_
 
-    def add_node(self, node: Node):
+    def add_node(self, node: Node) -> None:
         """Add new node to entity."""
         self.nodes_[node.get_tag()] = node
 
@@ -51,6 +53,6 @@ class NodeEntity:
         """Get node from entity by its tag."""
         return self.nodes_[tag]
 
-    def get_nodes(self) -> list[Node]:
+    def get_nodes(self) -> ValuesView[Node]:
         """Get all nodes in this entity."""
         return self.nodes_.values()
