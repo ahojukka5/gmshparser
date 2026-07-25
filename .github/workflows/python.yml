@@ -53,24 +53,10 @@ jobs:
         run: uv sync --no-default-groups --group typing
 
       - name: Check package typing
-        shell: bash
-        run: |
-          set -o pipefail
-          uv run --no-sync mypy gmshparser 2>&1 | tee mypy-package.txt
+        run: uv run --no-sync mypy gmshparser
 
       - name: Check downstream public API typing
-        shell: bash
-        run: |
-          set -o pipefail
-          uv run --no-sync mypy --strict tests/typing/public_api.py 2>&1 | tee mypy-public-api.txt
-
-      - name: Upload typing diagnostics
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: typing-diagnostics
-          path: mypy-*.txt
-          if-no-files-found: ignore
+        run: uv run --no-sync mypy --strict tests/typing/public_api.py
 
   test:
     name: Test Python ${{ matrix.python-version }}
