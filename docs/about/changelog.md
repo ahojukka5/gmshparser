@@ -83,6 +83,8 @@ semantic versioning.
 
 ### Fixed
 
+- made `PhysicalGroupCollection.get()` return its default only for missing
+  keys while preserving `KeyError` for ambiguous physical-group names
 - preserved multiple element-type blocks on the same MSH 1.x or 2.x entity
   instead of overwriting all but the last type
 - removed parser-side failure printing to stdout
