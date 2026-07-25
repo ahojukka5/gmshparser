@@ -32,6 +32,7 @@ Install additional groups only when needed:
 ```bash
 uv sync --group docs
 uv sync --group benchmark
+uv sync --group typing
 uv sync --group visualization
 uv sync --all-groups
 ```
@@ -51,7 +52,10 @@ Run the complete local quality checks:
 ```bash
 uv run ruff format --check gmshparser tests examples benchmarks
 uv run ruff check gmshparser tests examples benchmarks
+uv run mypy gmshparser
+uv run mypy --strict tests/typing/public_api.py
 uv run pytest
+uv run mkdocs build --strict
 ```
 
 Apply formatting and safe automatic lint fixes when necessary:
@@ -92,6 +96,7 @@ The groups in `pyproject.toml` have distinct purposes:
 | `benchmark` | NumPy dependency used by the reproducible benchmark matrix |
 | `test` | pytest and coverage tooling |
 | `lint` | Ruff formatting and linting |
+| `typing` | mypy and dependencies used by typing checks |
 | `docs` | MkDocs documentation toolchain |
 | `visualization` | matplotlib examples |
 | `dev` | the default combination of `test` and `lint` |
@@ -102,6 +107,7 @@ Add dependencies to the narrowest suitable group:
 uv add --group benchmark PACKAGE
 uv add --group test PACKAGE
 uv add --group lint PACKAGE
+uv add --group typing PACKAGE
 uv add --group docs PACKAGE
 uv add --group visualization PACKAGE
 ```
@@ -113,7 +119,8 @@ Remove the generated `uv.lock` before committing if `uv` creates it locally.
 - Follow PEP 8.
 - Use Ruff for formatting and linting.
 - Keep all configured Ruff rules clean.
-- Add type hints where they improve clarity.
+- Keep package and downstream public-API mypy checks clean.
+- Add precise type hints without hiding errors behind broad ignores.
 - Write tests for new behavior and bug fixes.
 - Document public APIs and user-visible changes.
 
@@ -123,7 +130,7 @@ Build the documentation:
 
 ```bash
 uv sync --group docs
-uv run mkdocs build
+uv run mkdocs build --strict
 ```
 
 Serve it locally:
@@ -137,6 +144,7 @@ uv run mkdocs serve
 GitHub Actions separates validation into these workflows and jobs:
 
 - `quality` runs Ruff once on Python 3.12
+- `typing` runs mypy on package sources and a strict downstream API example
 - `test` runs pytest on Python 3.12, 3.13, and 3.14
 - `package` builds and smoke-tests the wheel and source distribution after the
   quality and test jobs succeed
@@ -153,6 +161,8 @@ Before submitting a pull request, verify that:
 - all tests pass
 - `ruff format --check` reports no changes
 - `ruff check` reports no violations
+- package and downstream typing checks pass
+- strict documentation build reports no warnings
 - documentation is updated when behavior changes
 - the pull request explains what changed, why, and how it was tested
 
@@ -162,11 +172,14 @@ For maintainers:
 
 1. Update only `[project].version` in `pyproject.toml`.
 2. Move the changelog entries from `[Unreleased]` to the dated release section.
-3. Build locally with `uv build --no-sources`.
-4. Create and publish a GitHub release tagged `v<project-version>`.
-5. The release workflow verifies that the tag matches the project version.
-6. The workflow builds and smoke-tests both distributions.
-7. `uv publish` obtains a short-lived PyPI credential through GitHub OIDC.
+3. Run the complete quality, typing, test, strict documentation, and package
+   checks.
+4. Build locally with `uv build --no-sources` and verify that `py.typed` is present
+   in both distributions.
+5. Create and publish a GitHub release tagged `v<project-version>`.
+6. The release workflow verifies that the tag matches the project version.
+7. The workflow builds and smoke-tests both distributions.
+8. `uv publish` obtains a short-lived PyPI credential through GitHub OIDC.
 
 `gmshparser.__version__` and the CLI version are read from installed distribution
 metadata, which is generated from `pyproject.toml`; they must not be edited

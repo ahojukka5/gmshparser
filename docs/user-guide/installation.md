@@ -16,6 +16,12 @@ pip install gmshparser
 
 The package requires Python 3.12 or newer.
 
+## Typing support
+
+gmshparser ships inline PEP 561 type information and a `py.typed` marker. Type
+checkers such as mypy and pyright therefore use the annotations from the installed
+package without a separate stubs distribution.
+
 ## Development version
 
 Install the current `master` branch directly from GitHub:
@@ -85,11 +91,12 @@ cd gmshparser
 uv sync
 ```
 
-The default `dev` group includes the `test` and `lint` groups. Install other
-groups explicitly:
+The default `dev` group includes the `test`, `lint`, and `typing` groups.
+Install other groups explicitly:
 
 ```bash
 uv sync --group docs
+uv sync --group benchmark
 uv sync --group visualization
 uv sync --all-groups
 ```
@@ -98,8 +105,10 @@ Run project commands through uv:
 
 ```bash
 uv run pytest
-uv run ruff format --check gmshparser tests examples
-uv run ruff check gmshparser tests examples
+uv run ruff format --check gmshparser tests examples benchmarks
+uv run ruff check gmshparser tests examples benchmarks
+uv run mypy gmshparser
+uv run mypy --strict tests/typing/public_api.py
 ```
 
 Dependency lock files are intentionally not committed. A locally generated

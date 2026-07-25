@@ -18,6 +18,7 @@ backward compatibility.
 - **Python:** 3.12 or newer
 - **MSH formats:** 1.0, 2.0, 2.1, 2.2, 4.0, and 4.1
 - **Core dependencies:** none
+- **Typing:** PEP 561 inline type information through `py.typed`
 - **Scope:** reading meshes; writing and binary MSH files are not supported
 
 Project links:
@@ -264,14 +265,17 @@ uv add matplotlib
 ## Development
 
 The repository uses uv and intentionally does not commit dependency lock files.
-Ruff provides both formatting and linting.
+Ruff provides formatting and linting, while mypy validates both the package and a
+strict downstream public-API example.
 
 ```bash
 git clone https://github.com/ahojukka5/gmshparser.git
 cd gmshparser
 uv sync
-uv run ruff format --check gmshparser tests examples
-uv run ruff check gmshparser tests examples
+uv run ruff format --check gmshparser tests examples benchmarks
+uv run ruff check gmshparser tests examples benchmarks
+uv run mypy gmshparser
+uv run mypy --strict tests/typing/public_api.py
 uv run pytest
 ```
 
@@ -279,7 +283,7 @@ Build the documentation with:
 
 ```bash
 uv sync --group docs
-uv run mkdocs build
+uv run mkdocs build --strict
 ```
 
 See the [Contributing guide](https://ahojukka5.github.io/gmshparser/developer-guide/contributing/)

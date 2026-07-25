@@ -15,6 +15,15 @@ uv run --no-sync ruff format --check gmshparser tests examples benchmarks
 uv run --no-sync ruff check gmshparser tests examples benchmarks
 ```
 
+The typing job validates package sources and a strict downstream public-API
+sample:
+
+```bash
+uv sync --no-default-groups --group typing
+uv run --no-sync mypy gmshparser
+uv run --no-sync mypy --strict tests/typing/public_api.py
+```
+
 The test matrix runs on Python 3.12, 3.13, and 3.14:
 
 ```bash
@@ -22,16 +31,16 @@ uv sync --no-default-groups --group test
 uv run --no-sync pytest --cov=gmshparser --cov-report=xml --cov-report=term
 ```
 
-After quality and tests succeed, a separate package job builds the wheel and
-source distribution and smoke-tests the installed package and CLI. The release
-workflow repeats those package checks before publishing through PyPI trusted
-publishing.
+After quality, typing, and tests succeed, a separate package job builds the
+wheel and source distribution and smoke-tests the installed package, CLI, and
+packaged `py.typed` marker. The release workflow repeats those package checks
+before publishing through PyPI trusted publishing.
 
 The documentation workflow installs only the `docs` dependency group and runs:
 
 ```bash
 uv sync --no-default-groups --group docs
-uv run --no-sync mkdocs build
+uv run --no-sync mkdocs build --strict
 ```
 
 Pull requests validate the documentation build. Pushes to `master` additionally
