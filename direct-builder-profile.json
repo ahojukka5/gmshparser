@@ -1,16 +1,16 @@
 [
   {
     "format": "2.2",
-    "parse_seconds": 2.4028939620000003,
-    "parse_peak_bytes": 31180431,
-    "build_seconds": 2.1024141259999993,
+    "parse_seconds": 2.4181645749999987,
+    "parse_peak_bytes": 28832623,
+    "build_seconds": 2.1387366980000024,
     "build_peak_bytes": 43420384
   },
   {
     "format": "4.1",
-    "parse_seconds": 1.363510196,
-    "parse_peak_bytes": 26022395,
-    "build_seconds": 1.347012258999996,
+    "parse_seconds": 1.4010498250000012,
+    "parse_peak_bytes": 26423803,
+    "build_seconds": 1.3843572879999968,
     "build_peak_bytes": 34825000
   }
 ]
