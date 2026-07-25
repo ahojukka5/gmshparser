@@ -3,7 +3,7 @@ from __future__ import annotations
 from collections.abc import Iterable, Mapping
 from dataclasses import dataclass
 from types import MappingProxyType
-from typing import Any
+from typing import Any, cast
 
 try:
     import numpy as np
@@ -13,7 +13,7 @@ except ModuleNotFoundError as error:  # pragma: no cover
         "NumPy support is optional; install it with 'pip install gmshparser[numpy]'"
     ) from error
 
-from .api import Mesh
+from .api import Element, Mesh
 from .element_types import ElementType
 
 __all__ = ["CellBlock", "MeshArrays", "to_numpy"]
@@ -49,7 +49,7 @@ class CellBlock:
     @property
     def nodes_per_element(self) -> int:
         """Connectivity width for this element type."""
-        return self.connectivity.shape[1]
+        return int(self.connectivity.shape[1])
 
 
 @dataclass(frozen=True, slots=True)
@@ -96,7 +96,7 @@ class MeshArrays:
     def cell_node_tags(self, element_type: ElementType | int) -> NDArray[Any]:
         """Return original Gmsh node tags with the block connectivity shape."""
         block = self.cell_block(element_type)
-        return self.node_tags[block.connectivity]
+        return cast(NDArray[Any], self.node_tags[block.connectivity])
 
 
 def to_numpy(
@@ -148,7 +148,7 @@ def to_numpy(
     ).reshape((-1, 2))
 
     tag_to_row = {node.tag: row for row, node in enumerate(nodes)}
-    grouped: dict[ElementType, list] = {}
+    grouped: dict[ElementType, list[Element]] = {}
     for element in mesh.elements:
         if wanted_types is None or element.element_type in wanted_types:
             grouped.setdefault(element.element_type, []).append(element)
