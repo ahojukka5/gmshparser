@@ -6,6 +6,8 @@ semantic versioning.
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-07-25
+
 ### Added
 
 - Pythonic `gmshparser.read()` entry point for paths and open text streams
@@ -42,16 +44,21 @@ semantic versioning.
 - separate Cartesian and parametric node coordinates
 - PEP 621 console-script metadata for the installed `gmshparser` command
 - `gmshparser --version` support
-- wheel and source-distribution smoke tests for the installed CLI
+- PEP 561 inline typing metadata through the packaged `py.typed` marker
+- static type validation for package sources and a strict downstream public-API
+  usage sample
+- wheel and source-distribution smoke tests for the installed CLI and typing
+  marker
 - PyPI trusted publishing through GitHub OIDC
 
 ### Changed
 
-- made `[project].version` in `pyproject.toml` the single writable source
-  for package, runtime, and CLI version reporting
+- made `[project].version` in `pyproject.toml` the single writable source for
+  package, runtime, and CLI version reporting
 - made the release workflow reject Git tags that do not match the package
   version
-- added explicit MIT license metadata to built distributions
+- added explicit MIT license metadata, PyPI classifiers, and search keywords to
+  built distributions
 - added MSH 2.x and 4.x `$Periodic` parsing with immutable modern periodic-link
   values and compatibility-model accessors
 - made `gmshparser.read()` build immutable modern values through a dedicated
@@ -78,56 +85,65 @@ semantic versioning.
 - documented Python 3.12+, ASCII-only parsing, version-specific parser routing,
   and the actual helper return values
 - pointed MkDocs site metadata and badges to GitHub Pages
+- made documentation builds fail on warnings and invalid links
 - replaced stale exact test-count and coverage claims with links to CI and
   Codecov as the authoritative status
 - replaced Black and flake8 with Ruff for formatting and linting
 - enabled Ruff bugbear, import-sorting, and pyupgrade checks and modernized
   imports, type annotations, string formatting, and loop variables accordingly
 - extended Ruff checks to benchmark sources
-- separated CI into quality, test-matrix, and package jobs
+- separated CI into quality, typing, test-matrix, and package jobs
 - replaced the third-party Pages branch publisher with GitHub's official Pages
   artifact and deployment actions
 
 ### Fixed
 
-- retained MSH 4 entities and their physical groups even when they have no
-  node or element blocks in both direct and legacy-conversion paths
+- retained MSH 4 entities and their physical groups even when they have no node
+  or element blocks in both direct and legacy-conversion paths
 - corrected stale physical-group and quality-command documentation
 - implemented the actual MSH 4.0 `$Entities`, `$Nodes`, `$Elements`, and
   `$Periodic` layouts instead of interpreting those sections as MSH 4.1
 - rejected duplicate MSH 4 entity tags, non-finite or inverted geometry, and
   non-positive physical tags
-- made `PhysicalGroupCollection.get()` return its default only for missing
-  keys while preserving `KeyError` for ambiguous physical-group names
+- made `PhysicalGroupCollection.get()` return its default only for missing keys
+  while preserving `KeyError` for ambiguous physical-group names
 - preserved multiple element-type blocks on the same MSH 1.x or 2.x entity
   instead of overwriting all but the last type
 - removed parser-side failure printing to stdout
 - rejected binary MSH files before attempting to parse ASCII sections
 - reported truncated and malformed records as contextual parser errors instead of
   leaking incidental `IndexError` and conversion failures
-- synchronized `gmshparser.__version__` with package version 0.3.1
+- derived `gmshparser.__version__` from installed distribution metadata instead
+  of maintaining a second hard-coded version
 - restored the packaged CLI entry point in `pyproject.toml`
 - removed incorrect claims that binary MSH files or Git LFS are supported
+- corrected type annotations in the compatibility model and parser internals so
+  inline package typing passes mypy without suppressing errors
 
-## [0.3.1]
+## [0.3.1] - 2025-11-17
+
+### Fixed
+
+- corrected project metadata for the PyPI distribution
+- included `README.md` as the package long description
+
+## [0.3.0] - 2025-11-17
+
+### Added
+
+- MkDocs Material documentation organized into user, developer, API, and
+  test-data sections
+- triangle, quadrilateral, and mixed-2D visualization guidance
+- expanded format-version fixtures and tests
 
 ### Changed
 
-- migrated project builds and development workflows from Poetry to uv and
-  `uv_build`
 - raised the supported Python requirement to 3.12 or newer
-- updated CI to test Python 3.12, 3.13, and 3.14
-- grouped development dependencies with PEP 735 dependency groups
-- intentionally stopped committing dependency lock files
-- modernized GitHub Actions and package build smoke tests
+- modernized continuous integration, coverage reporting, formatting, and linting
+- prepared the project structure and documentation for the expanded multi-version
+  parser API
 
-### Documentation
-
-- added the MkDocs Material documentation site
-- organized user, developer, API, and test-data documentation
-- added triangle, quadrilateral, and mixed-2D visualization guidance
-
-## [0.2.0] - 2025-11-16
+## [0.2.0] - 2020-06-04
 
 ### Added
 
