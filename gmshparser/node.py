@@ -1,11 +1,11 @@
 class Node:
     """Node."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.tag_ = -1
-        self.coordinates_ = (None, None, None)
+        self.coordinates_: tuple[float, float, float] = (0.0, 0.0, 0.0)
 
-    def set_tag(self, tag: int):
+    def set_tag(self, tag: int) -> None:
         """Set node tag (node id)."""
         self.tag_ = tag
 
@@ -13,7 +13,7 @@ class Node:
         """Get node tag (node id)."""
         return self.tag_
 
-    def set_coordinates(self, coordinates: tuple[float, float, float]):
+    def set_coordinates(self, coordinates: tuple[float, float, float]) -> None:
         """Set the coordinates of the node."""
         self.coordinates_ = coordinates
 
