@@ -35,6 +35,26 @@ jobs:
       - name: Build documentation
         run: uv run --no-sync mkdocs build --strict
 
+      - name: Verify README-backed homepage
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          homepage = Path("site/index.html").read_text(encoding="utf-8")
+          expected = (
+              "Periodic meshes",
+              "NumPy interoperability",
+              "Structured parser errors",
+              "hero-image.webp",
+          )
+          missing = [value for value in expected if value not in homepage]
+          if missing:
+              raise SystemExit(
+                  "Generated homepage is not using README.md; missing: "
+                  + ", ".join(missing)
+              )
+          PY
+
       - name: Configure GitHub Pages
         if: github.event_name == 'push' && github.ref == 'refs/heads/master'
         uses: actions/configure-pages@v5
