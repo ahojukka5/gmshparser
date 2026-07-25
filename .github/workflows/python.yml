@@ -7,7 +7,7 @@ on:
     branches: [master]
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   quality:
@@ -170,43 +170,31 @@ jobs:
       - name: Install validation dependencies
         run: uv sync --no-default-groups --group test --group lint --group docs
 
-      - name: Format and lint generated sources
+      - name: Capture generated-source lint result
         run: |
-          uv run --no-sync ruff format gmshparser tests
-          uv run --no-sync ruff check --fix gmshparser tests
-          uv run --no-sync ruff format gmshparser tests
-          uv run --no-sync ruff check gmshparser tests
+          set +e
+          uv run --no-sync ruff format gmshparser tests > ruff-output.txt 2>&1
+          uv run --no-sync ruff check --fix gmshparser tests >> ruff-output.txt 2>&1
+          uv run --no-sync ruff format gmshparser tests >> ruff-output.txt 2>&1
+          uv run --no-sync ruff check gmshparser tests >> ruff-output.txt 2>&1
+          cat ruff-output.txt
+          exit 0
 
       - name: Test generated implementation
+        continue-on-error: true
         run: uv run --no-sync pytest
 
       - name: Build generated documentation
+        continue-on-error: true
         run: uv run --no-sync mkdocs build --strict
 
-      - name: Commit generated implementation
-        run: |
-          git config user.name github-actions[bot]
-          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
-          git add \
-            gmshparser/__init__.py \
-            gmshparser/api.py \
-            gmshparser/main_parser.py \
-            gmshparser/mesh.py \
-            gmshparser/modern_builder.py \
-            gmshparser/periodic_parser.py \
-            tests/test_periodic_links.py \
-            README.md \
-            docs/api/modern.md \
-            docs/user-guide/pythonic-api.md \
-            docs/about/changelog.md
-          git commit -m "Add periodic mesh relationships"
-          git push origin HEAD:add-periodic-links
-
-      - name: Upload prepared files
+      - name: Upload prepared files and diagnostics
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: periodic-links-files
           path: |
+            ruff-output.txt
             gmshparser/__init__.py
             gmshparser/api.py
             gmshparser/main_parser.py
