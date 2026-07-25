@@ -45,7 +45,9 @@ class PeriodicParser(AbstractParser):
 
             next_line = read_required_line(io, "periodic affine data or node count")
             if major == 2 or is_v40:
-                affine_transform, node_count_line = _parse_optional_affine(io, next_line)
+                affine_transform, node_count_line = _parse_optional_affine(
+                    io, next_line
+                )
             else:
                 affine_transform = _parse_counted_affine(io, next_line)
                 node_count_line = read_required_line(
