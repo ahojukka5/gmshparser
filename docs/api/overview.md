@@ -1,72 +1,37 @@
 # API Reference
 
-## Recommended entry point
+This reference documents the supported Python surface of gmshparser. Tutorials and task-oriented examples belong in the [User Guide](../user-guide/index.md); parser implementation details belong in the [Developer Guide](../developer-guide/index.md).
 
-### `gmshparser.read()`
+## Entry points
 
-```python
-import gmshparser
-from gmshparser.api import ElementType
+| Call | Return type | Intended use |
+| --- | --- | --- |
+| `gmshparser.read(source, *, name=None)` | `gmshparser.api.Mesh` | recommended for new code |
+| `gmshparser.api.parse(source, *, name=None)` | `gmshparser.api.Mesh` | modern alias for users who prefer `parse` |
+| `gmshparser.parse(filename)` | `gmshparser.mesh.Mesh` | existing compatibility applications |
 
-mesh = gmshparser.read("mesh.msh")
-```
+See [Package API](package.md) for top-level exports.
 
-`read()` returns the modern immutable model from `gmshparser.api`. It accepts a
-filesystem path or an open text stream.
+## Reference sections
 
-```python
-for node in mesh.nodes:
-    print(node.tag, node.coordinates)
+- [Modern API](modern.md) — immutable mesh, nodes, elements, entities, physical groups, periodic links, collections, and element metadata.
+- [NumPy API](numpy.md) — detached point arrays and element-type cell blocks.
+- [Errors](errors.md) — structured parser exceptions and source context.
+- [Compatibility API](mesh.md) — original mutable mesh, entity blocks, nodes, elements, and version helpers.
+- [Helpers](helpers.md) — visualization adapters and low-level line parsers.
 
-triangles = mesh.elements.by_type(ElementType.TRIANGLE)
-element = mesh.elements[17]
-entity = mesh.entities[(2, 7)]
-```
+## Public versus internal APIs
 
-The modern model provides:
+The modern model, top-level entry points, errors, element metadata, NumPy conversion, helpers, and compatibility classes are documented here because applications may use them directly.
 
-- normal attributes instead of `get_*` methods
-- flat, tag-addressable node and element collections
-- direct `Element` → `Node` relationships
-- typed `ElementType` values
-- unified entities containing both nodes and elements
-- filtering by element type, dimension, entity, and contents
-- immutable application-facing value objects
+Version-specific section parsers and parser registries are development interfaces. They are documented under [Parser Internals](../developer-guide/parser-internals.md), not mixed into the application API reference.
 
-See the [Modern API reference](modern.md) and
-[Pythonic API guide](../user-guide/pythonic-api.md).
+## Conventions
 
-## Compatibility entry point
+- Integer collection indexing uses original Gmsh tags, not positional offsets.
+- Entity, physical-group, and periodic-link keys are `(dimension, tag)` tuples.
+- Modern values and collections are immutable.
+- Compatibility values remain mutable and use `get_*` / `set_*` methods.
+- Both entry points raise the same structured parser errors.
 
-### `gmshparser.parse()`
-
-```python
-legacy_mesh = gmshparser.parse("mesh.msh")
-```
-
-`parse()` retains the original mutable parser-oriented data model and its
-`get_*` / `set_*` methods. Existing applications can continue using it without
-changes. The compatibility classes are documented under
-[Compatibility Mesh](mesh.md) and [Parsers](parsers.md).
-
-## Package metadata
-
-```python
-import gmshparser
-
-print(gmshparser.__version__)
-```
-
-## Helpers
-
-Visualization helpers accept either mesh model:
-
-```python
-X, Y, triangles = gmshparser.helpers.get_triangles(mesh)
-X, Y, quads = gmshparser.helpers.get_quads(mesh)
-mixed = gmshparser.helpers.get_elements_2d(mesh)
-```
-
-`get_triangles()` and `get_quads()` return zero-based connectivity into their
-coordinate arrays. `get_elements_2d()` preserves original Gmsh node tags in its
-connectivity lists.
+For a guided introduction, start with [Getting Started](../user-guide/getting-started.md) and [Modern Data Model](../user-guide/pythonic-api.md).

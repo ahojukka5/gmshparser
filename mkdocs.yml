@@ -66,30 +66,32 @@ markdown_extensions:
 nav:
   - Home: index.md
   - User Guide:
+      - Overview: user-guide/index.md
       - Getting Started: user-guide/getting-started.md
       - Installation: user-guide/installation.md
-      - Pythonic API: user-guide/pythonic-api.md
-      - Error Handling: user-guide/error-handling.md
+      - Modern Data Model: user-guide/pythonic-api.md
+      - Working with Meshes: user-guide/basic-usage.md
+      - Physical Groups and Periodicity: user-guide/physical-groups.md
       - NumPy Interoperability: user-guide/numpy.md
-      - Basic Usage: user-guide/basic-usage.md
+      - Error Handling: user-guide/error-handling.md
       - Command Line Interface: user-guide/cli.md
       - Visualization: user-guide/visualization.md
       - Supported Formats: user-guide/supported-formats.md
+      - Migrating from the Compatibility API: user-guide/migration.md
   - Developer Guide:
-      - Contributing: developer-guide/contributing.md
+      - Overview: developer-guide/index.md
       - Architecture: developer-guide/architecture.md
+      - Contributing: developer-guide/contributing.md
       - Writing Parsers: developer-guide/writing-parsers.md
+      - Parser Internals: developer-guide/parser-internals.md
       - Testing: developer-guide/testing.md
       - Performance Benchmarks: developer-guide/benchmarks.md
       - Test Results: developer-guide/test-results.md
   - API Reference:
       - Overview: api/overview.md
+      - Package API: api/package.md
       - Modern API: api/modern.md
       - NumPy API: api/numpy.md
       - Errors: api/errors.md
-      - Compatibility Mesh: api/mesh.md
-      - Parsers: api/parsers.md
+      - Compatibility API: api/mesh.md
       - Helpers: api/helpers.md
-  - Project:
-      - Changelog: https://github.com/ahojukka5/gmshparser/blob/master/CHANGELOG.md
-      - License: https://github.com/ahojukka5/gmshparser/blob/master/LICENSE
