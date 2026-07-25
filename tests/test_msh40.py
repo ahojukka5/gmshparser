@@ -2,10 +2,10 @@ from __future__ import annotations
 
 from io import StringIO
 
-import gmshparser
 import pytest
-from gmshparser.api import Mesh as ModernMesh
 
+import gmshparser
+from gmshparser.api import Mesh as ModernMesh
 
 MSH40 = """$MeshFormat
 4.0 0 8
