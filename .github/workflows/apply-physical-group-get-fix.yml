@@ -3,6 +3,9 @@ name: Apply physical group get fix
 on:
   push:
     branches: [fix-physical-group-get]
+  pull_request:
+    branches: [master]
+    types: [opened, synchronize, reopened]
 
 permissions:
   contents: write
@@ -22,27 +25,27 @@ jobs:
 
           api_path = Path("gmshparser/api.py")
           api = api_path.read_text()
-          old = '''    def get(
+          old = """    def get(
               self,
               key: PhysicalGroupKey | str,
               default: PhysicalGroup | None = None,
           ) -> PhysicalGroup | None:
-              """Return a physical group by key or unambiguous name."""
+              \"\"\"Return a physical group by key or unambiguous name.\"\"\"
               try:
                   return self[key]
               except KeyError:
                   return default
-          '''
-          new = '''    def get(
+          """
+          new = """    def get(
               self,
               key: PhysicalGroupKey | str,
               default: PhysicalGroup | None = None,
           ) -> PhysicalGroup | None:
-              """Return a physical group, or *default* only when the key is absent.
+              \"\"\"Return a physical group, or *default* only when the key is absent.
 
               Ambiguous names still raise :class:`KeyError`; callers must use the
               explicit ``(dimension, tag)`` key in that case.
-              """
+              \"\"\"
               if isinstance(key, str):
                   matches = self._by_name.get(key, ())
                   if len(matches) == 1:
@@ -50,27 +53,27 @@ jobs:
                   if not matches:
                       return default
                   raise KeyError(
-                      f"Physical group name {key!r} is ambiguous; "
-                      "use (dimension, tag)"
+                      f\"Physical group name {key!r} is ambiguous; \"
+                      \"use (dimension, tag)\"
                   )
               return self._by_key.get(key, default)
-          '''
+          """
           if old not in api:
               raise SystemExit("PhysicalGroupCollection.get target not found")
           api_path.write_text(api.replace(old, new, 1))
 
           changelog_path = Path("docs/about/changelog.md")
           changelog = changelog_path.read_text()
-          marker = '''### Fixed
+          marker = """### Fixed
 
           - preserved multiple element-type blocks on the same MSH 1.x or 2.x entity
-          '''
-          replacement = '''### Fixed
+          """.replace("          ", "")
+          replacement = """### Fixed
 
           - made `PhysicalGroupCollection.get()` return its default only for missing
             keys while preserving `KeyError` for ambiguous physical-group names
           - preserved multiple element-type blocks on the same MSH 1.x or 2.x entity
-          '''
+          """.replace("          ", "")
           if marker not in changelog:
               raise SystemExit("Changelog target not found")
           changelog_path.write_text(changelog.replace(marker, replacement, 1))
