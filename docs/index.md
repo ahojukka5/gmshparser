@@ -80,7 +80,8 @@ format-specific notes.
 - [Source repository](https://github.com/ahojukka5/gmshparser)
 - [Issue tracker](https://github.com/ahojukka5/gmshparser/issues)
 - [PyPI package](https://pypi.org/project/gmshparser)
-- [MIT License](about/license.md)
+- [Changelog](https://github.com/ahojukka5/gmshparser/blob/master/CHANGELOG.md)
+- [MIT License](https://github.com/ahojukka5/gmshparser/blob/master/LICENSE)
 
 [gh-ci-img]: https://github.com/ahojukka5/gmshparser/actions/workflows/python.yml/badge.svg
 [gh-ci-url]: https://github.com/ahojukka5/gmshparser/actions/workflows/python.yml
