@@ -4,7 +4,6 @@ import pytest
 
 import gmshparser
 
-
 MESH = """$MeshFormat
 4.1 0 8
 $EndMeshFormat
