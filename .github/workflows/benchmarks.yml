@@ -70,7 +70,7 @@ jobs:
         run: cat benchmark-summary.md >> "$GITHUB_STEP_SUMMARY"
 
       - name: Upload benchmark results
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: parser-benchmark-results
           path: |
