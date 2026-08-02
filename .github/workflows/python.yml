@@ -10,9 +10,25 @@ permissions:
   contents: read
 
 jobs:
+  # This repository is public. A pull_request from a fork must never reach
+  # the self-hosted runner used by quality/typing/test/package below --
+  # each needs this job and fails outright (not a silent skip) if the PR's
+  # head repository isn't this same repository, i.e. isn't from someone
+  # with write access.
+  guard-self-hosted:
+    name: Verify trusted source for self-hosted jobs
+    runs-on: ubuntu-latest
+    steps:
+      - name: Reject pull requests from forks
+        if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository
+        run: |
+          echo "::error::Self-hosted runner jobs do not run for pull requests from forks (head repository: ${{ github.event.pull_request.head.repo.full_name }})."
+          exit 1
+
   quality:
     name: Ruff quality checks
-    runs-on: [self-hosted, linux, x64, lumi, lumi-cpu, lumi-small]
+    needs: guard-self-hosted
+    runs-on: self-hosted
     steps:
       - uses: actions/checkout@v7
 
@@ -36,7 +52,8 @@ jobs:
 
   typing:
     name: Static typing
-    runs-on: [self-hosted, linux, x64, lumi, lumi-cpu, lumi-small]
+    needs: guard-self-hosted
+    runs-on: self-hosted
     steps:
       - uses: actions/checkout@v7
 
@@ -60,7 +77,8 @@ jobs:
 
   test:
     name: Test Python ${{ matrix.python-version }}
-    runs-on: [self-hosted, linux, x64, lumi, lumi-cpu, lumi-small]
+    needs: guard-self-hosted
+    runs-on: self-hosted
     strategy:
       fail-fast: false
       matrix:
@@ -95,8 +113,8 @@ jobs:
 
   package:
     name: Build and smoke-test distributions
-    runs-on: [self-hosted, linux, x64, lumi, lumi-cpu, lumi-small]
-    needs: [quality, typing, test]
+    runs-on: self-hosted
+    needs: [quality, typing, test, guard-self-hosted]
 
     steps:
       - uses: actions/checkout@v7
