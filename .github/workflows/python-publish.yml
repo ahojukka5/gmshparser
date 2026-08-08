@@ -10,7 +10,7 @@ permissions:
 
 jobs:
   deploy:
-    name: release: publish to PyPI
+    name: "release: publish to PyPI"
     runs-on: self-hosted
     environment:
       name: pypi
