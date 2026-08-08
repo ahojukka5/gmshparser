@@ -10,7 +10,8 @@ permissions:
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest
+    name: release: publish to PyPI
+    runs-on: self-hosted
     environment:
       name: pypi
       url: https://pypi.org/project/gmshparser/
