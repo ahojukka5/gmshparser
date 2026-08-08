@@ -28,8 +28,9 @@ permissions:
 
 jobs:
   benchmark:
-    name: Reproducible parser baseline
-    runs-on: ubuntu-latest
+    name: bench: reproducible parser baseline
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: self-hosted
 
     steps:
       - uses: actions/checkout@v7
