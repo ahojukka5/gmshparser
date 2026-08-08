@@ -11,7 +11,7 @@ permissions:
 
 jobs:
   quality:
-    name: lint: ruff format and check
+    name: "lint: ruff format and check"
     if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
     runs-on: self-hosted
     steps:
@@ -36,7 +36,7 @@ jobs:
         run: uv run --no-sync ruff check gmshparser tests examples benchmarks
 
   typing:
-    name: lint: static typing (mypy)
+    name: "lint: static typing (mypy)"
     if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
     runs-on: self-hosted
     steps:
@@ -61,7 +61,7 @@ jobs:
         run: uv run --no-sync mypy --strict tests/typing/public_api.py
 
   test:
-    name: test: pytest (python ${{ matrix.python-version }})
+    name: "test: pytest (python ${{ matrix.python-version }})"
     if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
     runs-on: self-hosted
     strategy:
@@ -97,7 +97,7 @@ jobs:
           fail_ci_if_error: false
 
   package:
-    name: build: package and smoke-test distributions
+    name: "build: package and smoke-test distributions"
     if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
     runs-on: self-hosted
     needs: [quality, typing, test]
