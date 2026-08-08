@@ -28,7 +28,7 @@ permissions:
 
 jobs:
   benchmark:
-    name: bench: reproducible parser baseline
+    name: "bench: reproducible parser baseline"
     if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
     runs-on: self-hosted
 
