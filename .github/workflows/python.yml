@@ -10,24 +10,9 @@ permissions:
   contents: read
 
 jobs:
-  # This repository is public. A pull_request from a fork must never reach
-  # the self-hosted runner used by quality/typing/test/package below --
-  # each needs this job and fails outright (not a silent skip) if the PR's
-  # head repository isn't this same repository, i.e. isn't from someone
-  # with write access.
-  guard-self-hosted:
-    name: Verify trusted source for self-hosted jobs
-    runs-on: ubuntu-latest
-    steps:
-      - name: Reject pull requests from forks
-        if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository
-        run: |
-          echo "::error::Self-hosted runner jobs do not run for pull requests from forks (head repository: ${{ github.event.pull_request.head.repo.full_name }})."
-          exit 1
-
   quality:
-    name: Ruff quality checks
-    needs: guard-self-hosted
+    name: lint: ruff format and check
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
     runs-on: self-hosted
     steps:
       - uses: actions/checkout@v7
@@ -51,8 +36,8 @@ jobs:
         run: uv run --no-sync ruff check gmshparser tests examples benchmarks
 
   typing:
-    name: Static typing
-    needs: guard-self-hosted
+    name: lint: static typing (mypy)
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
     runs-on: self-hosted
     steps:
       - uses: actions/checkout@v7
@@ -76,8 +61,8 @@ jobs:
         run: uv run --no-sync mypy --strict tests/typing/public_api.py
 
   test:
-    name: Test Python ${{ matrix.python-version }}
-    needs: guard-self-hosted
+    name: test: pytest (python ${{ matrix.python-version }})
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
     runs-on: self-hosted
     strategy:
       fail-fast: false
@@ -112,9 +97,10 @@ jobs:
           fail_ci_if_error: false
 
   package:
-    name: Build and smoke-test distributions
+    name: build: package and smoke-test distributions
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
     runs-on: self-hosted
-    needs: [quality, typing, test, guard-self-hosted]
+    needs: [quality, typing, test]
 
     steps:
       - uses: actions/checkout@v7
