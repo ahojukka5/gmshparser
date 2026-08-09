@@ -38,7 +38,7 @@ jobs:
 
       - name: Verify README-backed homepage
         run: |
-          python - <<'PY'
+          uv run --no-sync python - <<'PY'
           from pathlib import Path
 
           homepage = Path("site/index.html").read_text(encoding="utf-8")
