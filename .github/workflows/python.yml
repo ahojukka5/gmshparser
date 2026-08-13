@@ -9,6 +9,15 @@ on:
 permissions:
   contents: read
 
+# A newer push or pull-request update makes an in-flight run obsolete. Cancel
+# it instead of letting it run to completion: these jobs land on a shared
+# self-hosted fleet, so a superseded run is holding a slot that current work
+# is queueing for. Grouped per workflow, so unrelated workflows in this
+# repository never cancel each other.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 jobs:
   quality:
     name: "lint: ruff format and check"
