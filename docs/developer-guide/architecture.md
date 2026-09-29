@@ -31,13 +31,20 @@ Because inputs are read in text mode, both paths support ASCII MSH files only.
 
 ```python
 DEFAULT_PARSERS_V1 = [NodesParserV1, ElementsParserV1]
-DEFAULT_PARSERS_V2 = [MeshFormatParser, PhysicalNamesParser, NodesParserV2, ElementsParserV2]
+DEFAULT_PARSERS_V2 = [
+    MeshFormatParser,
+    PhysicalNamesParser,
+    NodesParserV2,
+    ElementsParserV2,
+    PeriodicParser,
+]
 DEFAULT_PARSERS_V4 = [
     MeshFormatParser,
     PhysicalNamesParser,
     EntitiesParser,
     NodesParser,
     ElementsParser,
+    PeriodicParser,
 ]
 ```
 
@@ -57,6 +64,7 @@ Section parsers use a small mutable, duck-typed target protocol. It covers:
 - node and element entity blocks
 - physical names
 - entity and element physical tags
+- periodic links between entities
 
 The compatibility `mesh.Mesh` and `ModernMeshBuilder` both implement this
 protocol. Section parsers therefore contain no public-model branching and retain
@@ -96,7 +104,8 @@ After parsing, one final indexed build pass:
 2. resolves element connectivity directly to those node objects
 3. combines node and element blocks into unified `Entity` values
 4. indexes entities, elements, and participating nodes by physical group
-5. creates the final immutable `api.Mesh`
+5. copies periodic links, checking that slave and master node tags exist
+6. creates the final immutable `api.Mesh`
 
 The builder delays final value creation until all sections have been read. This
 is necessary because flat MSH 1.x and 2.x element records can add physical-group
@@ -115,7 +124,8 @@ api.Mesh
   ├─ elements: ElementCollection
   ├─ entities: EntityCollection
   │      └─ Entity(nodes, elements)
-  └─ physical_groups: PhysicalGroupCollection
+  ├─ physical_groups: PhysicalGroupCollection
+  └─ periodic_links: PeriodicLinkCollection
 ```
 
 Both the direct builder and `Mesh.from_legacy()` apply the same public-model
