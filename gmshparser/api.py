@@ -313,6 +313,8 @@ class Entity:
     nodes: NodeCollection
     elements: ElementCollection
     physical_tags: tuple[int, ...] = ()
+    bounding_box: tuple[float, ...] = ()
+    boundary_tags: tuple[int, ...] = ()
 
     @property
     def key(self) -> EntityKey:
@@ -682,6 +684,7 @@ class Mesh:
         entity_keys = dict.fromkeys(
             [
                 *mesh.get_entity_physical_assignments(),
+                *mesh.get_entity_bounding_boxes(),
                 *nodes_by_entity,
                 *elements_by_entity,
             ]
@@ -704,6 +707,8 @@ class Mesh:
                     nodes=NodeCollection(nodes_by_entity.get(key, ())),
                     elements=entity_elements,
                     physical_tags=tuple(physical_tags),
+                    bounding_box=mesh.get_entity_bounding_box(*key),
+                    boundary_tags=mesh.get_entity_boundary_tags(*key),
                 )
             )
 

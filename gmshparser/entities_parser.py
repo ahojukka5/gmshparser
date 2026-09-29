@@ -110,6 +110,7 @@ class EntitiesParser(AbstractParser):
                     )
 
                 if dimension == 0:
+                    boundary_tags: tuple[int, ...] = ()
                     if len(parts) != physical_stop:
                         raise InvalidSectionError(
                             f"Point entity {tag} contains unexpected trailing fields"
@@ -151,7 +152,12 @@ class EntitiesParser(AbstractParser):
                             "Entity boundary tags must be non-zero signed integers"
                         )
 
+                if len(geometry) == 3:
+                    bounding_box = (*geometry, *geometry)
+                else:
+                    bounding_box = geometry
                 seen_entity_tags[dimension].add(tag)
+                mesh.set_entity_geometry(dimension, tag, bounding_box, boundary_tags)
                 mesh.set_entity_physical_tags(dimension, tag, physical_tags)
 
         expect_end_marker(io, "$EndEntities")
