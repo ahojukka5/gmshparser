@@ -36,6 +36,12 @@ Section parsers receive a mutable parser target and a text stream positioned imm
       heading_level: 3
       members: true
 
+::: gmshparser.periodic_parser.PeriodicParser
+    options:
+      show_source: true
+      heading_level: 3
+      members: true
+
 ## MSH 1.0
 
 ::: gmshparser.nodes_parser_v1.NodesParserV1

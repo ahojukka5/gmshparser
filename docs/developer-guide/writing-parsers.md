@@ -120,6 +120,7 @@ DEFAULT_PARSERS_V2 = [
     PhysicalNamesParser,
     NodesParserV2,
     ElementsParserV2,
+    PeriodicParser,
 ]
 
 DEFAULT_PARSERS_V4 = [
@@ -128,6 +129,7 @@ DEFAULT_PARSERS_V4 = [
     EntitiesParser,
     NodesParser,
     ElementsParser,
+    PeriodicParser,
 ]
 ```
 
@@ -177,11 +179,11 @@ Register each class in the matching parser list. This follows the existing
 - run Ruff, pytest, and the documentation build
 
 ```bash
-uv run ruff format --check gmshparser tests examples
-uv run ruff check gmshparser tests examples
+uv run ruff format --check gmshparser tests examples benchmarks
+uv run ruff check gmshparser tests examples benchmarks
 uv run pytest
 uv sync --group docs
-uv run mkdocs build
+uv run mkdocs build --strict
 ```
 
 ## Documentation checklist
