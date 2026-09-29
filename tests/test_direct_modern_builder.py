@@ -162,3 +162,41 @@ def test_read_does_not_call_mesh_from_legacy(monkeypatch):
 
     assert mesh.name == "direct.msh"
     assert mesh.elements.tags == (1, 2)
+
+
+TET_NODES = """1 0.0 0.0 0.0
+2 1.0 0.0 0.0
+3 0.0 1.0 0.0
+4 0.0 0.0 1.0
+"""
+
+MSH_1_TET = f"""$NOD
+4
+{TET_NODES}$ENDNOD
+$ELM
+1
+1 4 1 1 4 1 2 3 4
+$ENDELM
+"""
+
+MSH_2_TET = f"""$MeshFormat
+2.2 0 8
+$EndMeshFormat
+$Nodes
+4
+{TET_NODES}$EndNodes
+$Elements
+1
+1 4 2 1 1 1 2 3 4
+$EndElements
+"""
+
+
+def test_pre_entity_formats_store_nodes_on_the_same_volume_entity():
+    version_1 = gmshparser.read(StringIO(MSH_1_TET))
+    version_2 = gmshparser.read(StringIO(MSH_2_TET))
+
+    assert version_1.entity(3, 1).nodes.tags == (1, 2, 3, 4)
+    assert version_2.entity(3, 1).nodes.tags == (1, 2, 3, 4)
+    assert version_1.nodes[1].dimension == version_2.nodes[1].dimension == 3
+    assert version_1.elements[1].node_tags == version_2.elements[1].node_tags

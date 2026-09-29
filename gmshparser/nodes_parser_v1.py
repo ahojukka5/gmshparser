@@ -53,5 +53,5 @@ class NodesParserV1(AbstractParser):
             mesh.set_min_node_tag(min_tag)
             mesh.set_max_node_tag(max_tag)
         mesh.set_number_of_node_entities(1)
-        mesh.add_node_block(2, 1, 0, records)
+        mesh.add_node_block(3, 1, 0, records)
         expect_end_marker(io, "$ENDNOD")
