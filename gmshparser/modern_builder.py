@@ -53,6 +53,8 @@ class ModernMeshBuilder:
         self._raw_element_blocks: list[RawElementBlock] = []
         self._physical_names: dict[PhysicalGroupKey, str] = {}
         self._entity_physical_tags: dict[EntityKey, tuple[int, ...]] = {}
+        self._entity_bounding_boxes: dict[EntityKey, tuple[float, ...]] = {}
+        self._entity_boundary_tags: dict[EntityKey, tuple[int, ...]] = {}
         self._element_physical_tags: dict[int, tuple[int, ...]] = {}
         self._periodic_links: dict[
             EntityKey, tuple[int, tuple[float, ...], tuple[tuple[int, int], ...]]
@@ -213,6 +215,23 @@ class ModernMeshBuilder:
             physical_tags
         )
 
+    def set_entity_geometry(
+        self,
+        dimension: int,
+        tag: int,
+        bounding_box: Iterable[float],
+        boundary_tags: Iterable[int],
+    ) -> None:
+        key = int(dimension), int(tag)
+        self._entity_bounding_boxes[key] = tuple(float(value) for value in bounding_box)
+        self._entity_boundary_tags[key] = tuple(int(value) for value in boundary_tags)
+
+    def get_entity_bounding_box(self, dimension: int, tag: int) -> tuple[float, ...]:
+        return self._entity_bounding_boxes.get((dimension, tag), ())
+
+    def get_entity_boundary_tags(self, dimension: int, tag: int) -> tuple[int, ...]:
+        return self._entity_boundary_tags.get((dimension, tag), ())
+
     def add_entity_physical_tags(
         self,
         dimension: int,
@@ -372,7 +391,12 @@ class ModernMeshBuilder:
 
         elements = ElementCollection(all_elements)
         entity_keys = dict.fromkeys(
-            [*self._entity_physical_tags, *nodes_by_entity, *elements_by_entity]
+            [
+                *self._entity_physical_tags,
+                *self._entity_bounding_boxes,
+                *nodes_by_entity,
+                *elements_by_entity,
+            ]
         )
         entity_values: list[Entity] = []
 
@@ -391,6 +415,8 @@ class ModernMeshBuilder:
                     nodes=NodeCollection(nodes_by_entity.get(key, ())),
                     elements=entity_elements,
                     physical_tags=tuple(entity_physical_tag_values),
+                    bounding_box=self.get_entity_bounding_box(*key),
+                    boundary_tags=self.get_entity_boundary_tags(*key),
                 )
             )
 

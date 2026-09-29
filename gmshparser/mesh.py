@@ -43,6 +43,8 @@ class Mesh:
         self.element_entities_: dict[ElementEntityKey, ElementEntity] = {}
         self.physical_names_: dict[EntityKey, str] = {}
         self.entity_physical_tags_: dict[EntityKey, tuple[int, ...]] = {}
+        self.entity_bounding_boxes_: dict[EntityKey, tuple[float, ...]] = {}
+        self.entity_boundary_tags_: dict[EntityKey, tuple[int, ...]] = {}
         self.element_physical_tags_: dict[int, tuple[int, ...]] = {}
         self.periodic_links_: dict[EntityKey, PeriodicLinkValue] = {}
 
@@ -305,6 +307,32 @@ class Mesh:
         self.entity_physical_tags_[(dimension, tag)] = self._normalize_tags(
             physical_tags
         )
+
+    def set_entity_geometry(
+        self,
+        dimension: int,
+        tag: int,
+        bounding_box: Iterable[float],
+        boundary_tags: Iterable[int],
+    ) -> None:
+        """Store the axis-aligned box and signed boundary tags of one entity."""
+        box = tuple(float(value) for value in bounding_box)
+        self.entity_bounding_boxes_[(dimension, tag)] = box
+        self.entity_boundary_tags_[(dimension, tag)] = tuple(
+            int(value) for value in boundary_tags
+        )
+
+    def get_entity_bounding_box(self, dimension: int, tag: int) -> tuple[float, ...]:
+        """Return the entity box, or an empty tuple when `$Entities` omitted it."""
+        return self.entity_bounding_boxes_.get((dimension, tag), ())
+
+    def get_entity_boundary_tags(self, dimension: int, tag: int) -> tuple[int, ...]:
+        """Return signed boundary-entity tags, empty for points and older files."""
+        return self.entity_boundary_tags_.get((dimension, tag), ())
+
+    def get_entity_bounding_boxes(self) -> dict[EntityKey, tuple[float, ...]]:
+        """Return boxes declared by `$Entities`, keyed by ``(dimension, tag)``."""
+        return dict(self.entity_bounding_boxes_)
 
     def add_entity_physical_tags(
         self,
