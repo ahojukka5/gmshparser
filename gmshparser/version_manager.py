@@ -46,16 +46,6 @@ class VersionManager:
         MshFormatVersion.MSH_4_1,
     ]
 
-    # Versions that are recognized but not fully implemented yet
-    RECOGNIZED_VERSIONS = [
-        MshFormatVersion.MSH_1_0,
-        MshFormatVersion.MSH_2_0,
-        MshFormatVersion.MSH_2_1,
-        MshFormatVersion.MSH_2_2,
-        MshFormatVersion.MSH_4_0,
-        MshFormatVersion.MSH_4_1,
-    ]
-
     @staticmethod
     def parse_version(version_str: str) -> tuple[int, int]:
         """Parse version string to major and minor version numbers.
@@ -105,7 +95,7 @@ class VersionManager:
         ValueError
             If version is not recognized
         """
-        for version in cls.RECOGNIZED_VERSIONS:
+        for version in cls.SUPPORTED_VERSIONS:
             if version.major == major and version.minor == minor:
                 return version
         raise ValueError(f"Unrecognized MSH format version: {major}.{minor}")
@@ -143,19 +133,10 @@ class VersionManager:
         Raises
         ------
         ValueError
-            If version is not recognized or not supported
+            If version is not recognized
         """
         major, minor = cls.parse_version(version_str)
-        version_enum = cls.get_version_enum(major, minor)
-
-        if not cls.is_supported(version_enum):
-            supported = ", ".join(str(v) for v in cls.SUPPORTED_VERSIONS)
-            raise ValueError(
-                f"MSH format version {major}.{minor} is recognized but not "
-                f"supported. Supported versions: {supported}"
-            )
-
-        return version_enum
+        return cls.get_version_enum(major, minor)
 
     @classmethod
     def is_version_1(cls, version: MshFormatVersion) -> bool:
