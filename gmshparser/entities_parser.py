@@ -153,7 +153,7 @@ class EntitiesParser(AbstractParser):
                         )
 
                 if len(geometry) == 3:
-                    bounding_box = (*geometry, *geometry)
+                    bounding_box: tuple[float, ...] = (*geometry, *geometry)
                 else:
                     bounding_box = geometry
                 seen_entity_tags[dimension].add(tag)
