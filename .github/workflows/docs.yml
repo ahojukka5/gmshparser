@@ -17,6 +17,7 @@ jobs:
   build:
     name: "docs: build documentation"
     runs-on: ubuntu-latest
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v7
 
@@ -69,6 +70,7 @@ jobs:
     name: "docs: deploy documentation"
     if: github.event_name == 'push' && github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     needs: build
     permissions:
       pages: write
